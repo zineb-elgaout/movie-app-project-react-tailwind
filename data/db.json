@@ -1,0 +1,28 @@
+{
+  "categories": [
+    {
+      "id": "1",
+      "title": "Disney Classics",
+      "subtitle": "Années 90-2000",
+      "image": "../src/assets/public/images/disney.webp"
+    },
+    {
+      "id": "2",
+      "title": "Studio Ghibli",
+      "subtitle": "Chefs-d'œuvre japonais",
+      "image": "../src/assets/public/images/gibli.webp"
+    },
+    {
+      "id": "3",
+      "title": "Cartoon Network",
+      "subtitle": "Année 2000",
+      "image": "../src/assets/public/images/cartoon.jpg"
+    },
+    {
+      "id": "4",
+      "title": "Nickelodeon",
+      "subtitle": "Émissions cultes",
+      "image": "../src/assets/public/images/nickelodeon.jpg"
+    }
+  ]
+}
