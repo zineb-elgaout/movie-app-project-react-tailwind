@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import AdminLayout from "../../Layouts/admin/AdminLayout";
+import Header from "../../components/ui/Header";
+import Button from "../../components/ui/Button";
 import CategoryList from "../../components/admin/categories/CategorieList";
 import AddCategory from "../../components/admin/categories/AddCategory";
-import Button from "../../components/ui/Button";
 import Loading from "../../components/Loading";
 import ErrorMessage from "../../components/ErrorMessage";
-import Header from "../../components/ui/Header";
 import useCategories from "../../hooks/useCategories";
 
 export default function Categories() {

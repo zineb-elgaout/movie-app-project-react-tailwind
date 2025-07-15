@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import UpdateCategory from "./UpdateCategory";
@@ -33,7 +34,7 @@ export default function CategoryList() {
   };
 
   if (loading) return <Loading />;
-  if (error) return <ErrorMessage />;
+  if (error) return <ErrorMessage message={error}/>;
 
   return (
     <div className="max-w-7xl mx-auto mb-5">
@@ -44,6 +45,11 @@ export default function CategoryList() {
           </p>
         ) : (
           categories.map(({ id, title, subtitle, image }) => (
+            <Link 
+              to={`/category/${id}`} 
+              key={id} 
+              className="relative rounded-xl overflow-hidden h-80 group block" // block pour que le lien prenne toute la carte
+            >
             <motion.div
               key={id}
               initial={{ opacity: 0, y: 30 }}
@@ -61,19 +67,29 @@ export default function CategoryList() {
 
               <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
-                  onClick={() => handleEdit({ id, title, subtitle, image })}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleEdit({ id, title, subtitle, image });
+                  }}
                   title="Modifier"
                   className="bg-white/80 text-gray-800 hover:bg-white p-2 rounded-full shadow"
                 >
                   <FiEdit />
                 </button>
+
                 <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDelete(id);
+                  }}
                   title="Supprimer"
                   className="bg-white/80 text-gray-800 hover:bg-white p-2 rounded-full shadow"
-                  onClick={() => handleDelete(id)}
                 >
                   <FiTrash />
                 </button>
+
               </div>
 
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white/30 to-transparent backdrop-blur-sm px-4 py-3">
@@ -85,6 +101,7 @@ export default function CategoryList() {
                 </p>
               </div>
             </motion.div>
+            </Link>
           ))
         )}
       </div>

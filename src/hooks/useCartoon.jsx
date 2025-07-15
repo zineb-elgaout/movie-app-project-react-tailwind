@@ -1,26 +1,26 @@
 import { useState, useEffect } from "react";
-import { getAllCategories } from "../../services/categoryService";
+import { getAllCartoons } from "../../services/cartoonService";
 
-export default function useCategories(autoFetch = true) {
-  const [categories, setCategories] = useState([]);
+export default function useCartoons(autoFetch = true) {
+  const [cartoons, setCartoons] = useState([]);
   const [loading, setLoading] = useState(autoFetch);
   const [error, setError] = useState(null);
 
-  const fetchCategories = async () => {
+  const fetchCartoons = async () => {
     try {
       setLoading(true);
-      const res = await getAllCategories();
-      setCategories(res.data);
+      const res = await getAllCartoons();
+      setCartoons(res.data);
     } catch (err) {
-      setError("Erreur lors du chargement des catégories.");
+      setError("Erreur lors du chargement des cartoons.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (autoFetch) fetchCategories();
+    if (autoFetch) fetchCartoons();
   }, []);
 
-  return { categories, loading, error, fetchCategories };
+  return { cartoons, loading, error, fetchCartoons };
 }

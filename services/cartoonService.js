@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5400/cartoon';
+const API_URL = 'http://localhost:5400/cartoons';
 
-export const getAllCartoon = () => axios.get(API_URL);
+export const getAllCartoons = () => axios.get(API_URL);
 
 export const addCartoon = (cartoon) => axios.post(API_URL, cartoon);
 

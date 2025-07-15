@@ -1,12 +1,6 @@
 {
   "categories": [
     {
-      "id": "1",
-      "title": "Disney Classics",
-      "subtitle": "Années 90-2000",
-      "image": "../src/assets/public/images/disney.webp"
-    },
-    {
       "id": "2",
       "title": "Studio Ghibli",
       "subtitle": "Chefs-d'œuvre japonais",
@@ -23,13 +17,21 @@
       "title": "Nickelodeon",
       "subtitle": "Émissions cultes",
       "image": "../src/assets/public/images/nickelodeon.jpg"
+    },
+    {
+      "id": "ae83",
+      "title": "categorie 4",
+      "subtitle": "",
+      "image": "blob:http://localhost:5173/0e15fa7c-b169-4a0e-9cee-00dec663092b"
     }
   ],
   "cartoons": [
     {
       "id": "101",
       "title": "The Lion King",
+      "type": "Film d'animation",
       "release_year": 1994,
+      "categorieId": "1",
       "duration": 88,
       "description": "A young lion prince flees his kingdom only to learn the true meaning of responsibility and bravery.",
       "rating": 8.5,
@@ -39,7 +41,9 @@
     {
       "id": "102",
       "title": "Aladdin",
+      "type": "Film d'animation",
       "release_year": 1992,
+      "categorieId": "1",
       "duration": 90,
       "description": "A kind-hearted street urchin finds a magic lamp containing a genie who grants him three wishes.",
       "rating": 8,
@@ -49,7 +53,9 @@
     {
       "id": "201",
       "title": "Spirited Away",
+      "type": "Film d'animation",
       "release_year": 2001,
+      "categorieId": "2",
       "duration": 125,
       "description": "A young girl gets trapped in a mysterious spirit world and must work to free herself and her parents.",
       "rating": 8.6,
@@ -59,7 +65,9 @@
     {
       "id": "202",
       "title": "My Neighbor Totoro",
+      "type": "Film d'animation",
       "release_year": 1988,
+      "categorieId": "2",
       "duration": 86,
       "description": "Two sisters encounter friendly forest spirits in postwar rural Japan.",
       "rating": 8.2,
@@ -69,7 +77,9 @@
     {
       "id": "301",
       "title": "Adventure Time",
+      "type": "Série d'animation",
       "release_year": 2010,
+      "categorieId": "3",
       "duration": 11,
       "description": "Finn and Jake explore the post-apocalyptic Land of Ooo, encountering strange creatures and foes.",
       "rating": 8.6,
@@ -79,7 +89,9 @@
     {
       "id": "302",
       "title": "The Powerpuff Girls",
+      "type": "Série d'animation",
       "release_year": 1998,
+      "categorieId": "3",
       "duration": 22,
       "description": "Three superpowered little girls fight crime and save their city from villains.",
       "rating": 8,
@@ -89,7 +101,9 @@
     {
       "id": "401",
       "title": "SpongeBob SquarePants",
+      "type": "Série d'animation",
       "release_year": 1999,
+      "categorieId": "4",
       "duration": 23,
       "description": "A cheerful sea sponge lives in a pineapple under the sea and works at the Krusty Krab.",
       "rating": 8.2,
@@ -99,7 +113,9 @@
     {
       "id": "402",
       "title": "Avatar: The Last Airbender",
+      "type": "Série d'animation",
       "release_year": 2005,
+      "categorieId": "4",
       "duration": 24,
       "description": "A young boy must master the four elements to save the world from the Fire Nation.",
       "rating": 9.3,
