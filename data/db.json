@@ -23,12 +23,6 @@
       "title": "Nickelodeon",
       "subtitle": "Émissions cultes",
       "image": "../src/assets/public/images/nickelodeon.jpg"
-    },
-    {
-      "title": "titre de categorie 6",
-      "subtitle": "description de l categorie 7",
-      "image": "blob:http://localhost:5173/bef3b389-5162-4a48-b7e7-1d452e0c8bd1",
-      "id": "b058"
     }
   ],
   "cartoons": [
