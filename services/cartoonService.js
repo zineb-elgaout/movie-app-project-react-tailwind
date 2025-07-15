@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/cartoon';
+const API_URL = 'http://localhost:5400/cartoon';
 
 export const getAllCartoon = () => axios.get(API_URL);
 

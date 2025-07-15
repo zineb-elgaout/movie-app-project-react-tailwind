@@ -23,6 +23,94 @@
       "title": "Nickelodeon",
       "subtitle": "Émissions cultes",
       "image": "../src/assets/public/images/nickelodeon.jpg"
+    },
+    {
+      "title": "titre de categorie 6",
+      "subtitle": "description de l categorie 7",
+      "image": "blob:http://localhost:5173/bef3b389-5162-4a48-b7e7-1d452e0c8bd1",
+      "id": "b058"
+    }
+  ],
+  "cartoons": [
+    {
+      "id": "101",
+      "title": "The Lion King",
+      "release_year": 1994,
+      "duration": 88,
+      "description": "A young lion prince flees his kingdom only to learn the true meaning of responsibility and bravery.",
+      "rating": 8.5,
+      "main_character": "Simba",
+      "image_url": "../src/assets/public/images/lionking.webp"
+    },
+    {
+      "id": "102",
+      "title": "Aladdin",
+      "release_year": 1992,
+      "duration": 90,
+      "description": "A kind-hearted street urchin finds a magic lamp containing a genie who grants him three wishes.",
+      "rating": 8,
+      "main_character": "Aladdin",
+      "image_url": "../src/assets/public/images/aladdin.webp"
+    },
+    {
+      "id": "201",
+      "title": "Spirited Away",
+      "release_year": 2001,
+      "duration": 125,
+      "description": "A young girl gets trapped in a mysterious spirit world and must work to free herself and her parents.",
+      "rating": 8.6,
+      "main_character": "Chihiro",
+      "image_url": "../src/assets/public/images/spiritedaway.webp"
+    },
+    {
+      "id": "202",
+      "title": "My Neighbor Totoro",
+      "release_year": 1988,
+      "duration": 86,
+      "description": "Two sisters encounter friendly forest spirits in postwar rural Japan.",
+      "rating": 8.2,
+      "main_character": "Totoro",
+      "image_url": "../src/assets/public/images/totoro.webp"
+    },
+    {
+      "id": "301",
+      "title": "Adventure Time",
+      "release_year": 2010,
+      "duration": 11,
+      "description": "Finn and Jake explore the post-apocalyptic Land of Ooo, encountering strange creatures and foes.",
+      "rating": 8.6,
+      "main_character": "Finn the Human",
+      "image_url": "../src/assets/public/images/adventuretime.webp"
+    },
+    {
+      "id": "302",
+      "title": "The Powerpuff Girls",
+      "release_year": 1998,
+      "duration": 22,
+      "description": "Three superpowered little girls fight crime and save their city from villains.",
+      "rating": 8,
+      "main_character": "Blossom, Bubbles & Buttercup",
+      "image_url": "../src/assets/public/images/powerpuffgirls.webp"
+    },
+    {
+      "id": "401",
+      "title": "SpongeBob SquarePants",
+      "release_year": 1999,
+      "duration": 23,
+      "description": "A cheerful sea sponge lives in a pineapple under the sea and works at the Krusty Krab.",
+      "rating": 8.2,
+      "main_character": "SpongeBob",
+      "image_url": "../src/assets/public/images/spongebob.webp"
+    },
+    {
+      "id": "402",
+      "title": "Avatar: The Last Airbender",
+      "release_year": 2005,
+      "duration": 24,
+      "description": "A young boy must master the four elements to save the world from the Fire Nation.",
+      "rating": 9.3,
+      "main_character": "Aang",
+      "image_url": "../src/assets/public/images/avatar.webp"
     }
   ]
 }

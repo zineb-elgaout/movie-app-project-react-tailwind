@@ -1,18 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const CartoonList = ({ 
-  id,
-  title,
-  release_year,
-  duration,
-  description,
-  rating,
-  main_character,
-  image_url,
-  onEdit,
-  onDelete
-}) => {
+const CartoonList = () => {
   const [expanded, setExpanded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
