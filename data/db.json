@@ -79,7 +79,7 @@
       "title": "Adventure Time",
       "type": "Série d'animation",
       "release_year": 2010,
-      "categorieId": "3",
+      "categorieId": "9a26de21-e0e4-47e3-b55f-0055e1df832a",
       "duration": 11,
       "description": "Finn and Jake explore the post-apocalyptic Land of Ooo, encountering strange creatures and foes.",
       "rating": 8.6,
@@ -91,7 +91,7 @@
       "title": "The Powerpuff Girls",
       "type": "Série d'animation",
       "release_year": 1998,
-      "categorieId": "3",
+      "categorieId": "9a26de21-e0e4-47e3-b55f-0055e1df832a",
       "duration": 22,
       "description": "Three superpowered little girls fight crime and save their city from villains.",
       "rating": 8,
@@ -121,6 +121,19 @@
       "rating": 9.3,
       "main_character": "Aang",
       "image_url": "../src/assets/public/images/avatar.webp"
+    },
+    {
+      "id": "b7b7",
+      "title": "titre",
+      "type": "Film",
+      "releaseYear": 2020,
+      "description": "description",
+      "rating": 7.6,
+      "mainCharacter": "personnage 1",
+      "image": {},
+      "numberOfSaisons": null,
+      "duration": 15,
+      "categorieId": ""
     }
   ]
 }
