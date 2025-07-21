@@ -36,7 +36,7 @@ const GlobalSearch = ({
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative   ${className}`} style={{ width: '50%'}} >
       <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${isFocused ? 'text-purple-500' : 'text-gray-400'}`}>
         <FiSearch size={18} />
       </div>
@@ -44,7 +44,7 @@ const GlobalSearch = ({
       <input
         type="text"
         placeholder={placeholder}
-        className={`pl-10 pr-8 py-2.5 w-full text-white bg-gray-800 border ${isFocused ? 'border-purple-500 ring-2 ring-purple-500/30' : 'border-gray-700'} rounded-lg focus:outline-none transition-all duration-200`}
+        className={`pl-10 pr-8 py-2.5 w-full text-white bg-gray-800 border ${isFocused ? 'border-purple-500 ring-2 ring-purple-500/30' : 'border-gray-700'} rounded-full focus:outline-none transition-all duration-200`}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onFocus={() => setIsFocused(true)}

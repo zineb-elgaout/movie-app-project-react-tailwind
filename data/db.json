@@ -135,5 +135,72 @@
       "duration": 15,
       "categorieId": ""
     }
+  ],
+  
+  "users": [
+    {
+      "id": 1,
+      "firstName": "Zineb",
+      "lastName": "El Gaout",
+      "email": "zineb.elgaout@cartoonmovies.com",
+      "nationality": "marocaine",
+      "role": "admin",
+      "avatar": "https://randomuser.me/api/portraits/women/39.jpg"
+    },
+    {
+      "id": 2,
+      "firstName": "Sophie",
+      "lastName": "Martin",
+      "email": "sophie.martin@cartoonmovies.com",
+      "nationality": "française",
+      "role": "editor",
+      "avatar": "https://randomuser.me/api/portraits/women/45.jpg"
+    },
+    {
+      "id": 3,
+      "firstName": "Hiroshi",
+      "lastName": "Tanaka",
+      "email": "hiroshi.tanaka@example.com",
+      "nationality": "japonaise",
+      "role": "user",
+      "avatar": "https://randomuser.me/api/portraits/men/22.jpg"
+    },
+    {
+      "id": 4,
+      "firstName": "Amina",
+      "lastName": "Diallo",
+      "email": "amina.diallo@example.com",
+      "nationality": "sénégalaise",
+      "role": "user",
+      "avatar": "https://randomuser.me/api/portraits/women/63.jpg"
+    },
+    {
+      "id": 5,
+      "firstName": "Giovanni",
+      "lastName": "Rossi",
+      "email": "giovanni.rossi@example.com",
+      "nationality": "italienne",
+      "role": "editor",
+      "avatar": "https://randomuser.me/api/portraits/men/55.jpg"
+    },
+    {
+      "id": 6,
+      "firstName": "Olivia",
+      "lastName": "Smith",
+      "email": "olivia.smith@example.com",
+      "nationality": "américaine",
+      "role": "user",
+      "avatar": "https://randomuser.me/api/portraits/women/33.jpg"
+    },
+    {
+      "id": 7,
+      "firstName": "Chen",
+      "lastName": "Wei",
+      "email": "chen.wei@example.com",
+      "nationality": "chinoise",
+      "role": "user",
+      "avatar": "https://randomuser.me/api/portraits/men/44.jpg"
+    }
   ]
+
 }

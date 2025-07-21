@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiUser, FiSettings, FiLogOut, FiBell } from 'react-icons/fi';
+import {  FiSettings, FiLogOut } from 'react-icons/fi';
 import { RiMovie2Line } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
 
 const Topbar = ({ sidebarCollapsed }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,6 +26,7 @@ const Topbar = ({ sidebarCollapsed }) => {
 
       {/* Section droite avec nom utilisateur */}
       <div className="flex items-center space-x-4">
+        
         {/* Menu utilisateur */}
         <div className="relative">
           <button 

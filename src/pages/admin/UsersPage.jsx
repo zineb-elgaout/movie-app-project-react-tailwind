@@ -8,60 +8,24 @@ import GlobalSearch from "../../components/ui/GlobalSearch";
 import useSearch from "../../hooks/useSearch";
 import Button from "../../components/ui/Button";
 import getRoleBadge from "../../components/ui/RoleBagde";
+import useUsers from "../../hooks/useUsers";
+import Loading from "../../components/Loading";
+import ErrorMessage from "../../components/ErrorMessage";
 
 export default function UsersPage() {
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@cartoonmovies.com',
-      role: 'admin',
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
-    },
-    {
-      id: 2,
-      firstName: 'Alice',
-      lastName: 'Smith',
-      email: 'alice.smith@cartoonmovies.com',
-      role: 'editor',
-      avatar: 'https://randomuser.me/api/portraits/women/1.jpg'
-    },
-    {
-      id: 3,
-      firstName: 'Bob',
-      lastName: 'Johnson',
-      email: 'bob.johnson@example.com',
-      role: 'user',
-      avatar: 'https://randomuser.me/api/portraits/men/2.jpg'
-    },
-    {
-      id: 4,
-      firstName: 'Emma',
-      lastName: 'Williams',
-      email: 'emma.williams@example.com',
-      role: 'user',
-      avatar: 'https://randomuser.me/api/portraits/women/2.jpg'
-    },
-    {
-      id: 5,
-      firstName: 'Michael',
-      lastName: 'Brown',
-      email: 'michael.brown@example.com',
-      role: 'editor',
-      avatar: 'https://randomuser.me/api/portraits/men/3.jpg'
-    }
-  ]);
-
-    const {
+  const { users , loading, error, fetchUsers } = useUsers();
+  const {
         searchTerm,
         setSearchTerm,
         filteredData: filteredUsers
     } = useSearch(users, ['firstName', 'lastName', 'email', 'role']);
 
     
-  
-  const RoleBadge = getRoleBadge(role);
+
+    if (loading) { return (<Loading />)};
+    if(error) return (<ErrorMessage message={error} />) ; 
+
+    
 
  
      return(
@@ -70,14 +34,6 @@ export default function UsersPage() {
 
 
         <section className="px-4 sm:px-6 py-8 bg-gray-900 min-h-screen">
-            <GlobalSearch
-                placeholder="Rechercher ..."  
-                delay={500}                      
-                onSearch={(term) => {}}         
-                className="mb-4"                 
-                initialValue=""              
-                showClear={false}                
-            />
             <div className="max-w-7xl mx-auto">
 
                 <Header
@@ -88,10 +44,24 @@ export default function UsersPage() {
                     }}
                 />
 
+            </div>
+            <div className="max-w-7xl  flex justify-center my-2">
+                <GlobalSearch
+                    placeholder="Rechercher ..."  
+                    delay={500}                      
+                    onSearch={(term) => {}}         
+                    className="mb-4"                 
+                    initialValue=""              
+                    showClear={false}                
+                />
+            </div>
+            
+            <div className=" flex justify-end">
                 <Button>
                     
                      + Nouveau Utilisateur
                 </Button>
+            
             </div>
 
             {/* Users Table */}
@@ -102,6 +72,7 @@ export default function UsersPage() {
                     <tr>
                     <th className="px-6 py-4 text-left font-semibold text-gray-300">Utilisateur</th>
                     <th className="px-6 py-4 text-left font-semibold text-gray-300">Email</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-300">Nationalité</th>
                     <th className="px-6 py-4 text-left font-semibold text-gray-300">Rôle</th>
                     <th className="px-6 py-4 text-right font-semibold text-gray-300">Actions</th>
                     </tr>
@@ -126,7 +97,10 @@ export default function UsersPage() {
                             <div className="text-gray-300">{user.email}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${RoleBadge(user.role)}`}>
+                            <div className="text-gray-300">{user.nationality}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getRoleBadge(user.role)}`}>
                             {user.role}
                             </span>
                         </td>
@@ -191,7 +165,7 @@ export default function UsersPage() {
                     
                     <div className="flex justify-between items-center">
                         <span className="text-gray-400">Rôle:</span>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${RoleBadge(user.role)}`}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getRoleBadge(user.role)}`}>
                         {user.role}
                         </span>
                     </div>
