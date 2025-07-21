@@ -1,131 +1,69 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { addCartoon, updateCartoon, deleteCartoon } from '../../../../services/cartoonService';
-import { getAllCategories } from '../../../../services/categoryService';
+import { useCartoonForm } from '../../../hooks/useCartoonForm';
+import { useOutsideClick } from '../../../hooks/useOutsideClick';
+import  useCategories from '../../../hooks/useCategories';
+import { initialCartoonData } from '../../../constants/initialCartoonData';
 
-const CartoonCrud = ({ onClose, cartoonToEdit }) => {
+const CartoonCrud = ({ onClose, cartoonToEdit  }) => {
   const formRef = useRef(null);
+  useOutsideClick(formRef, onClose);
+  const { categories,loading, error, fetchCategories } = useCategories();
 
-  const [formData, setFormData] = useState({
-    id: '',
-    title: '',
-    type: '',
-    numberOfSaisons: '',
-    releaseYear: '',
-    description: '',
-    rating: '',
-    mainCharacter: '',
-    image: null,
-    duration: '',  // string libre
-    categorieId: ''
-  });
-
-  const [categories, setCategories] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const { formData, setFormData, handleChange, handleImageChange } = useCartoonForm(initialCartoonData);
 
   useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const categoriesData = await getAllCategories();
-        setCategories(categoriesData);
-      } catch (err) {
-        console.error("Erreur lors du chargement des catégories:", err);
-      }
-    };
-    loadCategories();
-
     if (cartoonToEdit) {
       setFormData({
-        id: cartoonToEdit.id || '',
-        title: cartoonToEdit.title || '',
-        type: cartoonToEdit.type || '',
-        releaseYear: cartoonToEdit.releaseYear || '',
-        description: cartoonToEdit.description || '',
-        rating: cartoonToEdit.rating || '',
-        mainCharacter: cartoonToEdit.mainCharacter || '',
-        image: cartoonToEdit.image || null,
-        duration: cartoonToEdit.duration || '',
-        numberOfSaisons: cartoonToEdit.numberOfSaisons || '',
-        categorieId: cartoonToEdit.categorieId || ''
+        ...initialCartoonData,
+        ...cartoonToEdit
       });
       setIsEditing(true);
     }
-  }, [cartoonToEdit]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (formRef.current && !formRef.current.contains(event.target)) {
-        const interactiveSelectors = ['input','button','textarea','label','[role="button"]','svg','path'];
-        const isInteractive = interactiveSelectors.some(selector => event.target.closest(selector));
-        if (!isInteractive) {
-          onClose();
-        }
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setFormData(prev => ({ ...prev, image: file }));
-  };
+  }, [cartoonToEdit, setFormData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
-      // Préparer les données à envoyer
-      // Si le backend attend un fichier image, utilise FormData :
-      const dataToSend = new FormData();
-      dataToSend.append('title', formData.title);
-      dataToSend.append('type', formData.type);
-      dataToSend.append('releaseYear', formData.releaseYear || '');
-      dataToSend.append('description', formData.description);
-      dataToSend.append('rating', formData.rating || '');
-      dataToSend.append('mainCharacter', formData.mainCharacter);
-      dataToSend.append('numberOfSaisons', formData.numberOfSaisons || '');
-      dataToSend.append('duration', formData.duration); // durée en string libre
-      dataToSend.append('categorieId', formData.categorieId);
-
-      if(formData.image && typeof formData.image !== 'string') {
-        dataToSend.append('image', formData.image);
+      const formDataToSend = new FormData();
+      for (const key in formData) {
+        if (key === 'image' && formData.image && typeof formData.image !== 'string') {
+          formDataToSend.append('image', formData.image);
+        } else {
+          formDataToSend.append(key, formData[key] ?? '');
+        }
       }
 
       if (isEditing) {
-        await updateCartoon(formData.id, dataToSend);
+        await updateCartoon(formData.id, formDataToSend);
         alert(`Dessin animé "${formData.title}" mis à jour avec succès !`);
       } else {
-        await addCartoon(dataToSend);
+        await addCartoon(formDataToSend);
         alert(`Dessin animé "${formData.title}" créé avec succès !`);
       }
-      onClose();
 
+      onClose();
     } catch (err) {
       console.error("Erreur lors de l'opération:", err);
-      alert(`Erreur lors de ${isEditing ? 'la mise à jour' : 'la création'} du dessin animé, voir console pour détails.`);
+      alert(`Erreur lors de ${isEditing ? 'la mise à jour' : 'la création'} du dessin animé.`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(`Êtes-vous sûr de vouloir supprimer "${formData.title}" ?`)) {
-      return;
-    }
-    try {
-      await deleteCartoon(formData.id);
-      alert(`Dessin animé "${formData.title}" supprimé avec succès !`);
-      onClose();
-    } catch (err) {
-      console.error("Erreur lors de la suppression:", err);
-      alert("Erreur lors de la suppression du dessin animé, voir console pour détails.");
+    if (window.confirm(`Supprimer "${formData.title}" ?`)) {
+      try {
+        await deleteCartoon(formData.id);
+        alert(`Dessin animé supprimé !`);
+        onClose();
+      } catch (err) {
+        console.error("Erreur suppression:", err);
+        alert("Erreur lors de la suppression.");
+      }
     }
   };
 
@@ -166,6 +104,9 @@ const CartoonCrud = ({ onClose, cartoonToEdit }) => {
               />
             </div>
             
+
+           
+
             {/* Type */}
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">Type</label>
@@ -187,8 +128,8 @@ const CartoonCrud = ({ onClose, cartoonToEdit }) => {
                 <label className="block text-gray-700 text-sm font-medium mb-2">Nombre de saisons</label>
                 <input
                   type="number"
-                  name="numberOfSaisons"
-                  value={formData.numberOfSaisons || ''}
+                  name="numberOfSeasons"
+                  value={formData.numberOfSeasons || ''}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                   placeholder="Nombre de saisons"
@@ -243,7 +184,7 @@ const CartoonCrud = ({ onClose, cartoonToEdit }) => {
               <div>
                 <label className="block text-gray-700 text-sm font-medium mb-2">Durée</label>
                 <input
-                  type="text"  // string libre
+                  type="text"  
                   name="duration"
                   value={formData.duration}
                   onChange={handleChange}

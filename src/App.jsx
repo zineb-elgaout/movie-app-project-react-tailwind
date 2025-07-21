@@ -5,6 +5,7 @@ import Contact from "./pages/public/Contact";
 import Policy from "./pages/public/Policy";
 import Dashboard from './pages/admin/Dashboard';
 import Categories from './pages/admin/Categories';
+import Users from './pages/admin/UsersPage';
 import CategoryContent from './pages/admin/CategoryContent';
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/policy" element={<Policy />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/users" element={<Users />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/category/:id" element={<CategoryContent />} />
       </Routes>
