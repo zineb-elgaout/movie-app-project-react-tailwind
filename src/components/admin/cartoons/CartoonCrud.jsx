@@ -1,14 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { addCartoon, updateCartoon, deleteCartoon } from '../../../../services/cartoonService';
+import { addCartoon, updateCartoon, deleteCartoon, uploadImage } from '../../../../services/cartoonService';
 import { useCartoonForm } from '../../../hooks/useCartoonForm';
 import { useOutsideClick } from '../../../hooks/useOutsideClick';
-import  useCategories from '../../../hooks/useCategories';
+import useCategories from '../../../hooks/useCategories';
 import { initialCartoonData } from '../../../constants/initialCartoonData';
 
-const CartoonCrud = ({ onClose, cartoonToEdit  }) => {
+const CartoonCrud = ({ onClose, cartoonToEdit }) => {
   const formRef = useRef(null);
   useOutsideClick(formRef, onClose);
-  const { categories,loading, error, fetchCategories } = useCategories();
+  const { categories, loading, error, fetchCategories } = useCategories();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -27,24 +27,45 @@ const CartoonCrud = ({ onClose, cartoonToEdit  }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
     try {
-      const formDataToSend = new FormData();
-      for (const key in formData) {
-        if (key === 'image' && formData.image && typeof formData.image !== 'string') {
-          formDataToSend.append('image', formData.image);
-        } else {
-          formDataToSend.append(key, formData[key] ?? '');
+      // Étape 1: Préparer les données sans l'image
+      const cartoonPayload = {
+        ...formData,
+        image: null // On envoie null pour l'image initialement
+      };
+
+      let cartoonId;
+      
+      if (isEditing) {
+        // Mise à jour existante
+        await updateCartoon(formData.id, cartoonPayload);
+        cartoonId = formData.id;
+      } else {
+        // Création nouvelle
+        const response = await addCartoon(cartoonPayload);
+        cartoonId = response.data.id; // Supposons que le backend retourne l'ID
+      }
+
+      // Étape 2: Upload de l'image si elle existe et est un fichier
+      if (formData.image && typeof formData.image !== 'string') {
+        try {
+          const imageResponse = await uploadImage(cartoonId, formData.image);
+          const uploadedImageUrl = imageResponse.data.imageUrl;
+          
+          // Étape 3 (optionnelle): Mettre à jour le cartoon avec l'URL de l'image
+          await updateCartoon(cartoonId, {
+            ...cartoonPayload,
+            image: uploadedImageUrl
+          });
+        } catch (imageError) {
+          console.error("Erreur lors de l'upload de l'image:", imageError);
+          // On pourrait choisir de continuer même si l'upload de l'image échoue
+          alert("Le cartoon a été créé mais l'image n'a pas pu être uploadée.");
         }
       }
 
-      if (isEditing) {
-        await updateCartoon(formData.id, formDataToSend);
-        alert(`Dessin animé "${formData.title}" mis à jour avec succès !`);
-      } else {
-        await addCartoon(formDataToSend);
-        alert(`Dessin animé "${formData.title}" créé avec succès !`);
-      }
-
+      alert(`Dessin animé "${formData.title}" ${isEditing ? 'mis à jour' : 'créé'} avec succès !`);
       onClose();
     } catch (err) {
       console.error("Erreur lors de l'opération:", err);
@@ -53,6 +74,7 @@ const CartoonCrud = ({ onClose, cartoonToEdit  }) => {
       setIsSubmitting(false);
     }
   };
+
 
   const handleDelete = async () => {
     if (window.confirm(`Supprimer "${formData.title}" ?`)) {

@@ -136,71 +136,69 @@
       "categorieId": ""
     }
   ],
-  
   "users": [
     {
-      "id": 1,
       "firstName": "Zineb",
       "lastName": "El Gaout",
-      "email": "zineb.elgaout@cartoonmovies.com",
+      "email": "zineb@gmail.com",
+      "password": "zineb@2204",
       "nationality": "marocaine",
       "role": "admin",
-      "avatar": "https://randomuser.me/api/portraits/women/39.jpg"
+      "id": "1"
     },
     {
-      "id": 2,
-      "firstName": "Sophie",
-      "lastName": "Martin",
-      "email": "sophie.martin@cartoonmovies.com",
-      "nationality": "française",
-      "role": "editor",
-      "avatar": "https://randomuser.me/api/portraits/women/45.jpg"
-    },
-    {
-      "id": 3,
+      "id": "3",
       "firstName": "Hiroshi",
       "lastName": "Tanaka",
       "email": "hiroshi.tanaka@example.com",
+      "password": "hafsa@2004",
       "nationality": "japonaise",
-      "role": "user",
-      "avatar": "https://randomuser.me/api/portraits/men/22.jpg"
+      "role": "user"
     },
     {
-      "id": 4,
+      "id": "4",
       "firstName": "Amina",
       "lastName": "Diallo",
       "email": "amina.diallo@example.com",
+      "password": "hafsa@2004",
       "nationality": "sénégalaise",
-      "role": "user",
-      "avatar": "https://randomuser.me/api/portraits/women/63.jpg"
+      "role": "user"
     },
     {
-      "id": 5,
+      "id": "5",
       "firstName": "Giovanni",
       "lastName": "Rossi",
       "email": "giovanni.rossi@example.com",
+      "password": "hafsa@2004",
       "nationality": "italienne",
-      "role": "editor",
-      "avatar": "https://randomuser.me/api/portraits/men/55.jpg"
+      "role": "editor"
     },
     {
-      "id": 6,
-      "firstName": "Olivia",
-      "lastName": "Smith",
-      "email": "olivia.smith@example.com",
-      "nationality": "américaine",
-      "role": "user",
-      "avatar": "https://randomuser.me/api/portraits/women/33.jpg"
+      "id": "4cdd",
+      "firstName": "hafsa",
+      "lastName": "elgaout",
+      "email": "hafsa@gmail.com",
+      "password": "hafsa@2004",
+      "nationality": "canada",
+      "role": "client"
     },
     {
-      "id": 7,
-      "firstName": "Chen",
-      "lastName": "Wei",
-      "email": "chen.wei@example.com",
-      "nationality": "chinoise",
-      "role": "user",
-      "avatar": "https://randomuser.me/api/portraits/men/44.jpg"
+      "id": "db5f",
+      "firstName": "anas ",
+      "lastName": "elgaout",
+      "email": "anas@gmail.com",
+      "password": "ans@2002",
+      "nationality": "francais",
+      "role": "editor"
+    },
+    {
+      "id": "0ed8",
+      "firstName": "najwa",
+      "lastName": "salimi",
+      "email": "najwa@gmail.com",
+      "password": "najwa123",
+      "nationality": "canada",
+      "role": "editor"
     }
   ]
-
 }

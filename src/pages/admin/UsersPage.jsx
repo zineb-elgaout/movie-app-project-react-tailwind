@@ -11,23 +11,40 @@ import getRoleBadge from "../../components/ui/RoleBagde";
 import useUsers from "../../hooks/useUsers";
 import Loading from "../../components/Loading";
 import ErrorMessage from "../../components/ErrorMessage";
+import { deleteUser } from "../../../services/userService";
+import AddUser from "../../components/admin/users/AddUser";
+import UpdateUser from "../../components/admin/users/UpdateUser";
 
 export default function UsersPage() {
-  const { users , loading, error, fetchUsers } = useUsers();
-  const {
-        searchTerm,
-        setSearchTerm,
-        filteredData: filteredUsers
+
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const { users , loading, error, fetchUsers } = useUsers();
+    const {
+            searchTerm,
+            setSearchTerm,
+            filteredData: filteredUsers
     } = useSearch(users, ['firstName', 'lastName', 'email', 'role']);
 
     
+    const handleDeleteUser = async (userId) => {
+    const confirmed = window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?");
+    if (!confirmed) return;
+
+    try {
+        await deleteUser(userId); 
+        fetchUsers();
+    } catch (err) {
+        console.error("Erreur lors de la suppression de l'utilisateur :", err);
+        alert("Une erreur est survenue lors de la suppression.");
+    }
+    };
+
 
     if (loading) { return (<Loading />)};
     if(error) return (<ErrorMessage message={error} />) ; 
 
-    
-
- 
      return(
         <>
         <AdminLayout>
@@ -57,11 +74,10 @@ export default function UsersPage() {
             </div>
             
             <div className=" flex justify-end">
-                <Button>
-                    
-                     + Nouveau Utilisateur
+                <Button onClick={() => setShowAddModal(true)}>
+                    + Nouveau Utilisateur
                 </Button>
-            
+
             </div>
 
             {/* Users Table */}
@@ -83,14 +99,9 @@ export default function UsersPage() {
                         <tr key={user.id} className="hover:bg-gray-750 transition-colors duration-150">
                         <td className="px-6 py-4 whitespace-nowrap text-white">
                             <div className="flex items-center gap-3">
-                            <img 
-                                src={user.avatar} 
-                                alt={`${user.firstName} ${user.lastName}`} 
-                                className="w-10 h-10 rounded-full object-cover"
-                            />
-                            <div>
+                        
                                 <div className="font-medium">{user.firstName} {user.lastName}</div>
-                            </div>
+                        
                             </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -109,19 +120,26 @@ export default function UsersPage() {
                             <button 
                                 className="p-2 rounded-full text-gray-400 hover:text-cyan-400 hover:bg-gray-700 transition-colors"
                                 title="Voir"
+                                
+
                             >
                                 <FiEye size={18} />
                             </button>
                             <button 
                                 className="p-2 rounded-full text-gray-400 hover:text-purple-400 hover:bg-gray-700 transition-colors"
                                 title="Modifier"
+                                onClick={() => {
+                                    setSelectedUser(user);
+                                    setShowUpdateModal(true);
+                                }}
                             >
                                 <FiEdit size={18} />
                             </button>
                             <button 
+                            
                                 className="p-2 rounded-full text-gray-400 hover:text-red-400 hover:bg-gray-700 transition-colors"
                                 title="Supprimer"
-                                onClick={() => deleteUser(user.id)}
+                                onClick={() => handleDeleteUser(user.id) }
                             >
                                 <FiTrash2 size={18} />
                             </button>
@@ -141,60 +159,28 @@ export default function UsersPage() {
             </div>
             </div>
 
-            {/* Mobile Cards (hidden on desktop) */}
-            <div className="mt-6 grid gap-4 md:hidden">
-            {filteredUsers.length > 0 ? (
-                filteredUsers.map((user) => (
-                <div key={user.id} className="bg-gray-800 rounded-lg p-4 shadow-lg">
-                    <div className="flex items-center gap-3 mb-3 text-white">
-                    <img 
-                        src={user.avatar} 
-                        alt={`${user.firstName} ${user.lastName}`} 
-                        className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div>
-                        <div className="font-medium">{user.firstName} {user.lastName}</div>
-                    </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                        <span className="text-gray-400">Email:</span>
-                        <span className="text-gray-300">{user.email}</span>
-                    </div>
-                    
-                    <div className="flex justify-between items-center">
-                        <span className="text-gray-400">Rôle:</span>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getRoleBadge(user.role)}`}>
-                        {user.role}
-                        </span>
-                    </div>
-                    </div>
-                    
-                    <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-700">
-                    <button className="p-2 rounded-full text-gray-400 hover:text-cyan-400 hover:bg-gray-700 transition-colors">
-                        <FiEye size={18} />
-                    </button>
-                    <button className="p-2 rounded-full text-gray-400 hover:text-purple-400 hover:bg-gray-700 transition-colors">
-                        <FiEdit size={18} />
-                    </button>
-                    <button 
-                        className="p-2 rounded-full text-gray-400 hover:text-red-400 hover:bg-gray-700 transition-colors"
-                        onClick={() => deleteUser(user.id)}
-                    >
-                        <FiTrash2 size={18} />
-                    </button>
-                    </div>
-                </div>
-                ))
-            ) : (
-                <div className="bg-gray-800 rounded-lg p-6 text-center text-gray-400">
-                Aucun utilisateur trouvé
-                </div>
-            )}
-            </div>
+            
       
         </section>
+        {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <AddUser
+            onClose={() => setShowAddModal(false)}
+            onUserAdded={fetchUsers}
+            />
+        </div>
+        )}
+        {showUpdateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <UpdateUser
+            onClose={() => setShowUpdateModal(false)}
+            onUserUpdated={fetchUsers}
+            user={selectedUser}
+            />
+        </div>
+        )}
+
+
         </AdminLayout>
         </>
     );

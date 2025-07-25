@@ -20,6 +20,7 @@ export default function useUsers(autoFetch = true) {
         if (autoFetch) fetchUsers();
     },[]);
     
-    return {users , loading, error , fetchUsers };
+    
+    return {users , loading, error , fetchUsers};
 }
 

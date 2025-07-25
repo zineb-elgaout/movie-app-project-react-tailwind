@@ -27,7 +27,7 @@ export default function CategoryContent() {
         .filter(cartoon => cartoon.categorieId && cartoon.categorieId.toString() === id)
         .map(cartoon => ({
           ...cartoon,
-          categoryTitle: cartoon.category?.title // Ajoutez cette ligne
+          categoryTitle: cartoon.category?.title 
         }));
       setCartoons(filtered);
     } catch (err) {
@@ -40,19 +40,19 @@ export default function CategoryContent() {
 
   const [categoryTitle, setCategoryTitle] = useState('');
 
-const fetchCategoryTitle = useCallback(async () => {
-  try {
-    const response = await getCategoryById(id); 
-    setCategoryTitle(response.data.title);
-  } catch (err) {
-    console.error("Erreur lors du chargement du titre de la catégorie", err);
-  }
-}, [id]);
+  const fetchCategoryTitle = useCallback(async () => {
+    try {
+      const response = await getCategoryById(id); 
+      setCategoryTitle(response.data.title);
+    } catch (err) {
+      console.error("Erreur lors du chargement du titre de la catégorie", err);
+    }
+  }, [id]);
 
-useEffect(() => {
-  fetchCartoons();
-  fetchCategoryTitle();
-}, [fetchCartoons, fetchCategoryTitle]);
+  useEffect(() => {
+    fetchCartoons();
+    fetchCategoryTitle();
+  }, [fetchCartoons, fetchCategoryTitle]);
 
 
   const handleAddCartoon = () => {
@@ -63,9 +63,8 @@ useEffect(() => {
   const handleEditCartoon = (cartoon) => {
     setCurrentCartoon({
       ...cartoon,
-      // Assure la compatibilité avec CartoonCrud
       mainCaracter: cartoon.mainCharacter,
-      categoryId: cartoon.categorieId,
+      categoryId: cartoon.categoryId,
       year: cartoon.releaseYear
     });
     setShowModal(true);
@@ -94,7 +93,7 @@ useEffect(() => {
             header={{
               prefix: 'Gestion des',
               title: 'Cartoons',
-              subtitle: `Contenus de la catégorie ${categoryTitle || id}`
+              subtitle: `Contenus de la catégorie ${categoryTitle || " "}`,
             }}
           />
 
@@ -196,14 +195,7 @@ useEffect(() => {
                         {cartoon.description || 'Aucune description disponible'}
                       </p>
                       
-                      <div className="flex justify-between items-center pt-3 border-t border-gray-600">
-                        <span className="text-xs text-gray-400">
-                          Créé le: {new Date(cartoon.createdAt).toLocaleDateString()}
-                        </span>
-                        <div className="text-xs text-gray-400">
-                          ID: {cartoon.id}
-                        </div>
-                      </div>
+                      
                     </div>
                   </div>
                 ))}

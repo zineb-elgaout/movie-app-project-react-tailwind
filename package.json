@@ -16,7 +16,7 @@
     "@fontsource/poppins": "^5.2.6",
     "@fontsource/raleway": "^5.2.6",
     "@heroicons/react": "^2.2.0",
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "cors": "^2.8.5",
     "cros": "^1.1.0",
     "framer-motion": "^12.23.0",
