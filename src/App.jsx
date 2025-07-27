@@ -7,6 +7,7 @@ import Dashboard from './pages/admin/Dashboard';
 import Categories from './pages/admin/Categories';
 import Users from './pages/admin/UsersPage';
 import CategoryContent from './pages/admin/CategoryContent';
+import Login from './pages/public/Login';
 function App() {
   return (
     <Router>
@@ -18,6 +19,7 @@ function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/category/:id" element={<CategoryContent />} />
+        <Route path="login" element={<Login/>} />
       </Routes>
     </Router>
   );

@@ -29,16 +29,16 @@ export default function UsersPage() {
 
     
     const handleDeleteUser = async (userId) => {
-    const confirmed = window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?");
-    if (!confirmed) return;
+        const confirmed = window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?");
+        if (!confirmed) return;
 
-    try {
-        await deleteUser(userId); 
-        fetchUsers();
-    } catch (err) {
-        console.error("Erreur lors de la suppression de l'utilisateur :", err);
-        alert("Une erreur est survenue lors de la suppression.");
-    }
+        try {
+            await deleteUser(userId); 
+            fetchUsers();
+        } catch (err) {
+            console.error("Erreur lors de la suppression de l'utilisateur :", err);
+            alert("Une erreur est survenue lors de la suppression.");
+        }
     };
 
 

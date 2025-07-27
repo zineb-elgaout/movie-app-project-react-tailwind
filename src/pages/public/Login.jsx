@@ -1,0 +1,110 @@
+import { useState } from 'react'
+import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa'
+import image from '../../assets/public/images/login-back.svg'
+
+export default function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log({ email, password, rememberMe })
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-dark bg-cover bg-center" 
+         style={{ backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://wallpapers.com/images/hd/animation-movies-3840-x-2160-wallpaper-f3ra0cyl5yhwfv8c.jpg')" }}>
+      
+      <div className="w-full max-w-md bg-black bg-opacity-75 rounded-lg p-12">
+        <h1 className="text-primary text-4xl font-bold text-center mb-8">CartoonApp</h1>
+        
+        <h2 className="text-white text-3xl mb-6">Sign In</h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="relative">
+                <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="peer w-full px-5 py-4 bg-gray-800 rounded text-white focus:outline-none focus:bg-gray-700 "
+                required
+                />
+                <label 
+                htmlFor="email"
+                className={`absolute left-5  text-gray-400 transition-all duration-200 pointer-events-none 
+                            ${email ? '-top-3  text-xs bg-dark px-1' : 'top-4 peer-focus:-top-3 peer-focus:text-xs peer-focus:bg-dark peer-focus:px-1'}`}
+                >
+                Email
+                </label>
+            </div>
+          
+            <div className="relative">
+                    <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="peer w-full px-5 py-4 bg-gray-800 rounded text-white focus:outline-none focus:bg-gray-700"
+                        required
+                    />
+                    <label 
+                        htmlFor="password"
+                        className={`absolute left-5 text-gray-400 transition-all duration-200 pointer-events-none 
+                                    ${password ? '-top-3 text-xs bg-dark px-1' : 'top-4 peer-focus:-top-3 peer-focus:text-xs peer-focus:bg-dark peer-focus:px-1'}`}
+                    >
+                        Password
+                    </label>
+            </div>
+
+          
+            <button
+                type="submit"
+                className=" w-full bg-primary py-4 rounded font-bold text-white hover:bg-pink-900 transition-colors"
+            >
+                Sign In
+            </button>
+          
+            <div className="flex justify-between items-center text-gray-400 text-sm ">
+                <div className="flex items-center">
+                <input
+                    type="checkbox"
+                    id="remember"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="mr-2"
+                />
+                <label htmlFor="remember">Remember me</label>
+                </div>
+                <a href="#" className="hover:underline">Need help?</a>
+            </div>
+        </form>
+        
+        <div className="mt-10 text-gray-400">
+          <p>New to MovieApp? <a href="#" className="text-white hover:underline">Sign up now</a>.</p>
+        </div>
+        
+        <div className="mt-10">
+          <div className="relative flex items-center justify-center mb-6">
+            <div className="flex-grow border-t border-gray-600"></div>
+            <span className="flex-shrink mx-4 text-gray-400">or sign in with</span>
+            <div className="flex-grow border-t border-gray-600"></div>
+          </div>
+          
+          <div className="flex justify-center space-x-6">
+            <a href="#" className="text-white text-2xl hover:text-primary transition-colors">
+              <FaGoogle />
+            </a>
+            <a href="#" className="text-white text-2xl hover:text-primary transition-colors">
+              <FaFacebook />
+            </a>
+            <a href="#" className="text-white text-2xl hover:text-primary transition-colors">
+              <FaApple />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
