@@ -23,8 +23,10 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-yellow-50 to-blue-100 font-sans">
       <ScrollNav sections={sections}/>
-      <Navbar />
-      <HeroSection />
+      <div style={{backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://wallpapers.com/images/hd/animation-movies-3840-x-2160-wallpaper-f3ra0cyl5yhwfv8c.jpg')`, }}>
+        <Navbar />
+        <HeroSection />
+      </div>
       <VisionSection />
       <CategoriesSection />
       <FAQSection />
