@@ -20,6 +20,7 @@ export default function Navbar() {
         <a href="#vision" className="hover:text-blue-400 transition">Notre vision</a>
         <a href="#categories" className="hover:text-blue-400 transition">Catégories</a>
         <a href="#about" className="hover:text-blue-400 transition">À propos</a>
+        <Link to="/contact" className="hover:text-blue-400 transition">Contact</Link>
       </div>
 
       {/* Button */}

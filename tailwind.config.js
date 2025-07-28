@@ -24,6 +24,13 @@ export default {
           900: '#2c071a',
         },
       },
+      theme: {
+        extend: {
+          screens: {
+            'smd': '700px', 
+          },
+        },
+      },
     },
   },
   plugins: [],

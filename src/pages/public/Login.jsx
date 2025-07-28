@@ -23,7 +23,7 @@ export default function Login() {
       <div className="w-full max-w-md bg-black bg-opacity-75 rounded-lg p-12">
         <Link 
             to="/" 
-            className="flex items-center text-indigo-200 hover:text-indigo-300 transition-colors mb-8"
+            className="flex items-center text-indigo-200 hover:text-indigo-400 transition-colors mb-8"
           >
             <FiArrowLeft className="mr-2" />
             Retour 
