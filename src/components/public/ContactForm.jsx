@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from 'framer-motion';
-import { FiSend, FiPhone, FiMail, FiMapPin, FiUser, FiMessageSquare, FiClock, FiHelpCircle } from 'react-icons/fi';
-import { FaTelegramPlane, FaWhatsapp, FaDiscord } from 'react-icons/fa';
+import { FiPhone, FiMail, FiMapPin, FiArrowLeft, FiClock, FiHelpCircle } from 'react-icons/fi';
+import { FaDiscord } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 export default function ContactForm() {
@@ -47,7 +47,7 @@ export default function ContactForm() {
     >
       {/* Overlay noir semi-transparent */}
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-  
+      
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -55,7 +55,12 @@ export default function ContactForm() {
         className="w-full max-w-6xl rounded-xl shadow-2xl overflow-hidden backdrop-blur-sm"
       >
         <div className="p-8 md:p-12">
+          
           <div className="text-center mb-12">
+            <Link  to="/" 
+                    className="flex items-center text-indigo-200 hover:text-indigo-400 transition-colors mb-8">
+                    <FiArrowLeft className="mr-2" /> Retour 
+            </Link>
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Contactez ToonTime</h1>
             <p className="text-gray-300 max-w-2xl mx-auto">Notre équipe est à votre disposition pour répondre à toutes vos questions</p>
           </div>
@@ -203,7 +208,7 @@ export default function ContactForm() {
         href="#" 
         className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg flex flex-col items-center transition-colors border border-gray-700"
       >
-        <FiHelpCircle className="text-3xl text-gray-300 mb-3" />
+        <FiHelpCircle className="text-3xl text-indigo-400 mb-3" />
         <span className="text-white font-medium">Centre d'aide</span>
         <span className="text-gray-400 text-sm mt-1 text-center">Guides & tutoriels</span>
       </motion.a>
