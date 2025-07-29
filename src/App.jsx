@@ -8,6 +8,7 @@ import Categories from './pages/admin/Categories';
 import Users from './pages/admin/UsersPage';
 import CategoryContent from './pages/admin/CategoryContent';
 import Login from './pages/public/Login';
+import Register from './pages/public/Account';
 function App() {
   return (
     <Router>
@@ -20,6 +21,8 @@ function App() {
         <Route path="/categories" element={<Categories />} />
         <Route path="/category/:id" element={<CategoryContent />} />
         <Route path="login" element={<Login/>} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<h1>Page Not Found</h1>} />
       </Routes>
     </Router>
   );

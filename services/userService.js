@@ -14,15 +14,19 @@ export const addUser = async (userData) => {
 
 export const updateUser = async (id, userData) => {
   try {
-    const response = await axios.put(`${API_URL}/${updateUser.id}`, 
-        {
-
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            email: userData.email,
-            password: userData.password || null,
-            role: userData.role, 
+    const response = await axios.put(`${API_URL}/${id}`, 
+      {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        password: userData.password || null,
+        role: userData.role,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
         }
+      }
     );
     return response.data;
   } catch (error) {
@@ -30,6 +34,7 @@ export const updateUser = async (id, userData) => {
     throw error;
   }
 };
+
 
 
 export const deleteUser = (id) => axios.delete(`${API_URL}/${id}`);

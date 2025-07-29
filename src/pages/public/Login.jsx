@@ -1,19 +1,37 @@
 import { useState } from 'react'
-import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa'
+import { FaGoogle, FaFacebook } from 'react-icons/fa'
 import { FiArrowLeft } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
-import image from '../../assets/public/images/login-back.svg'
 import Footer from '../../Layouts/public/Footer'
+import { login } from '../../../services/authService'
+import { useNavigate } from 'react-router-dom';
+
+
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [rememberMe, setRememberMe] = useState(false)
+  const [rememberMe, setRememberMe] = useState(true)
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log({ email, password, rememberMe })
+
+  
+  
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError(''); 
+
+  try {
+    const data = await login(email, password, rememberMe);
+    console.log("Utilisateur connecté :", data);
+    navigate("/users");
+  } catch (err) {
+    setError(err.message || "Erreur inconnue");
   }
+};
+
+{error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
   return (
     <>
@@ -28,6 +46,12 @@ export default function Login() {
             <FiArrowLeft className="mr-2" />
             Retour 
         </Link>
+        {error && (
+          <div className="bg-red-100 text-red-500 p-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+
         <h2 className="text-white text-3xl mb-6">Identifiez vous</h2>
         
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -91,7 +115,7 @@ export default function Login() {
         </form>
         
         <div className="mt-10 text-gray-400">
-          <p>Nouveau sur ToonTime? <a href="#" className="text-white hover:underline">Inscrivez-vous maintenant</a>.</p>
+          <p>Nouveau sur ToonTime? <Link to='/register' className="text-white hover:underline">Inscrivez-vous maintenant</Link>.</p>
         </div>
         
         <div className="mt-10">
@@ -108,9 +132,7 @@ export default function Login() {
             <a href="#" className="text-white text-2xl hover:text-primary transition-colors">
               <FaFacebook />
             </a>
-            <a href="#" className="text-white text-2xl hover:text-primary transition-colors">
-              <FaApple />
-            </a>
+            
           </div>
         </div>
       </div>
