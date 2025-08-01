@@ -3,12 +3,14 @@ import { NavLink } from 'react-router-dom';
 import {  FiSettings, FiLogOut } from 'react-icons/fi';
 import { RiMovie2Line } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getUserProfile } from '../../../services/authService';
 import React from 'react';
 
 const Topbar = ({ sidebarCollapsed }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const nom = 'elgaout';
-  const prenom = 'zineb';
+  const nom = getUserProfile()?.lastName || ' ';
+  const prenom = getUserProfile()?.firstName || ' ';
+  const email = getUserProfile()?.email || ' ';
 
   return (
     <div 
@@ -58,7 +60,7 @@ const Topbar = ({ sidebarCollapsed }) => {
               >
                 <div className="px-4 py-3 border-b border-gray-700">
                   <p className="text-sm font-medium text-white">{prenom} {nom}</p>
-                  <p className="text-xs text-gray-400">admin@toontime.com</p>
+                  <p className="text-xs text-gray-400">{email}</p>
                 </div>
                 <NavLink 
                   to="/settings" 

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom';
+import { FiLogIn } from "react-icons/fi";
 export default function Navbar() {
   return (
     <nav
@@ -25,15 +26,16 @@ export default function Navbar() {
 
       {/* Button */}
       <Link to="/login" 
-            className="hidden md:flex
-                        bg-indigo-500 hover:bg-indigo-400 
+            className="hidden md:flex justify-center items-center
+                       shadow-2xl overflow-hidden backdrop-blur-sm
+                       border border-white/50
                         text-white 
-                        px-6 py-2 
+                        px-5 py-2 
                         text-sm md:text-base 
                         rounded-full 
                         transition-all
                       "
-                      >
+                      ><FiLogIn className="inline-block mr-2" />
         Se connecter
       </Link>
     </nav>

@@ -4,6 +4,7 @@ import { FiArrowLeft } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 import Footer from '../../Layouts/public/Footer'
 import { useNavigate } from 'react-router-dom'
+import { register } from '../../../services/authService';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -71,10 +72,9 @@ export default function Register() {
     if (!validateForm()) return
     
     try {
-      // Ici vous ajouterez l'appel à votre service d'inscription
-      // const data = await register(formData);
+      const data = await register(formData);
       console.log("Inscription réussie:", formData)
-      navigate("/login") // Rediriger vers la page de connexion après inscription
+      navigate("/login") 
     } catch (err) {
       setError(err.message || "Registration failed. Please try again.")
     }
@@ -85,7 +85,7 @@ export default function Register() {
       <div className="min-h-screen flex items-center justify-center bg-dark bg-cover bg-center" 
            style={{ backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://wallpapers.com/images/hd/animation-movies-3840-x-2160-wallpaper-f3ra0cyl5yhwfv8c.jpg')" }}>
         
-        <div className="w-full max-w-md bg-black bg-opacity-75 rounded-lg p-12">
+        <div className="w-full max-w-md bg-black bg-opacity-75 rounded-lg p-12 ">
           <Link 
               to="/" 
               className="flex items-center text-indigo-200 hover:text-indigo-400 transition-colors mb-8"

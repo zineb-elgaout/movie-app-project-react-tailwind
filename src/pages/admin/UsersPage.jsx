@@ -14,8 +14,19 @@ import ErrorMessage from "../../components/ErrorMessage";
 import { deleteUser } from "../../../services/userService";
 import AddUser from "../../components/admin/users/AddUser";
 import UpdateUser from "../../components/admin/users/UpdateUser";
+import { getUserProfile } from "../../../services/authService";
 
 export default function UsersPage() {
+
+
+const userProfile = getUserProfile();
+
+if (userProfile) {
+  console.log("Utilisateur connecté :", userProfile.firstName, userProfile.email);
+  // Affiche dans l’UI, adapte selon besoins
+} else {
+  console.log("Utilisateur non connecté");
+}
 
     const [showAddModal, setShowAddModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);

@@ -4,17 +4,20 @@ import {FiUser, FiLogOut, FiMenu, FiX, FiEdit, FiVideo, FiCreditCard} from 'reac
 import { MdOutlineSpaceDashboard } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import profil from '../../../public/vite.svg';
-const nom = 'elgaout';
-const prenom = 'zineb';
+import { getUserProfile } from '../../../services/authService';
+
 
 function Sidebar() {
+ 
+  const nom = getUserProfile()?.lastName || '';
+  const prenom = getUserProfile()?.firstName || '';
+  const email = getUserProfile()?.email || ''; 
   const [collapsed, setCollapsed] = useState(true);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
-
-  // Nouveaux styles adaptés au thème sombre
+  
   const sidebarStyle = `relative h-screen flex flex-col transition-all duration-300  ${
     collapsed ? 'w-24' : 'w-64'
   } bg-gray-900 border border-r-gray-800 shadow-lg`;
@@ -77,7 +80,7 @@ function Sidebar() {
                 </motion.div>
                 <div>
                   <h3 className="font-semibold text-white">{nom} {prenom}</h3>
-                  <p className="text-xs text-gray-400">admin@toontime.com</p>
+                  <p className="text-xs text-gray-400">{email}</p>
                 </div>
               </div>
               <motion.button 

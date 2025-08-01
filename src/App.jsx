@@ -8,7 +8,7 @@ import Categories from './pages/admin/Categories';
 import Users from './pages/admin/UsersPage';
 import CategoryContent from './pages/admin/CategoryContent';
 import Login from './pages/public/Login';
-import Register from './pages/public/Account';
+import Register from './pages/public/Register';
 function App() {
   return (
     <Router>
