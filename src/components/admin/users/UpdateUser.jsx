@@ -7,7 +7,7 @@ import Button from "../../ui/Button";
 import getRoleBadge from "../../ui/RoleBagde";
 import { updateUser } from '../../../../services/userService';
 
-const UpdateUser = ({ onClose, onUserUpdated, user ,getId}) => {
+const UpdateUser = ({ onClose, onUserUpdated, user }) => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -78,16 +78,16 @@ const UpdateUser = ({ onClose, onUserUpdated, user ,getId}) => {
         delete dataToSend.password;
     }
 
-    try {
-        await updateUser(user.id, dataToSend); // ici on est sûr que user.id existe
-        onUserUpdated();
-        onClose();
-    } catch (err) {
-        console.error("Erreur lors de la modification de l'utilisateur:", err);
-        setError(err.message || "Erreur serveur");
-    } finally {
-        setIsSubmitting(false);
-    }
+        try {
+            await updateUser(user.id, dataToSend);
+            onUserUpdated();
+            onClose();
+        } catch (err) {
+            console.error("Erreur lors de la modification de l'utilisateur:", err);
+            setError(err.response?.data?.message || err.message || "Erreur serveur");
+        } finally {
+            setIsSubmitting(false);
+        }
 };
 
 

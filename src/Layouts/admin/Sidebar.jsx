@@ -4,7 +4,7 @@ import {FiUser, FiLogOut, FiMenu, FiX, FiEdit, FiVideo, FiCreditCard} from 'reac
 import { MdOutlineSpaceDashboard } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import profil from '../../../public/vite.svg';
-import { getUserProfile } from '../../../services/authService';
+import { getUserProfile } from '../../../services/userService';
 
 
 function Sidebar() {

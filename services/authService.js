@@ -1,11 +1,18 @@
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
-
+import { jwtDecode } from 'jwt-decode';
 
 const API_URL = 'https://localhost:7274/api/Auth/login';
 const API_REGISTER_URL = 'https://localhost:7274/api/Auth/register';
 
+// Fonction utilitaire pour lire le token depuis le cookie
+function getTokenFromCookie() {
+  const cookie = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('token='));
+  return cookie ? cookie.split('=')[1] : null;
+}
 
+//Login
 export async function login(email, password, rememberMe) {
   try {
     const response = await axios.post(API_URL, {
@@ -16,17 +23,18 @@ export async function login(email, password, rememberMe) {
 
     const token = response.data.token;
 
-    document.cookie = `token=${token}; path=/; max-age=${rememberMe ? 7 * 24 * 60 * 60 : 3 * 60 * 60}; Secure; SameSite=Strict`;
+    // Stocker le token dans un cookie sécurisé
+    document.cookie = `token=${token}; path=/; max-age=${rememberMe ? 7 * 24 * 60 * 60 : 3 * 60 * 60}; Secure; SameSite=None`;
 
     return response.data;
   } catch (error) {
-    console.error("Erreur complète :", error.response); 
+    console.error("Erreur complète :", error.response);
     const msg = error.response?.data?.message || "Erreur lors de la connexion";
     throw new Error(msg);
   }
 }
 
-
+// Register
 export async function register(userData) {
   try {
     const response = await axios.post(API_REGISTER_URL, userData, {
@@ -36,41 +44,31 @@ export async function register(userData) {
     });
     return response.data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message);
-    } else {
-      throw new Error("Erreur lors de l'inscription");
-    }
+    const msg = error.response?.data?.message || "Erreur lors de l'inscription";
+    throw new Error(msg);
   }
 }
 
-export function getUserProfile() {
-  const cookieString = document.cookie;
-  let token = null;
-  if (cookieString) {
-    const tokenCookie = cookieString.split('; ').find(row => row.startsWith('token='));
-    if (tokenCookie) {
-      token = tokenCookie.split('=')[1];
-    }
-  }
 
-  if (!token) return null;
+
+
+
+// Appel d’une API protégée avec envoi du token dans les headers
+export async function getCreatedUsers() {
+  const token = getTokenFromCookie();
+  if (!token) throw new Error("Utilisateur non authentifié");
 
   try {
-    const decoded = jwtDecode(token);
-    console.log(decoded);
-
-    return {
-      id: decoded.nameid,          
-      username: decoded.unique_name || decoded.name, 
-      firstName: decoded.FirstName,
-      lastName: decoded.LastName,
-      email: decoded.Email,
-      roles: decoded.role
-    };
+    const response = await axios.get('https://localhost:7274/api/User/created-users', {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log("Utilisateurs créés :", response.data);
+    return response.data;
   } catch (error) {
-    console.error("Erreur décodage token:", error);
-    return null;
+    console.error("Erreur récupération utilisateurs :", error.response?.data || error.message);
+    throw error;
   }
 }
-

@@ -87,7 +87,7 @@ export default function Register() {
         
         <div className="w-full max-w-md bg-black bg-opacity-75 rounded-lg p-12 ">
           <Link 
-              to="/" 
+              to="/login" 
               className="flex items-center text-indigo-200 hover:text-indigo-400 transition-colors mb-8"
             >
               <FiArrowLeft className="mr-2" />
@@ -236,9 +236,15 @@ export default function Register() {
               S'inscrire
             </button>
           </form>
-          
-          <div className="mt-10 text-gray-400">
-            <p>Déjà membre? <Link to="/login" className="text-white hover:underline">Connectez-vous ici</Link>.</p>
+
+          <div className="mt-10 text-gray-400 flex flex-grow justify-between items-center w-full">
+            <p>Déjà membre?</p>
+            <Link 
+              to='/login' 
+              className="px-4 py-1 text-sm font-medium text-white border border-white rounded-full shadow-2xl overflow-hidden backdrop-blur-sm hover:bg-gray-700 transition-all justify-center items-center "
+            >
+              se connecter
+            </Link>
           </div>
           
           <div className="mt-10">

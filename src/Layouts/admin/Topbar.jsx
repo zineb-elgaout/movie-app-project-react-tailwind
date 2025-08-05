@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import {  FiSettings, FiLogOut } from 'react-icons/fi';
 import { RiMovie2Line } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getUserProfile } from '../../../services/authService';
+import { getUserProfile } from '../../../services/userService';
 import React from 'react';
 
 const Topbar = ({ sidebarCollapsed }) => {

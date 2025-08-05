@@ -1,6 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\data",
+    "\\public",
+    "\\services",
+    "\\src"
   ],
+  "SelectedNode": "\\services",
   "PreviewInSolutionExplorer": false
 }

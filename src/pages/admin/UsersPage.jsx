@@ -14,7 +14,8 @@ import ErrorMessage from "../../components/ErrorMessage";
 import { deleteUser } from "../../../services/userService";
 import AddUser from "../../components/admin/users/AddUser";
 import UpdateUser from "../../components/admin/users/UpdateUser";
-import { getUserProfile } from "../../../services/authService";
+import { getUserProfile } from "../../../services/userService";
+import UsersCreatedByAdmin from "../../components/admin/users/CreatedUsers";
 
 export default function UsersPage() {
 
@@ -23,6 +24,8 @@ const userProfile = getUserProfile();
 
 if (userProfile) {
   console.log("Utilisateur connecté :", userProfile.firstName, userProfile.email);
+  
+  console.log("Récupération du profil utilisateur :", userProfile); 
   // Affiche dans l’UI, adapte selon besoins
 } else {
   console.log("Utilisateur non connecté");
@@ -39,12 +42,12 @@ if (userProfile) {
     } = useSearch(users, ['firstName', 'lastName', 'email', 'role']);
 
     
-    const handleDeleteUser = async (userId) => {
+    const handleDeleteUser = async (id) => {
         const confirmed = window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?");
         if (!confirmed) return;
 
         try {
-            await deleteUser(userId); 
+            await deleteUser(id); 
             fetchUsers();
         } catch (err) {
             console.error("Erreur lors de la suppression de l'utilisateur :", err);
@@ -63,7 +66,7 @@ if (userProfile) {
 
         <section className="px-4 sm:px-6 py-8 bg-gray-900 min-h-screen">
             <div className="max-w-7xl mx-auto">
-
+                <UsersCreatedByAdmin />
                 <Header
                     header={{
                         prefix: 'Gestion des',
