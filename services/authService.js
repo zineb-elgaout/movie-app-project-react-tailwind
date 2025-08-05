@@ -72,3 +72,11 @@ export async function getCreatedUsers() {
     throw error;
   }
 }
+
+export function logout() {
+  // Supprime le cookie du token
+  document.cookie = "token=; Max-Age=0; path=/";
+  
+  // Optionnel : redirection vers la page de login ou d'accueil
+  window.location.href = "/login"; 
+}

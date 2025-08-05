@@ -5,6 +5,7 @@ import { RiMovie2Line } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getUserProfile } from '../../../services/userService';
 import React from 'react';
+import {logout} from '../../../services/authService'; 
 
 const Topbar = ({ sidebarCollapsed }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -73,7 +74,7 @@ const Topbar = ({ sidebarCollapsed }) => {
                 <NavLink 
                   to="/logout" 
                   className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={logout}
                 >
                   <FiLogOut className="mr-2" />
                   <span>Déconnexion</span>

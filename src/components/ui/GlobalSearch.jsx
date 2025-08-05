@@ -36,7 +36,7 @@ const GlobalSearch = ({
   };
 
   return (
-    <div className={`relative   ${className}`} style={{ width: '50%'}} >
+    <div className={`relative   ${className}`} style={{ width: '100%'}} >
       <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${isFocused ? 'text-purple-500' : 'text-gray-400'}`}>
         <FiSearch size={18} />
       </div>

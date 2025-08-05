@@ -5,7 +5,7 @@ import { MdOutlineSpaceDashboard } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import profil from '../../../public/vite.svg';
 import { getUserProfile } from '../../../services/userService';
-
+import {logout} from '../../../services/authService';
 
 function Sidebar() {
  
@@ -159,14 +159,17 @@ function Sidebar() {
 
       {/* Déconnexion */}
       <div className="p-2">
-        <motion.button 
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          className={`${linkStyle({ isActive: false })}  hover:bg-gray-700/70`}
-        >
-          <FiLogOut className={iconStyle(false)} />
-          {!collapsed && <span className={textStyle}>Déconnexion</span>}
-        </motion.button>
+        <NavLink  to="/logout"  onClick={logout} >
+          <motion.button 
+            
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className={`${linkStyle({ isActive: false })}  hover:bg-gray-700/70`}
+          >
+            <FiLogOut className={iconStyle(false)} />
+            {!collapsed && <span className={textStyle}>Déconnexion</span>}
+          </motion.button>
+        </NavLink>
       </div>
     </div>
   );
