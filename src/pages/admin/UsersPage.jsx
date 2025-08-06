@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from 'framer-motion';
 import AdminLayout from "../../Layouts/admin/AdminLayout";
 import Header from "../../components/ui/Header";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiEye, FiEdit, FiTrash2 } from 'react-icons/fi';
 import GlobalSearch from "../../components/ui/GlobalSearch";
 import Button from "../../components/ui/Button";
@@ -10,15 +10,12 @@ import getRoleBadge from "../../components/ui/RoleBagde";
 import useUsers from "../../hooks/useUsers";
 import Loading from "../../components/Loading";
 import ErrorMessage from "../../components/ErrorMessage";
-import { deleteUser } from "../../../services/userService";
+import { deleteUser, getCreatedUsers } from "../../../services/userService";
 import AddUser from "../../components/admin/users/AddUser";
 import UpdateUser from "../../components/admin/users/UpdateUser";
-import { getUserProfile } from "../../../services/userService";
-import UsersCreatedByAdmin from "../../components/admin/users/CreatedUsers";
 import useUserFilter from "../../hooks/useUserFilter";
 
 export default function UsersPage() {
-    const userProfile = getUserProfile();
     const [showAddModal, setShowAddModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -32,8 +29,25 @@ export default function UsersPage() {
         nationalityFilter,
         setNationalityFilter,
         uniqueRoles,
-        filteredUsers
+        filteredUsers,
+        showOnlyCreatedByAdmin,
+        setShowOnlyCreatedByAdmin,
+        setCreatedByAdminUsers
     } = useUserFilter(users);
+    
+    const toggleCreatedByAdminFilter = async () => {
+        if (!showOnlyCreatedByAdmin) {
+            try {
+                const response = await getCreatedUsers();
+                setCreatedByAdminUsers(response.data);
+                setRoleFilter('all'); // Réinitialise le filtre de rôle
+            } catch (err) {
+                console.error("Erreur:", err);
+                return;
+            }
+        }
+        setShowOnlyCreatedByAdmin(!showOnlyCreatedByAdmin);
+    };
     
     const handleDeleteUser = async (id) => {
         const confirmed = window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?");
@@ -55,7 +69,6 @@ export default function UsersPage() {
         <AdminLayout>
             <section className="px-4 sm:px-6 py-8 bg-gray-900 min-h-screen">
                 <div className="max-w-7xl mx-auto">
-                    <UsersCreatedByAdmin />
                     <Header
                         header={{
                             prefix: 'Gestion des',
@@ -73,11 +86,14 @@ export default function UsersPage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                                roleFilter === 'all' 
+                                roleFilter === 'all' && !showOnlyCreatedByAdmin
                                     ? 'bg-cyan-600 text-white' 
                                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                             }`}
-                            onClick={() => setRoleFilter('all')}
+                            onClick={() => {
+                                setRoleFilter('all');
+                                setShowOnlyCreatedByAdmin(false);
+                            }}
                         >
                             Tous
                         </motion.button>
@@ -88,20 +104,38 @@ export default function UsersPage() {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className={`px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors ${
-                                    roleFilter === role 
-                                        ? `${getRoleBadge(role)} text-gray-500` 
+                                    roleFilter === role && !showOnlyCreatedByAdmin
+                                        ? `${getRoleBadge(role)} text-gray-600` 
                                         : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                                 }`}
-                                onClick={() => setRoleFilter(role)}
+                                onClick={() => {
+                                    setRoleFilter(role);
+                                    setShowOnlyCreatedByAdmin(false);
+                                }}
                             >
                                 {role}
                             </motion.button>
                         ))}
+                        
+                        {/* Bouton "Créés par vous" */}
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                                showOnlyCreatedByAdmin 
+                                    ? 'bg-purple-600 text-white' 
+                                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                            }`}
+                            
+                            onClick={toggleCreatedByAdminFilter}
+                        >
+                            Créés par vous
+                        </motion.button>
                     </div>
 
                     {/* Barre de recherche, filtre et bouton sur la même ligne */}
                     <div className="flex flex-col md:flex-row gap-3 items-center w-full">
-                        {/* Barre de recherche - taille fixe comme avant */}
+                        {/* Barre de recherche */}
                         <div className="w-full md:w-full mr-2"> 
                             <GlobalSearch
                                 placeholder="Rechercher un nom, email ou rôle..."
@@ -113,7 +147,7 @@ export default function UsersPage() {
                             />
                         </div>
                         
-                        {/* Champ de nationalité - taille fixe */}
+                        {/* Champ de nationalité */}
                         <div className="w-full md:w-ful mr-2">
                             <GlobalSearch
                                 placeholder="Rechercher une nationalité..."
@@ -128,17 +162,14 @@ export default function UsersPage() {
                             />
                         </div>
                         
-                        {/* Bouton Ajouter - taille automatique */}
+                        {/* Bouton Ajouter */}
                         <div className="w-full md:w-full justify-end flex">
                             <Button onClick={() => setShowAddModal(true)} className="w-full md:w-auto">
                                 + Nouvel Utilisateur
                             </Button>
                         </div>
                     </div>
-                    
                 </div>
-
-                
 
                 {/* Tableau des utilisateurs */}
                 <div className="max-w-7xl mx-auto">

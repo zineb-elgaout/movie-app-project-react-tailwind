@@ -1,19 +1,27 @@
-
 import { useState, useMemo } from 'react';
 
 const useUserFilter = (users) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [roleFilter, setRoleFilter] = useState('all');
     const [nationalityFilter, setNationalityFilter] = useState('');
+    const [showOnlyCreatedByAdmin, setShowOnlyCreatedByAdmin] = useState(false);
+    const [createdByAdminUsers, setCreatedByAdminUsers] = useState([]);
 
-    // Récupère les rôles uniques pour les boutons de filtre
     const uniqueRoles = useMemo(() => {
         return [...new Set(users.map(user => user.role))];
     }, [users]);
 
-    // Filtrage combiné
     const filteredUsers = useMemo(() => {
-        return users.filter(user => {
+        let result = [...users];
+        
+        // Si le filtre "Créés par admin" est activé
+        if (showOnlyCreatedByAdmin && createdByAdminUsers.length > 0) {
+            const createdIds = createdByAdminUsers.map(u => u.id);
+            result = result.filter(user => createdIds.includes(user.id));
+        }
+        
+        // Applique les autres filtres
+        return result.filter(user => {
             const matchesSearch = ['firstName', 'lastName', 'email', 'role'].some(prop => 
                 user[prop]?.toLowerCase().includes(searchTerm.toLowerCase())
             );
@@ -24,7 +32,7 @@ const useUserFilter = (users) => {
             
             return matchesSearch && matchesRole && matchesNationality;
         });
-    }, [users, searchTerm, roleFilter, nationalityFilter]);
+    }, [users, searchTerm, roleFilter, nationalityFilter, showOnlyCreatedByAdmin, createdByAdminUsers]);
 
     return {
         searchTerm,
@@ -34,7 +42,10 @@ const useUserFilter = (users) => {
         nationalityFilter,
         setNationalityFilter,
         uniqueRoles,
-        filteredUsers
+        filteredUsers,
+        showOnlyCreatedByAdmin,
+        setShowOnlyCreatedByAdmin,
+        setCreatedByAdminUsers
     };
 };
 
