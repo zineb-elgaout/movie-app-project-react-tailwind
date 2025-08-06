@@ -1,57 +1,56 @@
 import { useState } from 'react';
-import { FiInstagram, FiMail, FiMapPin, FiCalendar, FiAward, FiBook ,FiMessageSquare} from 'react-icons/fi';
+import { FiInstagram, FiMail, FiMapPin, FiCalendar, FiAward, FiBook, FiMessageSquare } from 'react-icons/fi';
 import { FaDiscord, FaGithub, FaLinkedin } from 'react-icons/fa';
 import AdminLayout from '../../Layouts/admin/AdminLayout';
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState('favorites');
 
-  // Données du profil enrichies
-  const profileData  = {
-  coverPhoto: 'https://png.pngtree.com/thumb_back/fw800/background/20231202/pngtree-artistic-fabric-splash-texture-image_13824802.png',
-  profilePhoto: 'https://www.toonw.com/wp-content/uploads/2024/11/kiki-kikis-delivery-service.png',
-  
-  username: 'cinefan_jd',
-  fullName: 'Jean Dupont',
-  email: 'jean.dupont@example.com',
-  country: 'Paris, France',
-  birthDate: '1990-03-15',
+  // Données du profil pour une app de cartoons
+  const profileData = {
+    coverPhoto: 'https://www.gannett-cdn.com/-mm-/c4ff156bfef11d468e2b233282a16eb1303f6aa4/c=0-39-768-473/local/-/media/2018/05/22/CarolinaGroup/Greenville/636625918491296957-Fireflies-2-1-.jpg?width=3200&height=1680&fit=crop',
+    profilePhoto: 'https://www.nautiljon.com/images/actualite/00/59/1486721458562_image.jpg',
+    
+    username: 'cartoon_lover',
+    fullName: 'Alex Johnson',
+    email: 'alex.johnson@example.com',
+    country: 'New York, USA',
+    birthDate: '1995-07-22',
 
-  bio: `Cinéphile passionné depuis toujours, je partage mes critiques, mes recommandations et mes coups de cœur sur cette plateforme. J'apprécie autant les classiques que les nouveautés, avec une préférence pour le cinéma indépendant et les thrillers psychologiques.`,
+    bio: `Passionné de cartoons depuis mon enfance, je collectionne et analyse les séries animées classiques et modernes. 
+    Spécialiste des cartoons des années 90 et des productions indépendantes contemporaines. 
+    Je partage régulièrement des analyses détaillées et des recommandations.`,
 
-  favoriteGenres: ['Thriller', 'Science-fiction', 'Drame', 'Animation'],
-  watchlist: [
-    'Inception',
-    'Parasite',
-    'The Grand Budapest Hotel',
-    'Spider-Man: Across the Spider-Verse'
-  ],
-  likedMovies: [
-    'Interstellar',
-    'Whiplash',
-    'The Godfather',
-    'Shutter Island'
-  ],
+    favoriteGenres: ['Animation', 'Comédie', 'Aventure', 'Science-fiction'],
+    watchlist: [
+      'Adventure Time',
+      'Rick and Morty',
+      'Avatar: The Last Airbender',
+      'Gravity Falls'
+    ],
+    likedCartoons: [
+      'Steven Universe',
+      'Over the Garden Wall',
+      'The Amazing World of Gumball',
+      'Samurai Jack'
+    ],
 
-  interests: ['Analyse de films', 'Rédaction de critiques', 'Réalisateurs indépendants', 'Festivals de cinéma'],
+    interests: ['Analyse de cartoons', 'Histoire de l\'animation', 'Voice acting', 'Character design'],
 
-  skills: ['Rédaction', 'Montage vidéo', 'UI Design', 'Critique cinématographique'],
+    socialLinks: {
+      instagram: '#',
+      discord: 'cartoon_lover#1234',
+      letterboxd: '#',
+      twitter: '#'
+    },
 
-  socialLinks: {
-    instagram: '',
-    discord: 'discord',
-    github: '', // remplacé par Letterboxd 
-    linkedin: ''
-  },
-
-  stats: {
-    reviewsPosted: 128,
-    followers: 320,
-    following: 85,
-    moviesWatched: 512
-  }
-};
-
+    stats: {
+      reviewsPosted: 86,
+      followers: 450,
+      following: 120,
+      cartoonsWatched: 320
+    }
+  };
 
   return (
     <AdminLayout>
@@ -65,7 +64,7 @@ const ProfilePage = () => {
             <img 
               src={profileData.profilePhoto} 
               alt="Profile" 
-              className="w-40 h-40 rounded-full object-cover shadow-lg"
+              className="w-40 h-40 rounded-full  object-cover shadow-lg"
             />
           </div>
         </div>
@@ -74,10 +73,10 @@ const ProfilePage = () => {
         <div className="px-8 pt-20 pb-8">
           {/* En-tête avec nom et titre */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">
-              {profileData.firstName} <span className="text-gray-700">{profileData.lastName}</span>
+            <h1 className="text-3xl font-bold text-white">
+              {profileData.fullName}
             </h1>
-            <p className="text-lg text-blue-600">{profileData.title}</p>
+            <p className="text-lg text-purple-400">@{profileData.username}</p>
           </div>
 
           {/* Grille principale */}
@@ -85,115 +84,130 @@ const ProfilePage = () => {
             {/* Colonne gauche (1/4 de largeur) */}
             <div className="lg:col-span-1 space-y-6">
               {/* Liens sociaux */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Réseaux sociaux</h3>
+              <div className="bg-gray-700 p-4 rounded-lg">
+                <h3 className="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-3">Réseaux sociaux</h3>
                 <div className="space-y-3">
                   <a 
                     href={profileData.socialLinks.instagram} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center text-gray-700 hover:text-pink-600 transition-colors"
+                    className="flex items-center text-gray-300 hover:text-pink-400 transition-colors"
                   >
                     <FiInstagram className="w-5 h-5 mr-2" />
                     <span className="text-sm">Instagram</span>
                   </a>
-                  <div className="flex items-center text-gray-700">
-                    <FaDiscord className="w-5 h-5 mr-2 text-indigo-600" />
+                  <div className="flex items-center text-gray-300">
+                    <FaDiscord className="w-5 h-5 mr-2 text-indigo-400" />
                     <span className="text-sm">{profileData.socialLinks.discord}</span>
                   </div>
                   <a 
-                    href={profileData.socialLinks.github} 
+                    href={profileData.socialLinks.twitter} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center text-gray-700 hover:text-gray-900 transition-colors"
+                    className="flex items-center text-gray-300 hover:text-blue-400 transition-colors"
                   >
                     <FaGithub className="w-5 h-5 mr-2" />
-                    <span className="text-sm">GitHub</span>
+                    <span className="text-sm">Twitter</span>
                   </a>
                   <a 
-                    href={profileData.socialLinks.linkedin} 
+                    href={profileData.socialLinks.letterboxd} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center text-gray-700 hover:text-blue-700 transition-colors"
+                    className="flex items-center text-gray-300 hover:text-green-400 transition-colors"
                   >
                     <FaLinkedin className="w-5 h-5 mr-2" />
-                    <span className="text-sm">LinkedIn</span>
+                    <span className="text-sm">Letterboxd</span>
                   </a>
                 </div>
               </div>
 
-              {/* Centres d'intérêt */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Centres d'intérêt</h3>
+              {/* Genres préférés */}
+              <div className="bg-gray-700 p-4 rounded-lg">
+                <h3 className="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-3">Genres préférés</h3>
                 <div className="flex flex-wrap gap-2">
-                  {profileData.interests.map((interest, index) => (
+                  {profileData.favoriteGenres.map((genre, index) => (
                     <span 
                       key={index}
-                      className="px-3 py-1 bg-white text-gray-800 text-xs rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
+                      className="px-3 py-1 bg-gray-600 text-gray-200 text-xs rounded-full hover:bg-gray-500 transition-colors"
                     >
-                      {interest}
+                      {genre}
                     </span>
                   ))}
                 </div>
               </div>
 
-              
+              {/* Watchlist */}
+              <div className="bg-gray-700 p-4 rounded-lg">
+                <h3 className="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-3">Ma watchlist</h3>
+                <ul className="space-y-2">
+                  {profileData.watchlist.slice(0, 4).map((item, index) => (
+                    <li key={index} className="flex items-center">
+                      <span className="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                      <span className="text-sm text-gray-300">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
             {/* Colonne droite (3/4 de largeur) */}
             <div className="lg:col-span-3 space-y-6">
               {/* Informations personnelles */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gray-50 p-5 rounded-lg">
-                  <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Informations personnelles</h3>
+                <div className="bg-gray-700 p-5 rounded-lg">
+                  <h3 className="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-4">Informations</h3>
                   <div className="space-y-3">
-                    <div className="flex items-center text-gray-700">
-                      <FiMail className="w-4 h-4 mr-3 text-gray-400" />
+                    <div className="flex items-center text-gray-300">
+                      <FiMail className="w-4 h-4 mr-3 text-purple-400" />
                       <span>{profileData.email}</span>
                     </div>
-                    <div className="flex items-center text-gray-700">
-                      <FiMapPin className="w-4 h-4 mr-3 text-gray-400" />
+                    <div className="flex items-center text-gray-300">
+                      <FiMapPin className="w-4 h-4 mr-3 text-purple-400" />
                       <span>{profileData.country}</span>
                     </div>
-                    <div className="flex items-center text-gray-700">
-                      <FiCalendar className="w-4 h-4 mr-3 text-gray-400" />
-                      <span>Né le {profileData.birthDate}</span>
+                    <div className="flex items-center text-gray-300">
+                      <FiCalendar className="w-4 h-4 mr-3 text-purple-400" />
+                      <span>Né le {new Date(profileData.birthDate).toLocaleDateString()}</span>
                     </div>
-                    <div className="flex items-center text-gray-700">
-                      <FiAward className="w-4 h-4 mr-3 text-gray-400" />
-                      <span>{profileData.stats.projects} Role</span>
+                    <div className="flex items-center text-gray-300">
+                      <FiAward className="w-4 h-4 mr-3 text-purple-400" />
+                      <span>Fan de cartoons depuis 15 ans</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Statistiques */}
-                <div className="bg-gray-50 p-5 rounded-lg">
-                  <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Statistiques</h3>
-                  <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="bg-gray-700 p-5 rounded-lg">
+                  <h3 className="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-4">Statistiques</h3>
+                  <div className="grid grid-cols-2 gap-4 text-center">
                     <div>
-                      <p className="text-2xl font-bold text-blue-600">{profileData.stats.projects}+</p>
-                      <p className="text-xs text-gray-500">Favoris</p>
+                      <p className="text-2xl font-bold text-purple-400">{profileData.stats.cartoonsWatched}</p>
+                      <p className="text-xs text-gray-400">Cartoons vus</p>
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-blue-600">{profileData.stats.followers}</p>
-                      <p className="text-xs text-gray-500">Abonnés</p>
+                      <p className="text-2xl font-bold text-purple-400">{profileData.stats.reviewsPosted}</p>
+                      <p className="text-xs text-gray-400">Critiques</p>
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-blue-600">{profileData.stats.following}</p>
-                      <p className="text-xs text-gray-500">Abonnements</p>
+                      <p className="text-2xl font-bold text-purple-400">{profileData.stats.followers}</p>
+                      <p className="text-xs text-gray-400">Abonnés</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-purple-400">{profileData.stats.following}</p>
+                      <p className="text-xs text-gray-400">Abonnements</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* À propos */}
-              <div className="bg-gray-50 p-5 rounded-lg">
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">À propos</h3>
-                <p className="text-gray-700 leading-relaxed">{profileData.about}</p>
+              {/* Bio */}
+              <div className="bg-gray-700 p-5 rounded-lg">
+                <h3 className="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-4">À propos</h3>
+                <p className="text-gray-300 leading-relaxed">{profileData.bio}</p>
               </div>
 
               {/* Séparateur */}
-              <div className="border-t border-gray-200 my-4"></div>
+              <div className="border-t border-gray-600 my-4"></div>
 
               {/* Onglets */}
               <div className="flex space-x-4">
@@ -201,8 +215,8 @@ const ProfilePage = () => {
                   onClick={() => setActiveTab('favorites')}
                   className={`px-6 py-2 font-medium rounded-md transition-colors flex items-center ${
                     activeTab === 'favorites' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   <FiBook className="mr-2" />
@@ -212,47 +226,48 @@ const ProfilePage = () => {
                   onClick={() => setActiveTab('comments')}
                   className={`px-6 py-2 font-medium rounded-md transition-colors flex items-center ${
                     activeTab === 'comments' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-purple-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   <FiMessageSquare className="mr-2" />
-                  Commentaires
+                  Critiques
                 </button>
               </div>
 
               {/* Contenu des onglets */}
-              <div className="bg-gray-50 rounded-lg p-6">
+              <div className="bg-gray-700 rounded-lg p-6">
                 {activeTab === 'favorites' ? (
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Mes favoris</h3>
+                    <h3 className="text-lg font-semibold text-white mb-4">Mes cartoons favoris</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {/* Exemple d'éléments favoris - à remplacer par vos données */}
-                      {[1, 2, 3].map((item) => (
-                        <div key={item} className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                          <h4 className="font-medium text-gray-900">Cartoon favori {item}</h4>
-                          <p className="text-sm text-gray-600 mt-1">Description des favori...</p>
+                      {profileData.likedCartoons.map((cartoon, index) => (
+                        <div key={index} className="bg-gray-600 p-4 rounded-lg shadow-sm border border-gray-500 hover:border-purple-400 transition-colors">
+                          <h4 className="font-medium text-white">{cartoon}</h4>
+                          <p className="text-sm text-gray-300 mt-1">Ma note: ★★★★★</p>
                         </div>
                       ))}
                     </div>
                   </div>
                 ) : (
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Mes commentaires</h3>
+                    <h3 className="text-lg font-semibold text-white mb-4">Mes dernières critiques</h3>
                     <div className="space-y-4">
-                      {/* Exemple de commentaires - à remplacer par vos données */}
                       {[1, 2].map((item) => (
-                        <div key={item} className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <div key={item} className="bg-gray-600 p-4 rounded-lg shadow-sm border border-gray-500">
                           <div className="flex items-center mb-2">
                             <img 
                               src={profileData.profilePhoto} 
                               alt="Profile" 
                               className="w-8 h-8 rounded-full mr-2"
                             />
-                            <span className="font-medium">Sur le cartoon #{item}</span>
+                            <span className="font-medium text-white">Sur "Adventure Time"</span>
                           </div>
-                          <p className="text-gray-700">"Ceci est un exemple de commentaire que j'ai laissé sur un catoon récent..."</p>
-                          <p className="text-xs text-gray-500 mt-2">Posté le {new Date().toLocaleDateString()}</p>
+                          <p className="text-gray-300">"Une série qui mélange parfaitement absurdité comique et profondeur émotionnelle. Chaque personnage est soigneusement développé sur plusieurs saisons..."</p>
+                          <div className="flex justify-between items-center mt-2">
+                            <span className="text-xs text-gray-400">Posté le {new Date().toLocaleDateString()}</span>
+                            <span className="text-yellow-400 text-sm">★★★★☆</span>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -262,7 +277,7 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
-    </AdminLayout>
+      </AdminLayout>  
   );
 };
 
