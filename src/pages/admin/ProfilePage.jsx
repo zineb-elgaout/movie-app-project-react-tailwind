@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { FiInstagram, FiMail, FiMapPin, FiCalendar, FiAward, FiBook ,FiMessageSquare} from 'react-icons/fi';
 import { FaDiscord, FaGithub, FaLinkedin } from 'react-icons/fa';
+import AdminLayout from '../../Layouts/admin/AdminLayout';
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState('favorites');
 
   // Données du profil enrichies
   const profileData  = {
-  coverPhoto: 'https://images.unsplash.com/photo-1535392432937-a27c34c09103?q=80&w=2232&auto=format&fit=crop',
-  profilePhoto: 'https://images.unsplash.com/photo-1603415526960-f8f0f2c8cfb2?q=80&w=2080&auto=format&fit=crop',
+  coverPhoto: 'https://png.pngtree.com/thumb_back/fw800/background/20231202/pngtree-artistic-fabric-splash-texture-image_13824802.png',
+  profilePhoto: 'https://www.toonw.com/wp-content/uploads/2024/11/kiki-kikis-delivery-service.png',
   
   username: 'cinefan_jd',
   fullName: 'Jean Dupont',
@@ -53,8 +54,7 @@ const ProfilePage = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+    <AdminLayout>
         {/* Photo de couverture */}
         <div 
           className="h-56 bg-cover bg-center relative"
@@ -65,7 +65,7 @@ const ProfilePage = () => {
             <img 
               src={profileData.profilePhoto} 
               alt="Profile" 
-              className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg"
+              className="w-40 h-40 rounded-full object-cover shadow-lg"
             />
           </div>
         </div>
@@ -262,8 +262,7 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </AdminLayout>
   );
 };
 
