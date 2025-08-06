@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import {  FiSettings, FiLogOut } from 'react-icons/fi';
+import {  FiSettings, FiLogOut , FiUser} from 'react-icons/fi';
 import { RiMovie2Line } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getUserProfile } from '../../../services/userService';
 import React from 'react';
 import {logout} from '../../../services/authService'; 
+import { AiFillProfile } from 'react-icons/ai';
 
 const Topbar = ({ sidebarCollapsed }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,8 +22,7 @@ const Topbar = ({ sidebarCollapsed }) => {
     >
       {/* Logo ToonTime à gauche */}
       <div className="flex items-center">
-        <RiMovie2Line className="text-2xl text-white mr-3" />
-        <h1 className="text-xl font-bold text-white">
+        <h1 className="text-xl font-bold text-indigo-200">
           ToonTime
         </h1>
       </div>
@@ -64,6 +64,14 @@ const Topbar = ({ sidebarCollapsed }) => {
                   <p className="text-xs text-gray-400">{email}</p>
                 </div>
                 <NavLink 
+                  to="/profil" 
+                  className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <FiUser className="mr-2" />
+                  Profil
+                </NavLink>
+                <NavLink 
                   to="/settings" 
                   className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
@@ -71,6 +79,7 @@ const Topbar = ({ sidebarCollapsed }) => {
                   <FiSettings className="mr-2" />
                   Paramètres
                 </NavLink>
+                
                 <NavLink 
                   to="/logout" 
                   className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 transition-colors"
