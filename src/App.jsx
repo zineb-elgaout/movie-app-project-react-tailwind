@@ -9,12 +9,15 @@ import Users from './pages/admin/UsersPage';
 import CategoryContent from './pages/admin/CategoryContent';
 import Login from './pages/public/Login';
 import Register from './pages/public/Register';
+import ProfilePage from './pages/admin/ProfilePage';
+import NotFound from './pages/public/NotFound';
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/profil" element={<ProfilePage />} />
         <Route path="/policy" element={<Policy />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/users" element={<Users />} />
@@ -22,7 +25,7 @@ function App() {
         <Route path="/category/:id" element={<CategoryContent />} />
         <Route path="login" element={<Login/>} />
         <Route path="/register" element={<Register />} />
-        <Route path="*" element={<h1>Page Not Found</h1>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

@@ -93,7 +93,7 @@ function Sidebar() {
             </div>
             <div className="flex space-x-2 mt-3 pt-3">
               <NavLink 
-                to="/profile" 
+                to="/profil" 
                 className="text-xs bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-1 rounded-full flex-1 text-center transition-colors"
               >
                 Profil
