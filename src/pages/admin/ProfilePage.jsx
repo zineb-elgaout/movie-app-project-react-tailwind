@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { FiInstagram, FiMail, FiMapPin, FiCalendar, FiAward, FiBook, FiMessageSquare } from 'react-icons/fi';
-import { FaDiscord, FaGithub, FaLinkedin } from 'react-icons/fa';
+import { FiInstagram, FiMail, FiMapPin, FiCalendar, FiAward, FiBook, FiMessageSquare , FiHeart } from 'react-icons/fi';
+import { FaDiscord, FaFacebook} from 'react-icons/fa';
 import AdminLayout from '../../Layouts/admin/AdminLayout';
+import { FaXTwitter } from 'react-icons/fa6';
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState('favorites');
@@ -16,6 +17,7 @@ const ProfilePage = () => {
     email: 'alex.johnson@example.com',
     country: 'New York, USA',
     birthDate: '1995-07-22',
+    role:'admin',
 
     bio: `Passionné de cartoons depuis mon enfance, je collectionne et analyse les séries animées classiques et modernes. 
     Spécialiste des cartoons des années 90 et des productions indépendantes contemporaines. 
@@ -38,10 +40,10 @@ const ProfilePage = () => {
     interests: ['Analyse de cartoons', 'Histoire de l\'animation', 'Voice acting', 'Character design'],
 
     socialLinks: {
-      instagram: '#',
-      discord: 'cartoon_lover#1234',
-      letterboxd: '#',
-      twitter: '#'
+      instagram: 'instagram',
+      discord: 'discord',
+      facebook: 'facebook',
+      twitter: 'twitter'
     },
 
     stats: {
@@ -106,17 +108,17 @@ const ProfilePage = () => {
                     rel="noopener noreferrer"
                     className="flex items-center text-gray-300 hover:text-blue-400 transition-colors"
                   >
-                    <FaGithub className="w-5 h-5 mr-2" />
+                    <FaXTwitter className="w-5 h-5 mr-2" />
                     <span className="text-sm">Twitter</span>
                   </a>
                   <a 
-                    href={profileData.socialLinks.letterboxd} 
+                    href={profileData.socialLinks.facebook} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center text-gray-300 hover:text-green-400 transition-colors"
                   >
-                    <FaLinkedin className="w-5 h-5 mr-2" />
-                    <span className="text-sm">Letterboxd</span>
+                    <FaFacebook className="w-5 h-5 mr-2" />
+                    <span className="text-sm">Facebook</span>
                   </a>
                 </div>
               </div>
@@ -171,7 +173,7 @@ const ProfilePage = () => {
                     </div>
                     <div className="flex items-center text-gray-300">
                       <FiAward className="w-4 h-4 mr-3 text-purple-400" />
-                      <span>Fan de cartoons depuis 15 ans</span>
+                      <span>{profileData.role}</span>
                     </div>
                   </div>
                 </div>
@@ -219,7 +221,7 @@ const ProfilePage = () => {
                       : 'text-gray-300 hover:bg-gray-600'
                   }`}
                 >
-                  <FiBook className="mr-2" />
+                  <FiHeart className="mr-2" />
                   Favoris
                 </button>
                 <button
