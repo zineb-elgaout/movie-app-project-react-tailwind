@@ -31,6 +31,15 @@ export default {
           },
         },
       },
+       
+      
+      theme: {
+    extend: {
+      maskImage: {
+        'radial-gradient': 'radial-gradient(circle at 80px 100%, transparent 80px, black 81px)',
+      },
+    }
+  }
     },
   },
   plugins: [],

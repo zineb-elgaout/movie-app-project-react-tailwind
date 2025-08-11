@@ -11,6 +11,7 @@ import Login from './pages/public/Login';
 import Register from './pages/public/Register';
 import ProfilePage from './pages/admin/ProfilePage';
 import NotFound from './pages/public/NotFound';
+import SettingsPage from './pages/admin/settings';
 function App() {
   return (
     <Router>
@@ -25,6 +26,7 @@ function App() {
         <Route path="/category/:id" element={<CategoryContent />} />
         <Route path="login" element={<Login/>} />
         <Route path="/register" element={<Register />} />
+        <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

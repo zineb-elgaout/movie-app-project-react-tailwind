@@ -9,23 +9,22 @@ const Loading = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-gray-900 bg-opacity-90 dark:bg-opacity-90">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-gray-900 bg-opacity-90 dark:bg-opacity-90 m-4">
       <div className="text-center">
-        {/* Logo ou titre (optionnel) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">
+          <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600 m-3 p-3">
             Chargement...
           </h2>
         </motion.div>
 
         {/* Animation de chargement */}
         <div className="flex justify-center space-x-2">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(13)].map((_, i) => (
             <motion.div
               key={i}
               variants={bubbleVariants}
@@ -34,7 +33,24 @@ const Loading = () => {
               transition={{
                 repeat: Infinity,
                 repeatType: "reverse",
-                duration: 0.6,
+                duration: 0.3,
+                delay: i * 0.1,
+              }}
+              className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-400 to-indigo-600"
+            />
+          ))}
+        </div>
+        <div className="flex justify-center space-x-2">
+          {[...Array(12)].map((_, i) => (
+            <motion.div
+              key={i}
+              variants={bubbleVariants}
+              initial="end"
+              animate="start"
+              transition={{
+                repeat: Infinity,
+                repeatType: "reverse",
+                duration: 0.3,
                 delay: i * 0.1,
               }}
               className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-400 to-indigo-600"
