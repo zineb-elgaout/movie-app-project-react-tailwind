@@ -1,13 +1,49 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'https://localhost:7274/api/Categories';
+// 🔹 URL de base de ton API
+const API_URL = "https://localhost:7274/api/Categories";
 
-export const getAllCategories = () => axios.get(API_URL);
+// 🔹 Fonction pour récupérer le token depuis les cookies
+function getTokenFromCookie() {
+  const cookies = document.cookie.split("; ");
+  const tokenCookie = cookies.find(cookie => cookie.startsWith("token="));
+  if (!tokenCookie) return null;
+  return tokenCookie.split("=")[1];
+}
 
-export const getCategoryById = (id) => axios.get(`${API_URL}/${id}`);
+// 🔹 Création d'une instance Axios avec le token automatiquement ajouté
+const axiosAuth = axios.create({
+  baseURL: API_URL,
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
 
-export const addCategory = (category) => axios.post(API_URL, category);
+axiosAuth.interceptors.request.use(config => {
+  const token = getTokenFromCookie();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, error => Promise.reject(error));
 
-export const updateCategory = (id, updatedCategory) => axios.put(`${API_URL}/${id}`, updatedCategory);
+// 🔹 Fonctions CRUD
+export const getAllCategories = () => {
+  return axiosAuth.get("/");
+};
 
-export const deleteCategory = (id) => axios.delete(`${API_URL}/${id}`);
+export const getCategoryById = (id) => {
+  return axiosAuth.get(`/${id}`);
+};
+
+export const createCategory = (category) => {
+  return axiosAuth.post("/", category);
+};
+
+export const updateCategory = (id, category) => {
+  return axiosAuth.put(`/${id}`, category);
+};
+
+export const deleteCategory = (id) => {
+  return axiosAuth.delete(`/${id}`);
+};

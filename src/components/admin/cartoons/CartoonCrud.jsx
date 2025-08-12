@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { addCartoon, updateCartoon, deleteCartoon, uploadImage } from '../../../../services/cartoonService';
+import { createCartoon, updateCartoon, deleteCartoon, uploadImage } from '../../../../services/cartoonService';
 import { useCartoonForm } from '../../../hooks/useCartoonForm';
 import { useOutsideClick } from '../../../hooks/useOutsideClick';
 import useCategories from '../../../hooks/useCategories';
@@ -43,7 +43,7 @@ const CartoonCrud = ({ onClose, cartoonToEdit }) => {
         cartoonId = formData.id;
       } else {
         // Création nouvelle
-        const response = await addCartoon(cartoonPayload);
+        const response = await createCartoon(cartoonPayload);
         cartoonId = response.data.id; // Supposons que le backend retourne l'ID
       }
 

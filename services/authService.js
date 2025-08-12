@@ -11,7 +11,7 @@ function getTokenFromCookie() {
     .find(row => row.startsWith('token='));
   return cookie ? cookie.split('=')[1] : null;
 }
-
+export  {getTokenFromCookie};
 //Login
 export async function login(email, password, rememberMe) {
   try {

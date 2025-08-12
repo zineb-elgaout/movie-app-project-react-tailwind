@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiEdit, FiTrash } from "react-icons/fi";
@@ -9,32 +9,32 @@ import Loading from "../../Loading";
 import ErrorMessage from "../../ErrorMessage";
 
 export default function CategoryList() {
-  const { categories, loading, error, fetchCategories } = useCategories();
+  const { categories, loading, error, fetchCategories, token } = useCategories();
   const [showUpdate, setShowUpdate] = useState(false);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
 
-  // Handle Delete
+  // Suppression
   const handleDelete = async (id) => {
     const confirm = window.confirm("Voulez-vous vraiment supprimer cette catégorie ?");
     if (!confirm) return;
 
     try {
-      await deleteCategory(id);
-      await fetchCategories(); // refresh la liste
+      await deleteCategory(id, token);
+      await fetchCategories();
     } catch (error) {
       console.error("Erreur de suppression :", error);
       alert("Échec de la suppression.");
     }
   };
 
-  // Handle Edit
+  // Edition
   const handleEdit = (category) => {
     setCategoryToEdit(category);
     setShowUpdate(true);
   };
 
   if (loading) return <Loading />;
-  if (error) return <ErrorMessage message={error}/>;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <div className="max-w-7xl mx-auto mb-5">
@@ -44,63 +44,51 @@ export default function CategoryList() {
             Aucune catégorie disponible pour le moment.
           </p>
         ) : (
-          categories.map(({ id, title, subtitle, image }) => (
-            <Link 
-              to={`/category/${id}`} 
-              key={id} 
-              className="relative rounded-xl overflow-hidden h-80 group block" // block pour que le lien prenne toute la carte
-            >
-            <motion.div
+          categories.map(({ id, title, description }) => (
+            <Link
+              to={`/category/${id}`}
               key={id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="relative rounded-xl overflow-hidden h-80 group"
+              className="relative rounded-xl overflow-hidden h-40 group block bg-gradient-to-r from-pink-500 to-pink-600 text-white p-4 shadow-lg"
             >
-              <img
-                src={image}
-                alt={title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="relative h-full flex flex-col justify-between"
+              >
+                {/* Boutons actions */}
+                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleEdit({ id, title, description });
+                    }}
+                    title="Modifier"
+                    className="bg-white/80 text-gray-800 hover:bg-white p-2 rounded-full shadow"
+                  >
+                    <FiEdit />
+                  </button>
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDelete(id);
+                    }}
+                    title="Supprimer"
+                    className="bg-white/80 text-gray-800 hover:bg-white p-2 rounded-full shadow"
+                  >
+                    <FiTrash />
+                  </button>
+                </div>
 
-              <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleEdit({ id, title, subtitle, image });
-                  }}
-                  title="Modifier"
-                  className="bg-white/80 text-gray-800 hover:bg-white p-2 rounded-full shadow"
-                >
-                  <FiEdit />
-                </button>
-
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleDelete(id);
-                  }}
-                  title="Supprimer"
-                  className="bg-white/80 text-gray-800 hover:bg-white p-2 rounded-full shadow"
-                >
-                  <FiTrash />
-                </button>
-
-              </div>
-
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white/30 to-transparent backdrop-blur-sm px-4 py-3">
-                <h3 className="text-xl font-bold text-white drop-shadow-md">
-                  {title}
-                </h3>
-                <p className="text-sm text-white drop-shadow-sm">
-                  {subtitle}
-                </p>
-              </div>
-            </motion.div>
+                {/* Infos catégorie */}
+                <div>
+                  <h3 className="text-xl font-bold">{title}</h3>
+                  <p className="text-sm opacity-90">{description}</p>
+                </div>
+              </motion.div>
             </Link>
           ))
         )}
@@ -111,6 +99,7 @@ export default function CategoryList() {
           category={categoryToEdit}
           onClose={() => setShowUpdate(false)}
           fetchCategories={fetchCategories}
+          token={token}
         />
       )}
     </div>

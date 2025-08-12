@@ -189,7 +189,7 @@ const UpdateUser = ({ onClose, onUserUpdated, user }) => {
                         <div>
                             <label className="block text-gray-300 mb-2">Rôle</label>
                             <div className="grid grid-cols-3 gap-2">
-                                {['admin', 'editor', 'client'].map((role) => (
+                                {['Admin', 'Editor', 'Client'].map((role) => (
                                     <div key={role} className="flex items-center">
                                         <input
                                             type="radio"
