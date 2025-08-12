@@ -1,19 +1,28 @@
-
-
 const Categories = ({ categories }) => {
   return (
-    <div className="mb-8">
-      <h2 className="text-2xl font-bold mb-6">Browse Categories</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    <div className="mb-12 overflow-x-auto pb-4 hide-scrollbar">
+      <div className="flex space-x-4 w-max px-4">
         {categories.map((category) => (
           <div
             key={category.id}
-            className="bg-gray-900 rounded-lg p-4 hover:bg-gray-800 transition cursor-pointer group"
+            className="relative bg-gray-800 rounded-xl p-5 w-48 hover:bg-gray-700 transition-all duration-300 hover:scale-105 cursor-pointer group"
           >
-            
-            <h3 className="font-semibold text-lg">{category.title}</h3>
-            <p className="text-gray-400 text-sm">{category.description}</p>
-            <p className="text-gray-500 text-xs mt-2">{category.count} titles</p>
+            <div className="space-y-2">
+              <h3 className="font-medium text-white text-lg group-hover:text-white w-full block">
+                {category.title}
+              </h3>
+
+              <p className="text-gray-400 text-sm line-clamp-2 py-2">
+                {category.description}
+              </p>
+
+              {/* Bouton gris en bas à gauche */}
+              <div className="absolute bottom-4 right-4">
+                <button className="bg-gray-700 text-gray-300 text-xs px-3 py-1 rounded-full hover:bg-gray-700">
+                  {category.count} titres
+                </button>
+              </div>
+            </div>
           </div>
         ))}
       </div>

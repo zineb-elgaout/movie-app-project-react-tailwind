@@ -4,6 +4,7 @@ import Navbar from '../../components/client/NavBar';
 import Hero from '../../components/client/Hero';
 import Categories from '../../components/client/Categories';
 import SearchBar from '../../components/client/SearchBar';
+import Header from '../../components/ui/Header';
 
 const LandingPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,26 +35,52 @@ const heroSlides = [
     keywords:"noir, thriller, enquête, mystère, suspense, crime",
     imageUrl: "https://d18ufwot1963hr.cloudfront.net/wp-content-production/uploads/2024/11/hero.jpg",
   },
+  {
+    id: 4,
+    title: "Midnight Detective",
+    description: "Step into the dark and moody world of a relentless detective unraveling a web of lies, betrayal, and secrets. With noir aesthetics, gripping suspense, and complex characters, 'Midnight Detective' keeps you on the edge of your seat until the final revelation.",
+    brandImageUrl:"https://tse1.mm.bing.net/th/id/OIP.NDxgFFBrwvjINfMV1vBIhgHaLH?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
+    keywords:"noir, thriller, enquête, mystère, suspense, crime",
+    imageUrl: "https://refstatic.sk/movie/ae6b07b0bb6bd7aab8f1.jpg?is=2000x2000&s=a198aeb4d7c7a5769f841b9f0556baca54dfd22161468053be1a9e8eb18c445b",
+  },
+];
+
+const categories = [
+  { id: 1, title: "Disney", description: "Classics and timeless tales", count: 245 },
+  { id: 2, title: "Pixar", description: "Heartwarming animated adventures", count: 189 },
+  { id: 3, title: "Studio Ghibli", description: "Magical Japanese animations", count: 312 },
+  { id: 4, title: "DreamWorks", description: "Fun-filled family entertainment", count: 178 },
+  { id: 5, title: "Warner Bros Animation", description: "Iconic and bold creations", count: 134 },
+  { id: 6, title: "Illumination", description: "Colorful and humorous stories", count: 97 },
+  { id: 7, title: "Nickelodeon", description: "Fun and quirky animated series", count: 88 },
+  { id: 8, title: "Sony Pictures Animation", description: "Innovative and unique stories", count: 76 },
+  { id: 9, title: "Blue Sky Studios", description: "Charming and adventurous tales", count: 54 },
+  { id: 10, title: "Cartoon Network", description: "Creative and entertaining shows", count: 145 },
 ];
 
 
-  const categories = [
-    { id: 1, title: "Action", description: "High-octane thrills", count: 245 },
-    { id: 2, title: "Comedy", description: "Laugh-out-loud fun", count: 189 },
-    { id: 3, title: "Drama", description: "Emotional journeys", count: 312 },
-    { id: 4, title: "Sci-Fi", description: "Futuristic adventures", count: 178 },
-    { id: 5, title: "Horror", description: "Chilling stories", count: 134 },
-    { id: 6, title: "Documentary", description: "Real-life stories", count: 97 },
-  ];
-
+ const renderSectionHeader = (title) => (
+    <div className="text-start my-8">
+      <span className="text-white text-2xl font-medium mt-2">{title}</span>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Navbar />
       <Hero slides={heroSlides} />
+      
       <div className="bg-black py-8 px-4 sm:px-6 lg:px-8">
-        <Categories categories={categories} />
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+
+        
+        <Categories categories={categories} />
+
+        {renderSectionHeader( 'Catégories préferée')}
+        
+        {renderSectionHeader('Films et seriés préférées')}
+        
+        {renderSectionHeader('Films et seriés')}
         
       </div>
     </div>
