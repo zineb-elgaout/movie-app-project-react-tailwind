@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { updateCategory } from '../../../../services/categoryService';
 
-const UpdateCategory = ({ onClose, category, fetchCategories }) => {
+const UpdateCategory = ({ onClose, category, fetchCategories, token }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: ''
@@ -52,8 +52,8 @@ const UpdateCategory = ({ onClose, category, fetchCategories }) => {
     };
 
     try {
-      await updateCategory(category.id, updatedCategory);
-      await fetchCategories(); // 🔁 Mise à jour automatique
+      await updateCategory(category.id, updatedCategory, token);
+      await fetchCategories();
       alert(`Catégorie "${formData.title}" mise à jour avec succès !`);
       onClose();
     } catch (err) {
@@ -66,19 +66,19 @@ const UpdateCategory = ({ onClose, category, fetchCategories }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm transition-opacity duration-300"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
         ref={formRef}
-        className="max-w-md w-full mx-4 p-6 bg-white rounded-xl shadow-2xl transform transition-all duration-300 scale-95 hover:scale-100"
+        className="max-w-md w-full mx-4 p-6 bg-gray-800 rounded-xl shadow-2xl border border-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Modifier Catégorie</h2>
+          <h2 className="text-2xl font-bold text-white">Modifier Catégorie</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl"
+            className="text-gray-400 hover:text-white text-2xl transition-colors"
             aria-label="Fermer"
           >
             &times;
@@ -88,26 +88,26 @@ const UpdateCategory = ({ onClose, category, fetchCategories }) => {
         <form onSubmit={handleSubmit}>
           {/* Titre */}
           <div className="mb-5">
-            <label className="block text-gray-700 text-sm font-medium mb-2">Titre *</label>
+            <label className="block text-gray-300 text-sm font-medium mb-2">Titre *</label>
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
               required
             />
           </div>
 
           {/* Description */}
           <div className="mb-5">
-            <label className="block text-gray-700 text-sm font-medium mb-2">Description</label>
+            <label className="block text-gray-300 text-sm font-medium mb-2">Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
               rows="3"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
               placeholder="Description optionnelle"
             />
           </div>
@@ -117,14 +117,14 @@ const UpdateCategory = ({ onClose, category, fetchCategories }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-5 py-2.5 text-sm font-medium text-gray-300 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 transition-colors"
               disabled={isSubmitting}
             >
               Annuler
             </button>
             <button
               type="submit"
-              className={`px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg hover:from-pink-600 hover:to-pink-700 transition-all transform hover:scale-105 ${
+              className={`px-5 py-2.5 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors ${
                 isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
               }`}
               disabled={isSubmitting}

@@ -1,9 +1,9 @@
 import axios from "axios";
 
-// 🔹 URL de base de ton API
+// URL de base de ton API
 const API_URL = "https://localhost:7274/api/Categories";
 
-// 🔹 Fonction pour récupérer le token depuis les cookies
+// Fonction pour récupérer le token depuis les cookies
 function getTokenFromCookie() {
   const cookies = document.cookie.split("; ");
   const tokenCookie = cookies.find(cookie => cookie.startsWith("token="));
@@ -11,7 +11,7 @@ function getTokenFromCookie() {
   return tokenCookie.split("=")[1];
 }
 
-// 🔹 Création d'une instance Axios avec le token automatiquement ajouté
+// Création d'une instance Axios avec le token automatiquement ajouté
 const axiosAuth = axios.create({
   baseURL: API_URL,
   headers: {
@@ -27,7 +27,7 @@ axiosAuth.interceptors.request.use(config => {
   return config;
 }, error => Promise.reject(error));
 
-// 🔹 Fonctions CRUD
+// Fonctions CRUD
 export const getAllCategories = () => {
   return axiosAuth.get("/");
 };

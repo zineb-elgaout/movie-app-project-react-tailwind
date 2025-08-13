@@ -67,14 +67,14 @@ const AddCategory = ({ onClose }) => {
     >
       <div 
         ref={formRef}
-        className="max-w-md w-full mx-4 p-6 bg-white rounded-xl shadow-2xl"
+        className="max-w-md w-full mx-4 p-6 bg-gray-800 rounded-xl shadow-2xl border border-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Créer une Catégorie</h2>
+          <h2 className="text-2xl font-bold text-white">Créer une Catégorie</h2>
           <button 
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl"
+            className="text-gray-400 hover:text-white text-2xl transition-colors"
             aria-label="Fermer"
           >
             &times;
@@ -83,25 +83,25 @@ const AddCategory = ({ onClose }) => {
         
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
-            <label className="block text-gray-700 text-sm font-medium mb-2">Titre *</label>
+            <label className="block text-gray-300 text-sm font-medium mb-2">Titre *</label>
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
               placeholder="Nom de la catégorie"
               required
             />
           </div>
           
           <div className="mb-5">
-            <label className="block text-gray-700 text-sm font-medium mb-2">Description</label>
+            <label className="block text-gray-300 text-sm font-medium mb-2">Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
               rows="3"
               placeholder="Description optionnelle"
             />
@@ -111,14 +111,14 @@ const AddCategory = ({ onClose }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg"
+              className="px-5 py-2.5 text-sm font-medium text-gray-300 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 transition-colors"
               disabled={isSubmitting}
             >
               Annuler
             </button>
             <button
               type="submit"
-              className={`px-5 py-2.5 text-sm font-medium text-white bg-pink-500 rounded-lg hover:bg-pink-600 ${isSubmitting ? 'opacity-75' : ''}`}
+              className={`px-5 py-2.5 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors ${isSubmitting ? 'opacity-75' : ''}`}
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Création...' : 'Créer'}
