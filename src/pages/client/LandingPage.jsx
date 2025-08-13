@@ -31,9 +31,9 @@ const heroSlides = [
     id: 3,
     title: "Midnight Detective",
     description: "Step into the dark and moody world of a relentless detective unraveling a web of lies, betrayal, and secrets. With noir aesthetics, gripping suspense, and complex characters, 'Midnight Detective' keeps you on the edge of your seat until the final revelation.",
-    brandImageUrl:"https://th.bing.com/th/id/R.de76b6582fefcb8ff7e052369493522c?rik=k9lg8YJma7m31g&riu=http%3a%2f%2fwww.impawards.com%2f2017%2fposters%2fcoco_ver6_xlg.jpg&ehk=vbs5NaOW6RLVJ82ruLLB2nmKdTyikPF7RuUhdlm5HvU%3d&risl=&pid=ImgRaw&r=0",
+    brandImageUrl:"https://lumiere-a.akamaihd.net/v1/images/p_encanto_homeent_22359_4892ae1c.jpeg",
     keywords:"noir, thriller, enquête, mystère, suspense, crime",
-    imageUrl: "https://d18ufwot1963hr.cloudfront.net/wp-content-production/uploads/2024/11/hero.jpg",
+    imageUrl: "https://s.abcnews.com/images/GMA/Encanto-ht-er-210909_1631228363870_hpMain_16x9_992.jpg",
   },
   {
     id: 4,

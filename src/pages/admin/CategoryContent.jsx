@@ -102,6 +102,8 @@ export default function CategoryContent() {
                     <th className="px-6 py-4 text-left font-semibold text-gray-300">Description</th>
                     <th className="px-6 py-4 text-left font-semibold text-gray-300">Date de sortie</th>
                     <th className="px-6 py-4 text-left font-semibold text-gray-300">Favoris</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-300">Votes</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-300">Commentaires</th>
                     <th className="px-6 py-4 text-left font-semibold text-gray-300">Créé par</th>
                     <th className="px-6 py-4 text-right font-semibold text-gray-300">Actions</th>
                   </tr>
@@ -121,6 +123,12 @@ export default function CategoryContent() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-gray-300">
                           {cartoon.countFavoris || 0}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-300">
+                          {cartoon.countVote || 0}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-300">
+                          {cartoon.countComments || 0}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-gray-300">
                           <div>
@@ -243,6 +251,14 @@ export default function CategoryContent() {
                       <div>
                         <h3 className="text-sm font-medium text-gray-400 mb-1">Nombre de favoris</h3>
                         <p className="text-white">{selectedCartoon.countFavoris || 0}</p>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-400 mb-1">Vote</h3>
+                        <p className="text-white">{selectedCartoon.countVote || 0}</p>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-400 mb-1">Commentaires</h3>
+                        <p className="text-white">{selectedCartoon.countComment || 0}</p>
                       </div>
                     </div>
 
