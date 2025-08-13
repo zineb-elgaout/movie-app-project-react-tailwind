@@ -1,183 +1,216 @@
-// src/pages/cartoon/UpdateCartoon.jsx
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { updateCartoon } from "../../../../services/cartoonService";
-import { getCartoonById } from "../../../../services/cartoonService";
-import { getAllCategories } from "../../../../services/categoryService";
+import React, { useState, useRef, useEffect } from 'react';
+import { updateCartoon } from '../../../../services/cartoonService';
+import { getTokenFromCookie } from '../../../../services/authService';
+import Button from '../../ui/Button';
+import ErrorMessage from '../../ErrorMessage';
 
-const UpdateCartoon = ({ token }) => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  const [cartoon, setCartoon] = useState({
-    title: "",
-    description: "",
-    keywords: "",
-    trailerUrl: "",
-    countFavoris: 0,
-    countVote: 0,
-    countComments: 0,
-    brandImageUrl: "",
-    backImageUrl: "",
-    categoryId: "",
-    mainCharacters: "",
-    releaseDate: "",
+export default function UpdateCartoon({ cartoon, onClose, fetchCartoons }) {
+  const token = getTokenFromCookie();
+  const modalRef = useRef();
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    keywords: '',
+    trailerUrl: '',
+    brandImageUrl: '',
+    backImageUrl: '',
+    mainCharacters: '',
+    releaseDate: '',
+    categoryId: 0
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const [categories, setCategories] = useState([]);
-
+  // Pré-remplir le formulaire avec les données du cartoon
   useEffect(() => {
-    // Charger les catégories pour le select
-    getAllCategories(token)
-      .then(setCategories)
-      .catch(console.error);
-
-    // Charger le cartoon existant
-    getCartoonById(id, token)
-      .then((data) => {
-        setCartoon({
-          title: data.title || "",
-          description: data.description || "",
-          keywords: data.keywords || "",
-          trailerUrl: data.trailerUrl || "",
-          countFavoris: data.countFavoris || 0,
-          countVote: data.countVote || 0,
-          countComments: data.countComments || 0,
-          brandImageUrl: data.brandImageUrl || "",
-          backImageUrl: data.backImageUrl || "",
-          categoryId: data.categoryId || "",
-          mainCharacters: data.mainCharacters || "",
-          releaseDate: data.releaseDate ? data.releaseDate.split("T")[0] : "",
-        });
-      })
-      .catch(console.error);
-  }, [id, token]);
+    if (cartoon) {
+      setFormData({
+        title: cartoon.title || '',
+        description: cartoon.description || '',
+        keywords: cartoon.keywords || '',
+        trailerUrl: cartoon.trailerUrl || '',
+        brandImageUrl: cartoon.brandImageUrl || '',
+        backImageUrl: cartoon.backImageUrl || '',
+        mainCharacters: cartoon.mainCharacters || '',
+        releaseDate: cartoon.releaseDate || '',
+        categoryId: cartoon.categoryId || 0
+      });
+    }
+  }, [cartoon]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCartoon({ ...cartoon, [name]: value });
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+
     try {
-      await updateCartoon(id, cartoon, token);
-      alert("Cartoon mis à jour avec succès !");
-      navigate("/cartoons");
+      await updateCartoon(cartoon.id, formData, token);
+      await fetchCartoons();
+      onClose();
     } catch (err) {
-      console.error(err);
-      alert("Erreur lors de la mise à jour du cartoon");
+      setError(err.message || "Erreur lors de la mise à jour du cartoon");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
-      <h1 className="text-2xl font-bold mb-4">Modifier un Cartoon</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="title"
-          value={cartoon.title}
-          onChange={handleChange}
-          placeholder="Titre"
-          className="border p-2 w-full"
-          required
-        />
-        <textarea
-          name="description"
-          value={cartoon.description}
-          onChange={handleChange}
-          placeholder="Description"
-          className="border p-2 w-full"
-          required
-        />
-        <input
-          name="keywords"
-          value={cartoon.keywords}
-          onChange={handleChange}
-          placeholder="Mots-clés"
-          className="border p-2 w-full"
-        />
-        <input
-          name="trailerUrl"
-          value={cartoon.trailerUrl}
-          onChange={handleChange}
-          placeholder="URL Bande-annonce"
-          className="border p-2 w-full"
-        />
-        <input
-          name="countFavoris"
-          type="number"
-          value={cartoon.countFavoris}
-          onChange={handleChange}
-          placeholder="Nombre de favoris"
-          className="border p-2 w-full"
-        />
-        <input
-          name="countVote"
-          type="number"
-          value={cartoon.countVote}
-          onChange={handleChange}
-          placeholder="Nombre de votes"
-          className="border p-2 w-full"
-        />
-        <input
-          name="countComments"
-          type="number"
-          value={cartoon.countComments}
-          onChange={handleChange}
-          placeholder="Nombre de commentaires"
-          className="border p-2 w-full"
-        />
-        <input
-          name="brandImageUrl"
-          value={cartoon.brandImageUrl}
-          onChange={handleChange}
-          placeholder="URL image de marque"
-          className="border p-2 w-full"
-        />
-        <input
-          name="backImageUrl"
-          value={cartoon.backImageUrl}
-          onChange={handleChange}
-          placeholder="URL image de fond"
-          className="border p-2 w-full"
-        />
-        <select
-          name="categoryId"
-          value={cartoon.categoryId}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        >
-          <option value="">-- Sélectionner une catégorie --</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.title}
-            </option>
-          ))}
-        </select>
-        <input
-          name="mainCharacters"
-          value={cartoon.mainCharacters}
-          onChange={handleChange}
-          placeholder="Personnages principaux"
-          className="border p-2 w-full"
-        />
-        <input
-          name="releaseDate"
-          type="date"
-          value={cartoon.releaseDate}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Mettre à jour
-        </button>
-      </form>
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div 
+        ref={modalRef}
+        className="bg-gray-800 rounded-xl shadow-2xl p-6 border border-gray-700 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-white">Modifier le cartoon</h2>
+          <button 
+            onClick={onClose}
+            className="text-gray-400 hover:text-white text-2xl transition-colors"
+            aria-label="Fermer"
+          >
+            &times;
+          </button>
+        </div>
+
+        {error && <ErrorMessage message={error} className="mb-4" />}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Titre & mots-clés */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-gray-300 text-sm font-medium mb-2">Titre *</label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-300 text-sm font-medium mb-2">Mots-clés</label>
+              <input
+                type="text"
+                name="keywords"
+                value={formData.keywords}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-gray-300 text-sm font-medium mb-2">Description *</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="3"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+              required
+            />
+          </div>
+
+          {/* Trailer & personnages */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-gray-300 text-sm font-medium mb-2">URL du trailer</label>
+              <input
+                type="url"
+                name="trailerUrl"
+                value={formData.trailerUrl}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-300 text-sm font-medium mb-2">Personnages principaux</label>
+              <input
+                type="text"
+                name="mainCharacters"
+                value={formData.mainCharacters}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+              />
+            </div>
+          </div>
+
+          {/* Images */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-gray-300 text-sm font-medium mb-2">URL image marque</label>
+              <input
+                type="text"
+                name="brandImageUrl"
+                value={formData.brandImageUrl}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-300 text-sm font-medium mb-2">URL image arrière-plan</label>
+              <input
+                type="text"
+                name="backImageUrl"
+                value={formData.backImageUrl}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+              />
+            </div>
+          </div>
+
+          {/* Date */}
+          <div>
+            <label className="block text-gray-300 text-sm font-medium mb-2">Date de sortie *</label>
+            <input
+              type="text"
+              name="releaseDate"
+              value={formData.releaseDate}
+              onChange={handleChange}
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+              required
+            />
+          </div>
+
+          {/* ID de catégorie (peut être caché si nécessaire) */}
+          <input 
+            type="hidden" 
+            name="categoryId" 
+            value={formData.categoryId} 
+          />
+
+          {/* Boutons */}
+          <div className="flex justify-end gap-3 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-5 py-2.5 text-sm font-medium text-gray-300 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 transition-colors"
+              disabled={loading}
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              className={`px-5 py-2.5 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors ${
+                loading ? 'opacity-75 cursor-not-allowed' : ''
+              }`}
+              disabled={loading}
+            >
+              {loading ? 'Enregistrement...' : 'Mettre à jour'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
-};
-
-export default UpdateCartoon;
+}

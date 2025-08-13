@@ -80,6 +80,7 @@ export default function Categories() {
                       <th className="px-6 py-4 text-left font-semibold text-gray-300">Cartoons</th>
                       <th className="px-6 py-4 text-left font-semibold text-gray-300">Créé le</th>
                       <th className="px-6 py-4 text-left font-semibold text-gray-300">Créé par</th>
+                      <th className="px-6 py-4 text-left font-semibold text-gray-300">Accéder au contenu</th>
                       <th className="px-6 py-4 text-right font-semibold text-gray-300">Actions</th>
                     </tr>
                   </thead>
@@ -106,15 +107,21 @@ export default function Categories() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right">
-                            <div className="flex justify-end gap-2">
-                              {/* Icône Accéder au contenu */}
+                            <div className="flex justify-start">
                               <Link
                                 to={`/category/${category.id}`}
-                                className="p-2 rounded-full text-gray-400 hover:text-green-400 hover:bg-gray-700 transition-colors"
-                                title="Accéder au contenu"
+                                className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-300 hover:text-green-400 hover:bg-gray-700 transition-colors"
+                                title="Gérer les cartoons de cette catégorie"
                               >
-                                <FiExternalLink size={18} />
+                                <FiExternalLink size={16} />
+                                <span className="text-sm">Cartoons</span>
                               </Link>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right">
+                            <div className="flex justify-end gap-2">
+                              {/* Icône Accéder au contenu */}
+                              
 
                               {/* Icône Voir détails */}
                               <button 
