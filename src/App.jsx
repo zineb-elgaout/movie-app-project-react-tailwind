@@ -13,6 +13,7 @@ import ProfilePage from './pages/admin/ProfilePage';
 import NotFound from './pages/public/NotFound';
 import SettingsPage from './pages/admin/settings';
 import LandingPage from './pages/client/LandingPage';
+import CartoonPage from './pages/client/CartoonPage';
 function App() {
   return (
     <Router>
@@ -29,6 +30,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/toontime" element={<LandingPage />} />
+        <Route path="/cartoon" element={<CartoonPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

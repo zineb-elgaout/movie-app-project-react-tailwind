@@ -114,7 +114,7 @@ export default function Categories() {
                                 title="Gérer les cartoons de cette catégorie"
                               >
                                 <FiExternalLink size={16} />
-                                <span className="text-sm">Cartoons</span>
+                                <span className="text-sm">Gérer le contenu</span>
                               </Link>
                             </div>
                           </td>

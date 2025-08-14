@@ -1,10 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import Navbar from '../../components/client/NavBar';
 import Hero from '../../components/client/Hero';
 import Categories from '../../components/client/Categories';
 import SearchBar from '../../components/client/SearchBar';
 import Header from '../../components/ui/Header';
+import { getAllCategories } from '../../../services/categoryService';
+import { getAllCartoons } from '../../../services/cartoonService';
+import Cartoons from '../../components/client/Cartoons';
 
 const LandingPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -45,18 +48,24 @@ const heroSlides = [
   },
 ];
 
-const categories = [
-  { id: 1, title: "Disney", description: "Classics and timeless tales", count: 245 },
-  { id: 2, title: "Pixar", description: "Heartwarming animated adventures", count: 189 },
-  { id: 3, title: "Studio Ghibli", description: "Magical Japanese animations", count: 312 },
-  { id: 4, title: "DreamWorks", description: "Fun-filled family entertainment", count: 178 },
-  { id: 5, title: "Warner Bros Animation", description: "Iconic and bold creations", count: 134 },
-  { id: 6, title: "Illumination", description: "Colorful and humorous stories", count: 97 },
-  { id: 7, title: "Nickelodeon", description: "Fun and quirky animated series", count: 88 },
-  { id: 8, title: "Sony Pictures Animation", description: "Innovative and unique stories", count: 76 },
-  { id: 9, title: "Blue Sky Studios", description: "Charming and adventurous tales", count: 54 },
-  { id: 10, title: "Cartoon Network", description: "Creative and entertaining shows", count: 145 },
-];
+const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    getAllCategories()
+      .then(res => {
+        setCategories(res.data);
+      })
+      .catch(err => console.error("Erreur récupération catégories", err));
+  }, []);
+
+  const [cartoons, setMovies] = useState([]);
+
+  useEffect(() => {
+    getAllCartoons()
+      .then(res => setMovies(res.data))
+      .catch(err => console.error("Erreur chargement films", err));
+  }, []);
+
 
 
  const renderSectionHeader = (title) => (
@@ -81,6 +90,9 @@ const categories = [
         {renderSectionHeader('Films et seriés préférées')}
         
         {renderSectionHeader('Films et seriés')}
+
+        <Cartoons cartoons={cartoons} />
+  
         
       </div>
     </div>

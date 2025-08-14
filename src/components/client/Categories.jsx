@@ -19,7 +19,7 @@ const Categories = ({ categories }) => {
               {/* Bouton gris en bas à gauche */}
               <div className="absolute bottom-4 right-4">
                 <button className="bg-gray-700 text-gray-300 text-xs px-3 py-1 rounded-full hover:bg-gray-700">
-                  {category.count} titres
+                  {category.cartoonsCount} titres
                 </button>
               </div>
             </div>
