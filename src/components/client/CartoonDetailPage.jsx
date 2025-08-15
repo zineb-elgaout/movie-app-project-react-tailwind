@@ -70,7 +70,16 @@ export default function CartoonDetailPage() {
             <p className="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl">
                 {cartoon.description}
             </p>
+            
+            <div className="flex flex-wrap "> 
+                <div> <h3 className="text-lg font-semibold mr-7 my-2">Date de sortie</h3> 
+                    <span className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">{cartoon.releaseDate}</span> 
+                </div> 
+                <div> <h3 className="text-lg font-semibold my-2">Catégorie</h3> 
+                    <span className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">{cartoon.categoryTitle}</span> 
 
+                </div>
+            </div>
             {/* Personnages */}
             {cartoon.mainCharacters && (
                 <>
