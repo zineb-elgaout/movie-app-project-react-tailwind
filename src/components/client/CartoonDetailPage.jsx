@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getCartoonById } from "../../../services/cartoonService";
 import Navbar from "./NavBar";
+import KeywordsMarquee from "../ui/KeywordsMarquee";
 
 export default function CartoonDetailPage() {
   const { id } = useParams();
@@ -140,30 +141,9 @@ export default function CartoonDetailPage() {
             </div>
       </div>
 
-        {/* Mots-clés en bas, défilement horizontal continu */}
-        {cartoon.keywords && (
-        <div className="absolute bottom-4 left-0 w-full overflow-hidden px-4 py-2">
-            <div className="flex whitespace-nowrap animate-marquee">
-            {cartoon.keywords.split(",").map((kw, i) => (
-                <span
-                key={i}
-                className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm inline-block mr-2"
-                >
-                {kw.trim()}
-                </span>
-            ))}
-            {/* On répète pour que l'animation soit continue */}
-            {cartoon.keywords.split(",").map((kw, i) => (
-                <span
-                key={`repeat-${i}`}
-                className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm inline-block mr-2"
-                >
-                {kw.trim()}
-                </span>
-            ))}
-            </div>
-        </div>
-        )}
+        {/* Mots-clés en bas */}
+{cartoon.keywords && <KeywordsMarquee keywords={cartoon.keywords} />}
+
 
       {/* Modal Trailer */}
       {showModal && (
