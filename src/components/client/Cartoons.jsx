@@ -1,9 +1,11 @@
 import {useState }from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Cartoons({ cartoons }) {
 
    const [showModal, setShowModal] = useState(false);
   const [selectedTrailer, setSelectedTrailer] = useState(null);
+  const navigate = useNavigate();
 
   const openTrailer = (trailerUrl) => {
     setSelectedTrailer(trailerUrl);
@@ -20,6 +22,10 @@ export default function Cartoons({ cartoons }) {
   return `https://www.youtube.com/embed/${videoId}`;
 };
 
+const navigateToDetails = (cartoonId) => {
+    navigate(`/cartoon/${cartoonId}`);
+  };
+
   return (
     <div className="pyb-12   bg-black">
       {/* Grille */}
@@ -30,7 +36,7 @@ export default function Cartoons({ cartoons }) {
             className="group relative overflow-hidden rounded-lg transition-all duration-300 transform hover:scale-105 hover:z-10 cursor-pointer"
           >
             {/* Image fixe même hauteur */}
-            <div className="w-full h-[280px] bg-gray-800 rounded-lg overflow-hidden">
+            <div className="w-full h-[390px] bg-gray-800 rounded-lg overflow-hidden">
               <img
                 src={item.brandImageUrl}
                 alt={item.title}
@@ -68,7 +74,9 @@ export default function Cartoons({ cartoons }) {
 
 
                 {/* Bouton Info */}
-                <button className="bg-white bg-opacity-30 hover:bg-opacity-20 text-white px-3 py-2 rounded-lg font-semibold flex items-center justify-center text-xs sm:text-sm w-full sm:w-auto">
+                <button 
+                  onClick={() => navigateToDetails(item.id)}
+                  className="bg-white bg-opacity-30 hover:bg-opacity-20 text-white px-3 py-2 rounded-lg font-semibold flex items-center justify-center text-xs sm:text-sm w-full sm:w-auto">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4 mr-2"
@@ -104,36 +112,36 @@ export default function Cartoons({ cartoons }) {
       </div>
 
 
-       {showModal && (
-  <div
-    className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50"
-    onClick={closeModal}
-  >
-    <div
-      className="bg-black p-4 rounded-lg max-w-3xl w-full relative"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {/* Bouton close avec z-index élevé */}
-      <button
+      {showModal && (
+      <div
+        className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50"
         onClick={closeModal}
-        className="absolute top-2 right-2 text-white text-2xl z-50"
       >
-        ✕
-      </button>
+        <div
+          className="bg-black p-4 rounded-lg max-w-3xl w-full relative"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Bouton close avec z-index élevé */}
+          <button
+            onClick={closeModal}
+            className="absolute top-2 right-2 text-white text-2xl z-50"
+          >
+            ✕
+          </button>
 
-      {/* Wrapper iframe avec z-index plus bas */}
-      <div className="relative w-full h-0 pb-[56.25%] z-10">
-        <iframe
-          className="absolute top-0 left-0 w-full h-full rounded-lg"
-          src={selectedTrailer}
-          title="Trailer Video"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
+          {/* Wrapper iframe avec z-index plus bas */}
+          <div className="relative w-full h-0 pb-[56.25%] z-10">
+            <iframe
+              className="absolute top-0 left-0 w-full h-full rounded-lg"
+              src={selectedTrailer}
+              title="Trailer Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-)}
+    )}
 
     </div>
   );

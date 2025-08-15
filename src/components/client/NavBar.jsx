@@ -1,5 +1,6 @@
 
 import {FaUser} from "react-icons/fa6";
+import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black to-transparent px-4 py-4 sm:px-6 lg:px-8">
@@ -8,7 +9,7 @@ const Navbar = () => {
           <h1 className="text-2xl font-bold text-white">ToonTime</h1>
         </div>
         <div className="hidden md:flex items-center space-x-6">
-          <a href="#" className="text-white hover:text-gray-300">Acceuil</a>
+          <Link to='/toontime' className="text-white hover:text-gray-300">Acceuil</Link>
           <a href="#" className="text-white hover:text-gray-300">Favoris</a>
           <a href="#" className="text-white hover:text-gray-300">Découvrir</a>
         </div>

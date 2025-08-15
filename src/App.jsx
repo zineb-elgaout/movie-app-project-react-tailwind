@@ -14,6 +14,7 @@ import NotFound from './pages/public/NotFound';
 import SettingsPage from './pages/admin/settings';
 import LandingPage from './pages/client/LandingPage';
 import CartoonPage from './pages/client/CartoonPage';
+import CartoonDetailPage from './components/client/CartoonDetailPage';
 function App() {
   return (
     <Router>
@@ -26,12 +27,15 @@ function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/category/:id" element={<CategoryContent />} />
+        <Route path="/cartoon/:id" element={<CartoonDetailPage />} />
         <Route path="login" element={<Login/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/toontime" element={<LandingPage />} />
         <Route path="/cartoon" element={<CartoonPage />} />
+        
         <Route path="*" element={<NotFound />} />
+      
       </Routes>
     </Router>
   );
