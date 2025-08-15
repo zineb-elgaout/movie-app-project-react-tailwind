@@ -68,7 +68,7 @@ export default function UsersPage() {
     return (
         <AdminLayout>
             <section className="px-4 sm:px-6 py-8 bg-gray-900 min-h-screen">
-                <div className="max-w-7xl mx-auto">
+                <div className="mx-auto">
                     <Header
                         header={{
                             prefix: 'Gestion des',
@@ -79,7 +79,7 @@ export default function UsersPage() {
                 </div>
 
                 {/* Barre de filtres */}
-                <div className="max-w-7xl mx-auto space-y-4 mt-4">
+                <div className=" mx-auto space-y-4 mt-4">
                     {/* Filtres par rôle */}
                     <div className="flex flex-wrap gap-2">
                         <motion.button
@@ -172,7 +172,7 @@ export default function UsersPage() {
                 </div>
 
                 {/* Tableau des utilisateurs */}
-                <div className="max-w-7xl mx-auto">
+                <div className="mx-auto">
                     <div className="bg-gray-800 rounded-xl shadow-xl overflow-hidden my-5">
                         <div className="overflow-x-auto">
                             <table className="w-full">

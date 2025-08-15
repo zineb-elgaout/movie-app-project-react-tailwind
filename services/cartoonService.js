@@ -48,3 +48,4 @@ export const updateCartoon = (id, cartoon) => {
 export const deleteCartoon = (id) => {
   return axiosAuth.delete(`/${id}`);
 };
+

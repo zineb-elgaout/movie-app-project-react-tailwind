@@ -74,7 +74,7 @@ export default function CategoryContent() {
   return (
     <AdminLayout>
       <section className="px-4 sm:px-6 py-8 bg-gray-900 min-h-screen">
-        <div className="max-w-7xl mx-auto">
+        <div className=" mx-auto">
           <Header
             header={{
               prefix: "Contenu de ",

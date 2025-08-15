@@ -52,7 +52,7 @@ export default function Categories() {
   return (
     <AdminLayout>
       <section className="px-4 sm:px-6 py-8 bg-gray-900 min-h-screen">
-        <div className="max-w-7xl mx-auto">
+        <div className=" mx-auto">
           <Header
             header={{
               prefix: "Gestion des",
@@ -69,7 +69,7 @@ export default function Categories() {
           </div>
 
           {/* Tableau des catégories */}
-          <div className="max-w-7xl mx-auto">
+          <div className=" mx-auto">
             <div className="bg-gray-800 rounded-xl shadow-xl overflow-hidden my-5">
               <div className="overflow-x-auto">
                 <table className="w-full">

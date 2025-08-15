@@ -1,17 +1,21 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getCartoonById } from "../../../services/cartoonService";
+import { useEffect, useState, useCallback } from "react";
+import { getCartoonById, getAllCartoons } from "../../../services/cartoonService";
 import Navbar from "./NavBar";
 import KeywordsMarquee from "../ui/KeywordsMarquee";
+import Cartoons from "./Cartoons";
+import { Link } from "react-router-dom";
 
 export default function CartoonDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [cartoon, setCartoon] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [relatedCartoons, setRelatedCartoons] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedTrailer, setSelectedTrailer] = useState(null);
+  const [error, setError] = useState(null);
 
   const openTrailer = (trailerUrl) => {
     setSelectedTrailer(trailerUrl);
@@ -22,29 +26,48 @@ export default function CartoonDetailPage() {
     setShowModal(false);
     setSelectedTrailer(null);
   };
-   const getEmbedUrl = (url) => {
-  const videoId = new URL(url).searchParams.get("v");
-  return `https://www.youtube.com/embed/${videoId}`;
-};
 
-  useEffect(() => {
-    getCartoonById(id)
-      .then((res) => {
-        setCartoon(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching cartoon details", err);
-        setLoading(false);
-      });
+  const getEmbedUrl = (url) => {
+    if (!url) return "";
+    const videoId = new URL(url).searchParams.get("v");
+    return `https://www.youtube.com/embed/${videoId}`;
+  };
+
+  // Fetch cartoon details
+  const fetchCartoon = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await getCartoonById(id);
+      setCartoon(res.data);
+
+      // Fetch all cartoons to calculate related cartoons
+      const allRes = await getAllCartoons();
+      const related = allRes.data.filter(
+        (c) => c.categoryId === res.data.categoryId && c.id !== res.data.id
+      );
+      setRelatedCartoons(related);
+
+    } catch (err) {
+      console.error("Error fetching cartoon details", err);
+      setError("Erreur lors du chargement du cartoon");
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
 
+  useEffect(() => {
+    fetchCartoon();
+  }, [fetchCartoon]);
+
   if (loading) return <div className="text-white text-center py-20">Loading...</div>;
+  if (error) return <div className="text-red-500 text-center py-20">{error}</div>;
   if (!cartoon) return <div className="text-white text-center py-20">Cartoon not found</div>;
 
   return (
+    <div>
     <div className="relative min-h-screen text-white">
-        <Navbar />
+      <Navbar />
+
       {/* Background image */}
       <div className="absolute inset-0">
         <img
@@ -55,49 +78,46 @@ export default function CartoonDetailPage() {
         <div className="absolute inset-0 bg-black bg-opacity-80"></div>
       </div>
 
-        {/* Contenu principal */}
-        <div className="relative container mx-auto px-4 py-8 md:py-16 lg:py-20 min-h-screen flex flex-col-reverse md:flex-row items-start md:items-center justify-center gap-8">
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 lg:gap-12 mx-auto w-full">
-            
-            {/* Texte */}
-            <div className="flex flex-col space-y-4 md:space-y-5 justify-center">
-            {/* Titre */}
+      {/* Contenu principal */}
+      <div className="relative container mx-auto px-4 py-8 md:py-16 lg:py-20 min-h-screen flex flex-col-reverse md:flex-row items-start md:items-center justify-center gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 lg:gap-12 mx-auto w-full">
+          <div className="flex flex-col space-y-4 md:space-y-5 justify-center">
             <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight">
-                {cartoon.title}
+              {cartoon.title}
             </h1>
-
-            {/* Description */}
             <p className="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl">
-                {cartoon.description}
+              {cartoon.description}
             </p>
-            
-            <div className="flex flex-wrap "> 
-                <div> <h3 className="text-lg font-semibold mr-7 my-2">Date de sortie</h3> 
-                    <span className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">{cartoon.releaseDate}</span> 
-                </div> 
-                <div> <h3 className="text-lg font-semibold my-2">Catégorie</h3> 
-                    <span className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">{cartoon.categoryTitle}</span> 
 
-                </div>
+            <div className="flex flex-wrap">
+              <div>
+                <h3 className="text-lg font-semibold mr-7 my-2">Date de sortie</h3>
+                <span className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">
+                  {cartoon.releaseDate}
+                </span>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold my-2">Catégorie</h3>
+                <span className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">
+                  {cartoon.categoryTitle}
+                </span>
+              </div>
             </div>
-            {/* Personnages */}
+
+            {/* Personnages principaux */}
             {cartoon.mainCharacters && (
-                <>
+              <>
                 <h3 className="text-lg font-semibold">Personnages principaux</h3>
                 <div className="flex flex-wrap gap-2">
-                    {cartoon.mainCharacters.split(",").map((char, i) => (
-                    <span
-                        key={i}
-                        className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm"
-                    >
-                        {char.trim()}
+                  {cartoon.mainCharacters.split(",").map((char, i) => (
+                    <span key={i} 
+                        className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">
+                      {char.trim()}
                     </span>
-                    ))}
+                  ))}
                 </div>
-                </>
+              </>
             )}
-
-           
 
             {/* Boutons */}
             <div className="flex flex-wrap gap-4 pt-6">
@@ -150,9 +170,10 @@ export default function CartoonDetailPage() {
             </div>
       </div>
 
-        {/* Mots-clés en bas */}
-{cartoon.keywords && <KeywordsMarquee keywords={cartoon.keywords} />}
+      
 
+      {/* Mots-clés en bas */}
+      {cartoon.keywords && <KeywordsMarquee keywords={cartoon.keywords} />}
 
       {/* Modal Trailer */}
       {showModal && (
@@ -182,6 +203,41 @@ export default function CartoonDetailPage() {
           </div>
         </div>
       )}
+
+      
     </div>
+    {/* Section autres suggestions */}
+    {relatedCartoons.length > 0 && (
+    <div className="bg-black py-12 px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto">
+        <div className="mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-white">
+            Vous pourriez aussi aimer
+            </h2>
+        </div>
+        
+        <div className="relative">
+            <Cartoons cartoons={relatedCartoons} />
+            
+            {/* Effet de dégradé sur les bords (optionnel) */}
+            <div className="hidden md:block absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+            <div className="hidden md:block absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+        </div>
+        
+        <div className="mt-8 text-center">
+            <Link to="/toontime" className="inline-flex items-center px-6 py-3 border border-gray-700 hover:border-purple-500 text-gray-300 hover:text-white rounded-lg transition-all duration-300 group">
+            Voir plus de suggestions
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+            </Link>
+        </div>
+        </div>
+    </div>
+    )}
+
+      </div>
   );
+
+  
 }
