@@ -207,59 +207,111 @@ export default function CartoonDetailPage() {
       
     </div>
     {/* Section autres suggestions */}
-{relatedCartoons.length > 0 && (
-  <Link to="/cartoon/:id" >
-  <div className="bg-black py-12 px-4 sm:px-6 lg:px-8">
-    <div className="mx-auto">
-      <div className="mb-10">
-        <h2 className="text-2xl md:text-3xl font-bold text-white">
-          Vous pourriez aussi aimer
-        </h2>
-      </div>
-      
-      <div className="relative">
-        {/* Conteneur modifié pour le défilement horizontal comme Categories */}
-        <div className="mb-12 overflow-x-auto pb-4 hide-scrollbar">
-          <div className="flex space-x-6 w-max">
-            {relatedCartoons.map((cartoon) => (
-              <div 
-                key={cartoon.id}
-                className="relative bg-gray-800 rounded-xl p-5 w-64 hover:bg-gray-700 transition-all duration-300 hover:scale-105 cursor-pointer group flex-shrink-0"
-              >
-                {/* Contenu de votre cartoon ici - adaptez selon votre structure */}
-                <img 
-                  src={cartoon.backImageUrl} 
-                  alt={cartoon.title} 
-                  className="w-full h-32 object-cover rounded-lg mb-3"
-                />
-                <h3 className="font-medium text-white text-lg group-hover:text-white">
-                  {cartoon.title}
-                </h3>
-                <p className="text-gray-400 text-sm line-clamp-2 py-1">
-                  {cartoon.description}
-                </p>
+        {/* Section autres suggestions */}
+        {relatedCartoons.length > 0 && (
+          <div className="bg-black py-12 px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto">
+              <div className="mb-10">
+                <h2 className="text-2xl md:text-3xl font-bold text-white">
+                  Vous pourriez aussi aimer
+                </h2>
               </div>
-            ))}
+              
+              <div className="relative">
+                {/* Conteneur modifié pour le défilement horizontal */}
+                <div className="mb-12 overflow-x-auto pb-4 hide-scrollbar">
+                  <div className="flex space-x-6 w-max">
+                    {relatedCartoons.slice(0, 10).map((item) => (
+                      <div
+                        key={item.id}
+                        className="group relative overflow-hidden rounded-lg transition-all duration-300 transform hover:scale-105 hover:z-10 cursor-pointer flex-shrink-0"
+                        style={{ width: '200px' }} // Largeur fixe pour chaque élément
+                      >
+                        {/* Image fixe même hauteur */}
+                        <div className="w-full h-[290px] bg-gray-800 rounded-lg overflow-hidden">
+                          <img
+                            src={item.brandImageUrl}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        {/* Overlay noir total */}
+                        <div className="absolute inset-0 bg-black bg-opacity-80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-start text-start p-4">
+                          <h3 className="text-white font-bold text-lg">{item.title}</h3>
+                          <p className="text-gray-400 text-sm">Sortie : {item.releaseDate}</p>
+
+                          {/* Boutons responsive */}
+                          <div className="flex flex-col sm:flex-col space-y-2 sm:space-y-0 py-3 w-full gap-2">
+                            {/* Bouton Trailer */}
+                            <button
+                              onClick={() => openTrailer(getEmbedUrl(item.trailerUrl))}
+                              className="bg-purple-600 hover:bg-purple-800 text-white px-3 py-2 rounded-lg font-semibold flex items-center justify-center text-xs sm:text-sm w-full sm:w-auto"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4 mr-2"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                              Annonce
+                            </button>
+
+                            {/* Bouton Info */}
+                            <button 
+                              onClick={() => navigateToDetails(item.id)}
+                              className="bg-white bg-opacity-30 hover:bg-opacity-20 text-white px-3 py-2 rounded-lg font-semibold flex items-center justify-center text-xs sm:text-sm w-full sm:w-auto"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4 mr-2"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              Savoir plus
+                            </button>
+                          </div>
+
+                          {/* Badge catégorie */}
+                          <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                            {item.categoryTitle}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Effet de dégradé sur les bords (optionnel) */}
+                <div className="hidden md:block absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+                <div className="hidden md:block absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+              </div>
+              
+              <div className="mt-8 text-center">
+                <Link to="/toontime" className="inline-flex items-center px-6 py-3 border border-gray-700 hover:border-purple-500 text-gray-300 hover:text-white rounded-lg transition-all duration-300 group">
+                  Voir plus de suggestions
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
-        
-        {/* Effet de dégradé sur les bords (optionnel) */}
-        <div className="hidden md:block absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
-        <div className="hidden md:block absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
-      </div>
-      
-      <div className="mt-8 text-center">
-        <Link to="/toontime" className="inline-flex items-center px-6 py-3 border border-gray-700 hover:border-purple-500 text-gray-300 hover:text-white rounded-lg transition-all duration-300 group">
-          Voir plus de suggestions
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </Link>
-      </div>
-    </div>
-  </div>
-  </Link>
-)}
+        )}
 
       </div>
   );
