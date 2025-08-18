@@ -121,7 +121,7 @@ export default function CartoonDetailPage() {
 
             {/* Boutons */}
             <div className="flex flex-wrap gap-4 pt-6">
-                <button className="bg-purple-600 hover:bg-purple-900 px-6 py-3 rounded-lg font-semibold flex items-center">
+                <button className="bg-purple-600 hover:bg-purple-900 px-6 py-3 rounded-lg font-semibold flex items-center  mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path
                     fillRule="evenodd"
@@ -134,7 +134,7 @@ export default function CartoonDetailPage() {
 
                 <button
                 onClick={() => openTrailer(cartoon.trailerUrl)}
-                className="bg-white bg-opacity-20 hover:bg-opacity-30 px-6 py-3 rounded-lg font-semibold flex items-center"
+                className="bg-white bg-opacity-20 hover:bg-opacity-30 px-6 py-3 rounded-lg font-semibold flex items-center mb-3"
                 >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path
@@ -173,7 +173,11 @@ export default function CartoonDetailPage() {
       
 
       {/* Mots-clés en bas */}
-      {cartoon.keywords && <KeywordsMarquee keywords={cartoon.keywords} />}
+      {cartoon.keywords && (
+        <div className="hidden md:block"> {/* Ajout de hidden md:block */}
+          <KeywordsMarquee keywords={cartoon.keywords} />
+        </div>
+      )}
 
       {/* Modal Trailer */}
       {showModal && (
