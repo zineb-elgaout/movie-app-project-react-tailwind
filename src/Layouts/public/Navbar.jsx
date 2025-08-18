@@ -6,7 +6,7 @@ export default function Navbar() {
     <nav
       id="nav"
       className=" top-0 left-0 w-full z-50 
-                 bg-white/5  
+                 bg-black/5  
                  px-6 py-4 flex justify-between items-center 
                  text-white"
     >

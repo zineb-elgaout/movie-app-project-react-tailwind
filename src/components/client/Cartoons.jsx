@@ -50,7 +50,7 @@ const navigateToDetails = (cartoonId) => {
               <p className="text-gray-400 text-sm">Sortie : {item.releaseDate}</p>
 
               {/* Boutons responsive */}
-              <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 py-3 w-full">
+              <div className="flex flex-col sm:flex-col  space-y-2 sm:space-y-0 py-3 w-full gap-2">
                 {/* Bouton Trailer */}
                 <button
                   onClick={() => openTrailer(getEmbedUrl(item.trailerUrl))}
@@ -69,7 +69,7 @@ const navigateToDetails = (cartoonId) => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Trailer
+                  Annonce
                 </button>
 
 
@@ -91,7 +91,7 @@ const navigateToDetails = (cartoonId) => {
                       d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  Info
+                  Savoir plus
                 </button>
               </div>
 

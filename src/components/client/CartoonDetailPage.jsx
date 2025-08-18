@@ -207,34 +207,59 @@ export default function CartoonDetailPage() {
       
     </div>
     {/* Section autres suggestions */}
-    {relatedCartoons.length > 0 && (
-    <div className="bg-black py-12 px-4 sm:px-6 lg:px-8">
-        <div className=" mx-auto">
-        <div className="mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-white">
-            Vous pourriez aussi aimer
-            </h2>
+{relatedCartoons.length > 0 && (
+  <Link to="/cartoon/:id" >
+  <div className="bg-black py-12 px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto">
+      <div className="mb-10">
+        <h2 className="text-2xl md:text-3xl font-bold text-white">
+          Vous pourriez aussi aimer
+        </h2>
+      </div>
+      
+      <div className="relative">
+        {/* Conteneur modifié pour le défilement horizontal comme Categories */}
+        <div className="mb-12 overflow-x-auto pb-4 hide-scrollbar">
+          <div className="flex space-x-6 w-max">
+            {relatedCartoons.map((cartoon) => (
+              <div 
+                key={cartoon.id}
+                className="relative bg-gray-800 rounded-xl p-5 w-64 hover:bg-gray-700 transition-all duration-300 hover:scale-105 cursor-pointer group flex-shrink-0"
+              >
+                {/* Contenu de votre cartoon ici - adaptez selon votre structure */}
+                <img 
+                  src={cartoon.backImageUrl} 
+                  alt={cartoon.title} 
+                  className="w-full h-32 object-cover rounded-lg mb-3"
+                />
+                <h3 className="font-medium text-white text-lg group-hover:text-white">
+                  {cartoon.title}
+                </h3>
+                <p className="text-gray-400 text-sm line-clamp-2 py-1">
+                  {cartoon.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
         
-        <div className="relative">
-            <Cartoons cartoons={relatedCartoons} />
-            
-            {/* Effet de dégradé sur les bords (optionnel) */}
-            <div className="hidden md:block absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
-            <div className="hidden md:block absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
-        </div>
-        
-        <div className="mt-8 text-center">
-            <Link to="/toontime" className="inline-flex items-center px-6 py-3 border border-gray-700 hover:border-purple-500 text-gray-300 hover:text-white rounded-lg transition-all duration-300 group">
-            Voir plus de suggestions
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-            </Link>
-        </div>
-        </div>
+        {/* Effet de dégradé sur les bords (optionnel) */}
+        <div className="hidden md:block absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+        <div className="hidden md:block absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+      </div>
+      
+      <div className="mt-8 text-center">
+        <Link to="/toontime" className="inline-flex items-center px-6 py-3 border border-gray-700 hover:border-purple-500 text-gray-300 hover:text-white rounded-lg transition-all duration-300 group">
+          Voir plus de suggestions
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </Link>
+      </div>
     </div>
-    )}
+  </div>
+  </Link>
+)}
 
       </div>
   );
