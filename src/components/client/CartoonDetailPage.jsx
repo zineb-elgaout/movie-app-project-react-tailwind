@@ -211,9 +211,8 @@ export default function CartoonDetailPage() {
       
     </div>
     {/* Section autres suggestions */}
-        {/* Section autres suggestions */}
         {relatedCartoons.length > 0 && (
-          <div className="bg-black py-12 px-4 sm:px-6 lg:px-8">
+          <div className="bg-black py-12 px-4 sm:px-6 lg:px-8  ">
             <div className="mx-auto">
               <div className="mb-10">
                 <h2 className="text-2xl md:text-3xl font-bold text-white">
@@ -221,7 +220,7 @@ export default function CartoonDetailPage() {
                 </h2>
               </div>
               
-              <div className="relative">
+              <div className="relative flex justify-center">
                 {/* Conteneur modifié pour le défilement horizontal */}
                 <div className="mb-12 overflow-x-auto pb-4 hide-scrollbar">
                   <div className="flex space-x-6 w-max">

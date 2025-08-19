@@ -74,9 +74,9 @@ const SettingsPage = () => {
 
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-gray-900 text-gray-100">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-7xl mx-auto">
+      <div className=" bg-gray-900 text-gray-100">
+        <div className=" px-4 py-8">
+          <div className=" mx-auto">
             <Header
               header={{
                 prefix: 'Gestion des',

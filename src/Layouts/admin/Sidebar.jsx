@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import {FiUser, FiLogOut, FiMenu, FiX, FiEdit, FiVideo, FiCreditCard} from 'react-icons/fi';
+import {FiUser, FiLogOut, FiMenu, FiX, FiEdit, FiVideo, FiCreditCard, FiInfo, FiFilm} from 'react-icons/fi';
 import { MdOutlineSpaceDashboard } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import profil from '../../../public/vite.svg';
 import { getUserProfile } from '../../../services/userService';
 import {logout} from '../../../services/authService';
+import { AiFillInfoCircle } from 'react-icons/ai';
 
 function Sidebar() {
  
@@ -136,6 +137,13 @@ function Sidebar() {
         </motion.div>
 
         <motion.div whileHover={{ scale: collapsed ? 1.05 : 1.02 }}>
+          <NavLink to="/cartoon" className={linkStyle}>
+            <FiFilm className={iconStyle(false)} />
+            <span className={textStyle}>Cartoons</span>
+          </NavLink>
+        </motion.div>
+
+        <motion.div whileHover={{ scale: collapsed ? 1.05 : 1.02 }}>
           <NavLink to="/users" className={linkStyle}>
             <FiUser className={iconStyle(false)} />
             <span className={textStyle}>Utilisateurs</span>
@@ -151,8 +159,8 @@ function Sidebar() {
 
         <motion.div whileHover={{ scale: collapsed ? 1.05 : 1.02 }}>
           <NavLink to="/subscriptions" className={linkStyle}>
-            <FiCreditCard className={iconStyle(false)} />
-            <span className={textStyle}>Abonnements</span>
+            <FiInfo className={iconStyle(false)} />
+            <span className={textStyle}>FAQ</span>
           </NavLink>
         </motion.div>
       </nav>
