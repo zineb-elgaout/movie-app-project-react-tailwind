@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { FiShield, FiBell, FiMoon, FiChevronRight , FiMail , FiArrowLeft , FiArrowDown , FiCheck } from 'react-icons/fi';
 import Header from "../../components/ui/Header";
 import axios from "axios";
-import {requestVerificationCode ,verifyCode } from "../../../services/emailVerificationService";
+import {getVerifiedEmails, requestVerificationCode ,verifyCode } from "../../../services/emailVerificationService";
+import { getUserProfile } from "../../../services/userService";
 
 const SettingsPage = () => {
   const [notifications, setNotifications] = useState(true);
@@ -21,11 +22,25 @@ const SettingsPage = () => {
   const [verificationCode, setVerificationCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
-
+  const [verifiedEmails, setVerifiedEmails] = useState([]);
   const showMessage = (text, type = "success") => {
     setMessage({ text, type });
     setTimeout(() => setMessage({ text: "", type: "" }), 5000);
   };
+
+
+    // Récupérer la liste des emails vérifiés
+  const fetchVerifiedEmails = async () => {
+    try {
+      const userId = getUserProfile().id ; 
+      console.log(getUserProfile().id)// Remplace par l'ID réel de l'utilisateur connecté
+      const response = await getVerifiedEmails();
+      setVerifiedEmails(response.data);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des emails vérifiés :", error);
+    }
+  };
+
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
@@ -169,6 +184,22 @@ const SettingsPage = () => {
                 </div>
 
                 <div className="space-y-6">
+
+                  {/* Liste des emails vérifiés */}
+                  <div className="p-4 bg-gray-700 rounded-lg">
+                    <h3 className="font-medium mb-2">Emails vérifiés</h3>
+                    {verifiedEmails.length === 0 ? (
+                      <p className="text-sm text-gray-400">Aucun email vérifié pour le moment.</p>
+                    ) : (
+                      <ul className="list-disc list-inside text-sm text-gray-200">
+                        {verifiedEmails.map((emailItem, index) => (
+                          <li key={index} className="flex items-center">
+                            <FiCheck className="mr-2 text-green-400" /> {emailItem}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
 
                   {/* Vérification d'email */}
                   <div className="p-4 bg-gray-700 rounded-lg">
