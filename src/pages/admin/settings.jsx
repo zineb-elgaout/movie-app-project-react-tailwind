@@ -1,56 +1,100 @@
 import AdminLayout from "../../Layouts/admin/AdminLayout";
 import { useState } from 'react';
-import { FiShield, FiBell, FiMoon, FiChevronRight } from 'react-icons/fi';
+import { FiShield, FiBell, FiMoon, FiChevronRight , FiMail , FiArrowLeft , FiArrowDown , FiCheck } from 'react-icons/fi';
 import Header from "../../components/ui/Header";
 import axios from "axios";
+import {requestVerificationCode ,verifyCode } from "../../../services/emailVerificationService";
 
 const SettingsPage = () => {
-  const [twoFactorAuth, setTwoFactorAuth] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(true);
   const [activeSection, setActiveSection] = useState('security');
   const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [showTwoFactorCodeInput, setShowTwoFactorCodeInput] = useState(false);
-  const [twoFactorCode, setTwoFactorCode] = useState("");
 
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
+  const [verificationStep, setVerificationStep] = useState('email'); // 'email', 'code', 'success'
+  const [email, setEmail] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ text: "", type: "" });
 
-  // Envoi du code pour activer la 2FA
-  const requestTwoFactorActivation = async () => {
+  const showMessage = (text, type = "success") => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: "", type: "" }), 5000);
+  };
+
+  const handleEmailSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!email) {
+      showMessage("Veuillez entrer une adresse email", "error");
+      return;
+    }
+
+    // Validation basique de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showMessage("Veuillez entrer une adresse email valide", "error");
+      return;
+    }
+
+    setLoading(true);
     try {
-      setShowTwoFactorCodeInput(true);
-      await axios.post("/api/2fa/send-activation-code");
+      // Utiliser le service fourni pour demander le code de vérification
+      await requestVerificationCode(email);
+      
+      setVerificationStep('code');
+      showMessage("Code de vérification envoyé à votre adresse email", "success");
     } catch (error) {
-      console.error("Erreur envoi code 2FA:", error);
+      console.error("Erreur lors de l'envoi du code:", error);
+      const errorMessage = typeof error === 'string' ? error : "Erreur lors de l'envoi du code de vérification";
+      showMessage(errorMessage, "error");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Vérification du code
-  const verifyTwoFactorCode = async () => {
+  const handleCodeSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!verificationCode) {
+      showMessage("Veuillez entrer le code de vérification", "error");
+      return;
+    }
+
+    // Validation du code (6 chiffres)
+    const codeRegex = /^\d{6}$/;
+    if (!codeRegex.test(verificationCode)) {
+      showMessage("Le code doit contenir 6 chiffres", "error");
+      return;
+    }
+
+    setLoading(true);
     try {
-      await axios.post("/api/2fa/verify-activation-code", { code: twoFactorCode });
-      setTwoFactorAuth(true);
-      setShowTwoFactorCodeInput(false);
-      setTwoFactorCode("");
+      // Utiliser le service fourni pour vérifier le code
+      await verifyCode(email, verificationCode);
+      
+      setVerificationStep('success');
+      showMessage("Email vérifié avec succès!", "success");
     } catch (error) {
-      console.error("Code invalide :", error);
-      alert("Code invalide ou expiré !");
+      console.error("Erreur lors de la vérification:", error);
+      const errorMessage = typeof error === 'string' ? error : "Code de vérification invalide ou expiré";
+      showMessage(errorMessage, "error");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Désactivation de la 2FA
-  const disableTwoFactor = async () => {
-    try {
-      await axios.post("/api/2fa/disable");
-      setTwoFactorAuth(false);
-    } catch (error) {
-      console.error("Erreur désactivation 2FA:", error);
-    }
+  const resetVerificationProcess = () => {
+    setVerificationStep('email');
+    setEmail('');
+    setVerificationCode('');
   };
+  
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
@@ -125,57 +169,106 @@ const SettingsPage = () => {
                 </div>
 
                 <div className="space-y-6">
-                  {/* Double authentification */}
+
+                  {/* Vérification d'email */}
                   <div className="p-4 bg-gray-700 rounded-lg">
-                    <div className="flex justify-between items-center mb-3">
+                    <div className="flex items-center mb-3">
+                      <FiMail className="text-lg mr-2 text-yellow-400" />
                       <div>
-                        <h3 className="font-medium">Double authentification</h3>
+                        <h3 className="font-medium">Vérification d'email</h3>
                         <p className="text-sm text-gray-400 mt-1">
-                          {twoFactorAuth
-                            ? "Activée - Un code sera requis à chaque connexion"
-                            : "Désactivée - Moins sécurisé"}
+                          {verificationStep === 'email' 
+                            ? "Entrez votre adresse email pour recevoir un code de vérification"
+                            : verificationStep === 'code'
+                            ? "Entrez le code reçu par email"
+                            : "Votre email a été vérifié avec succès!"}
                         </p>
                       </div>
-                      {twoFactorAuth ? (
-                        <button
-                          onClick={disableTwoFactor}
-                          className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-full text-sm font-medium transition-colors"
-                        >
-                          Désactiver
-                        </button>
-                      ) : (
-                        <button
-                          onClick={requestTwoFactorActivation}
-                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-full text-sm font-medium transition-colors"
-                        >
-                          Activer
-                        </button>
-                      )}
                     </div>
-
-                    {/* Champ pour entrer le code reçu par email */}
-                    {showTwoFactorCodeInput && (
-                      <div className="mt-4 flex space-x-2">
-                        <input
-                          type="text"
-                          placeholder="Code reçu par email"
-                          value={twoFactorCode}
-                          onChange={(e) => setTwoFactorCode(e.target.value)}
-                          className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        />
-                        
+                    
+                    {/* Étape 1: Saisie de l'email */}
+                    {verificationStep === 'email' && (
+                      <form onSubmit={handleEmailSubmit} className="mt-4">
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-gray-300 mb-1">
+                            Adresse email
+                          </label>
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                            placeholder="votre@email.com"
+                            required
+                          />
+                        </div>
                         <button
-                           onClick={() => setShowTwoFactorCodeInput(false)}
-                          className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-full"
+                          type="submit"
+                          disabled={loading}
+                          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-700'}`}
                         >
-                          Annuler
+                          {loading ? 'Envoi en cours...' : 'Recevoir le code de vérification'}
                         </button>
-                        <button
-                          onClick={verifyTwoFactorCode}
-                          className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-full"
-                        >
-                          Vérifier
-                        </button>
+                      </form>
+                    )}
+                    
+                    {/* Étape 2: Saisie du code */}
+                    {verificationStep === 'code' && (
+                      <form onSubmit={handleCodeSubmit} className="mt-4">
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-gray-300 mb-1">
+                            Code de vérification
+                          </label>
+                          <p className="text-sm text-gray-400 mb-2">
+                            Entrez le code à 6 chiffres envoyé à <strong>{email}</strong>
+                          </p>
+                          <input
+                            type="text"
+                            value={verificationCode}
+                            onChange={(e) => setVerificationCode(e.target.value)}
+                            className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                            placeholder="123456"
+                            required
+                          />
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            type="button"
+                            onClick={() => setVerificationStep('email')}
+                            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-full text-sm font-medium transition-colors"
+                          >
+                            <FiArrowLeft className="inline mr-1" /> Changer d'email
+                          </button>
+                          <button
+                            type="submit"
+                            disabled={loading}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
+                          >
+                            {loading ? 'Vérification...' : 'Vérifier le code'}
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                    
+                    {/* Étape 3: Succès */}
+                    {verificationStep === 'success' && (
+                      <div className="mt-4">
+                        <div className="flex items-center justify-center text-green-400 mb-4">
+                          <FiCheck className="text-2xl mr-2" />
+                          <span className="text-lg font-medium">Email vérifié avec succès!</span>
+                        </div>
+                        <p className="text-sm text-gray-300 mb-4 text-center">
+                          Votre adresse email <strong>{email}</strong> a été vérifiée.
+                          Vous pouvez maintenant utiliser toutes les fonctionnalités de sécurité.
+                        </p>
+                        <div className="flex justify-center">
+                          <button
+                            onClick={resetVerificationProcess}
+                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-full text-sm font-medium transition-colors"
+                          >
+                            Vérifier une autre adresse
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

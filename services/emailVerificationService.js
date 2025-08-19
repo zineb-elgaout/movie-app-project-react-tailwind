@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Base URL de ton API
-const API_BASE_URL = "https://localhost:5001/api/EmailVerification";
+const API_BASE_URL = "https://localhost:7274/api/EmailVerification";
 
 export const requestVerificationCode = async (email) => {
   try {
@@ -21,5 +21,18 @@ export const verifyCode = async (email, code) => {
     return response.data; // message de succès
   } catch (error) {
     throw error.response?.data || "Code invalide ou expiré";
+  }
+};
+
+
+// Récupérer la liste des emails vérifiés d’un utilisateur
+export const getVerifiedEmails = async (userId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/verified-emails`, {
+      params: { userId }
+    });
+    return response.data; // tableau d'emails vérifiés
+  } catch (error) {
+    throw error.response?.data || "Erreur lors de la récupération des emails vérifiés";
   }
 };
