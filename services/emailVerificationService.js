@@ -3,9 +3,9 @@ import axios from "axios";
 // Base URL de ton API
 const API_BASE_URL = "https://localhost:7274/api/EmailVerification";
 
-export const requestVerificationCode = async (email) => {
+export const requestVerificationCode = async ({ email , userId}) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/request-code`, { email });
+    const response = await axios.post(`${API_BASE_URL}/request-code`, { email , userId});
     return response.data; // message de confirmation
   } catch (error) {
     throw error.response?.data || "Erreur lors de l'envoi du code";
