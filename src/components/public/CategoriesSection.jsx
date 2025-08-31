@@ -11,7 +11,7 @@ export default function CategoriesSection(){
     
     return (
         
-        <section id="categories" className="relative bg-gray-900 py-20 overflow-hidden">
+        <section id="categories" className="relative bg-black py-20 overflow-hidden">
 
         {/* Effets d'arrière-plan */}
         <div className="absolute inset-0 overflow-hidden">

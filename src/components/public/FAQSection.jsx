@@ -33,7 +33,7 @@ const FAQSection = () => {
   ];
 
   return (
-    <section id='about' className="bg-gray-900 text-white py-16 px-4">
+    <section id='about' className="bg-black text-white py-16 px-4">
         <div className="relative max-w-7xl mx-auto px-6">
 
        {/* En-tête */}

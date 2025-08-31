@@ -3,7 +3,6 @@ import { useEffect, useState, useCallback } from "react";
 import { getCartoonById, getAllCartoons } from "../../../services/cartoonService";
 import Navbar from "./NavBar";
 import KeywordsMarquee from "../ui/KeywordsMarquee";
-import Cartoons from "./Cartoons";
 import { Link } from "react-router-dom";
 
 export default function CartoonDetailPage() {
@@ -22,6 +21,9 @@ export default function CartoonDetailPage() {
     setShowModal(true);
   };
 
+  const navigateToDetails = (cartoonId) => {
+    navigate(`/cartoon/${cartoonId}`);
+  };
   const closeModal = () => {
     setShowModal(false);
     setSelectedTrailer(null);

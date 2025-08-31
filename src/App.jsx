@@ -14,6 +14,7 @@ import NotFound from './pages/public/NotFound';
 import SettingsPage from './pages/admin/settings';
 import LandingPage from './pages/client/LandingPage';
 import CartoonDetailPage from './components/client/CartoonDetailPage';
+import FAQ from './pages/admin/FaqPage';
 function App() {
   return (
     <Router>
@@ -25,8 +26,10 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/users" element={<Users />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/FAQ" element={<FAQ />} />
         <Route path="/category/:id" element={<CategoryContent />} />
         <Route path="/cartoon/:id" element={<CartoonDetailPage />} />
+        
         <Route path="login" element={<Login/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/settings" element={<SettingsPage />} />

@@ -5,11 +5,10 @@ import { HomeIcon,SparklesIcon, Squares2X2Icon,InformationCircleIcon} from '@her
 // Composants sections
 import Footer from "../../Layouts/public/Footer";
 import Navbar from "../../Layouts/public/Navbar";
-import HeroSection from "../../components/public/HeroSection"
 import VisionSection from "../../components/public/VisionSection";
 import CategoriesSection from "../../components/public/CategoriesSection";
 import FAQSection from "../../components/public/FAQSection";
-import ScrollNav from "../../Layouts/public/ScrollNav";
+import Hero from "../../components/client/Hero";
 
 const HomePage = () => {
 
@@ -20,13 +19,44 @@ const HomePage = () => {
       { id: "about", icon: <InformationCircleIcon className="w-5 h-5" />, label: "À propos" }
     ];
 
+    const heroSlides = [
+  {
+    id: 1,
+    title: "The Last Adventure",
+    description: "Embark on a breathtaking journey through uncharted lands filled with magic, mystery, and unforgettable characters. This Disney-Pixar masterpiece combines heartwarming storytelling with stunning animation to create a cinematic experience for all ages.",
+    imageUrl: "https://lh4.googleusercontent.com/-kearrbyvllI/T-8EgNgs-yI/AAAAAAAAMhs/G8dTzElqenY/s1600/Disney-Pixar-Brave-Wallpaper.jpg",
+    brandImageUrl:"https://m.media-amazon.com/images/I/51H20lDxdoL.jpg",
+    keywords:"comédie, Pixar, Disney, 1999, film, animation",
+  },
+  {
+    id: 2,
+    title: "Cosmic Odyssey",
+    description: "Dive deep into the vastness of space in this visually stunning sci-fi epic. Exploring themes of human consciousness, the nature of existence, and the unknown, 'Cosmic Odyssey' challenges the mind while thrilling audiences with breathtaking visuals and an unforgettable soundtrack.",
+    brandImageUrl:"https://1.bp.blogspot.com/-PSTGS9T0ZQE/XZ1T-E1WPpI/AAAAAAACdiQ/jJ8FfR1yzbAbHPDJjLzwAwaw2lcc9RRIwCLcBGAsYHQ/s1600/unnamed%2B%25285%2529.jpg",
+    keywords:"science-fiction, odyssée, espace, exploration, aventure, thriller",
+    imageUrl: "https://wallpaper-house.com/data/out/5/wallpaper2you_66968.jpg",
+  },
+  {
+    id: 3,
+    title: "Midnight Detective",
+    description: "Step into the dark and moody world of a relentless detective unraveling a web of lies, betrayal, and secrets. With noir aesthetics, gripping suspense, and complex characters, 'Midnight Detective' keeps you on the edge of your seat until the final revelation.",
+    brandImageUrl:"https://lumiere-a.akamaihd.net/v1/images/p_encanto_homeent_22359_4892ae1c.jpeg",
+    keywords:"noir, thriller, enquête, mystère, suspense, crime",
+    imageUrl: "https://s.abcnews.com/images/GMA/Encanto-ht-er-210909_1631228363870_hpMain_16x9_992.jpg",
+  },
+  {
+    id: 4,
+    title: "Midnight Detective",
+    description: "Step into the dark and moody world of a relentless detective unraveling a web of lies, betrayal, and secrets. With noir aesthetics, gripping suspense, and complex characters, 'Midnight Detective' keeps you on the edge of your seat until the final revelation.",
+    brandImageUrl:"https://tse1.mm.bing.net/th/id/OIP.NDxgFFBrwvjINfMV1vBIhgHaLH?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
+    keywords:"noir, thriller, enquête, mystère, suspense, crime",
+    imageUrl: "https://refstatic.sk/movie/ae6b07b0bb6bd7aab8f1.jpg?is=2000x2000&s=a198aeb4d7c7a5769f841b9f0556baca54dfd22161468053be1a9e8eb18c445b",
+  },
+];
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-yellow-50 to-blue-100 font-sans">
-      <ScrollNav sections={sections}/>
-      <div style={{backgroundImage: `linear-gradient(rgba(0,0,0,95), rgba(0,0,0,0.8)), url('https://i.pinimg.com/originals/76/83/b3/7683b33f50192d98798befe66f2656d6.jpg')`, }}>
+    <div className="min-h-screen bg-black font-sans">
         <Navbar />
-        <HeroSection />
-      </div>
+        <Hero slides={heroSlides} />
       <VisionSection />
       <CategoriesSection />
       <FAQSection />

@@ -11,6 +11,8 @@ const SettingsPage = () => {
   const [darkMode, setDarkMode] = useState(true);
   const [activeSection, setActiveSection] = useState('security');
   const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState('');
+
 
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
@@ -306,7 +308,11 @@ const SettingsPage = () => {
                         </div>
                       </div>
                     )}
+
+                    
+
                   </div>
+                  
 
                   {/* Mot de passe */}
                   {!showPasswordForm ? (

@@ -2,12 +2,16 @@ import { useNavigate } from "react-router-dom";
 
 const Categories = ({ categories }) => {
   const navigate = useNavigate();
-
+// Dans votre composant Categories
+const handleCategoryClick = (categoryId) => {
+  navigate(`/category/${categoryId}`);
+};
   return (
     <div className="mb-12 overflow-x-auto pb-4 hide-scrollbar">
       <div className="flex space-x-4 w-max px-4">
         {categories.map((category) => (
           <div
+          onClick={() => handleCategoryClick(category.id) }
             key={category.id}
             className="relative bg-gray-800 rounded-xl p-5 w-48 hover:bg-gray-700 transition-all duration-300 hover:scale-105 cursor-pointer group"
           >

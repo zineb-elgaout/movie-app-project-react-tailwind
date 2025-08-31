@@ -158,7 +158,7 @@ function Sidebar() {
         </motion.div>
 
         <motion.div whileHover={{ scale: collapsed ? 1.05 : 1.02 }}>
-          <NavLink to="/subscriptions" className={linkStyle}>
+          <NavLink to="/FAQ" className={linkStyle}>
             <FiInfo className={iconStyle(false)} />
             <span className={textStyle}>FAQ</span>
           </NavLink>
