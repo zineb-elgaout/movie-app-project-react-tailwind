@@ -1,57 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminLayout from "../../Layouts/admin/AdminLayout";
 import Header from "../../components/ui/Header";
 import Button from "../../components/ui/Button";
 import Loading from "../../components/Loading";
 import ErrorMessage from "../../components/ErrorMessage";
-import { FiEye, FiEdit, FiTrash2, FiExternalLink} from 'react-icons/fi';
-
-// Données simulées pour les FAQ
-const initialFaqs = [
-  {
-    id: 1,
-    createdAt: "2023-10-01",
-    createdByEmail: "admin@toontime.com",
-    createdByRole: "Administrateur",
-    question: "Comment créer un compte sur ToonTime ?",
-    answer: "Cliquez sur 'S'inscrire' en haut à droite de la page d'accueil. Entrez votre email, créez un mot de passe et validez votre compte via le lien que vous recevrez par email."
-  },
-  {
-    id: 2,
-    createdAt: "2023-10-02",
-    createdByEmail: "moderateur@toontime.com",
-    createdByRole: "Modérateur",
-    question: "Quels modes de paiement acceptez-vous ?",
-    answer: "Nous acceptons les cartes Visa, Mastercard, PayPal et les cartes cadeaux ToonTime. Les paiements sont sécurisés par chiffrement SSL."
-  },
-  {
-    id: 3,
-    createdAt: "2023-10-03",
-    createdByEmail: "admin@toontime.com",
-    createdByRole: "Administrateur",
-    question: "Puis-je annuler mon abonnement à tout moment ?",
-    answer: "Oui, vous pouvez annuler votre abonnement dans la section 'Compte' à tout moment. L'accès reste valide jusqu'à la fin de la période payée."
-  },
-  {
-    id: 4,
-    createdAt: "2023-10-04",
-    createdByEmail: "support@toontime.com",
-    createdByRole: "Support",
-    question: "Comment changer la qualité de streaming ?",
-    answer: "Pendant la lecture, cliquez sur l'icône d'engrenage et sélectionnez la qualité souhaitée dans le menu 'Paramètres de lecture'."
-  },
-  {
-    id: 5,
-    createdAt: "2023-10-05",
-    createdByEmail: "admin@toontime.com",
-    createdByRole: "Administrateur",
-    question: "Les dessins animés ont-ils des sous-titres ?",
-    answer: "La plupart de notre catalogue propose des sous-titres en français et plusieurs autres langues. Activez-les via le bouton 'Sous-titres' pendant la lecture."
-  }
-];
+import { FiEye, FiEdit, FiTrash2, FiExternalLink } from "react-icons/fi";
+import { getFaqs, createFaq, updateFaq, deleteFaq } from "../../../services/faqService";
+import { getUserProfile } from "../../../services/userService";
 
 export default function FAQ() {
-  const [faqs, setFaqs] = useState(initialFaqs);
+  const [faqs, setFaqs] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -59,54 +17,76 @@ export default function FAQ() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Simuler le chargement
-  const simulateLoading = () => {
-    setLoading(true);
-    setTimeout(() => setLoading(false), 500);
-  };
+  // Charger les FAQ depuis le backend
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      setLoading(true);
+      try {
+        const data = await getFaqs();
+        setFaqs(data);
+      } catch (err) {
+        setError("Erreur lors du chargement des FAQ");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFaqs();
+  }, []);
 
   // Gérer l'ajout d'une nouvelle FAQ
-  const handleAddFaq = (newFaq) => {
-    simulateLoading();
+  const handleAddFaq = async (newFaq) => {
+    setLoading(true);
     try {
-      const faqToAdd = {
-        ...newFaq,
-        id: Math.max(...faqs.map(f => f.id)) + 1,
-        createdAt: new Date().toISOString().split('T')[0],
-        createdByEmail: "admin@toontime.com",
-        createdByRole: "Administrateur"
-      };
-      setFaqs([...faqs, faqToAdd]);
+      const addedFaq = await createFaq({
+        question: newFaq.question,
+        answer: newFaq.answer,
+        createdByEmail: getUserProfile().email, 
+        createdByRole: getUserProfile().role   
+      }); 
+      setFaqs([...faqs, addedFaq]);
       setShowAddForm(false);
     } catch (err) {
-      setError("Erreur lors de l'ajout de la FAQ");
+      setError("Erreur lors de l'ajout de la FAQ: " + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Gérer la mise à jour d'une FAQ
-  const handleUpdateFaq = (updatedFaq) => {
-    simulateLoading();
+  const handleUpdateFaq = async (updatedFaq) => {
+    setLoading(true);
     try {
-      setFaqs(faqs.map(faq => 
-        faq.id === updatedFaq.id ? updatedFaq : faq
-      ));
+      // Vérifiez la structure de données attendue par l'API
+      const savedFaq = await updateFaq(updatedFaq.id, {
+        id: updatedFaq.id,
+        question: updatedFaq.question,
+        answer: updatedFaq.answer
+      });
+      
+      setFaqs(faqs.map((faq) => (faq.id === savedFaq.id ? savedFaq : faq)));
       setShowUpdateForm(false);
       setSelectedFaq(null);
     } catch (err) {
-      setError("Erreur lors de la mise à jour de la FAQ");
+      setError("Erreur lors de la mise à jour de la FAQ: " + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Gérer la suppression d'une FAQ
-  const handleDelete = (id) => {
-    const confirm = window.confirm("Voulez-vous vraiment supprimer cette question ?");
-    if (!confirm) return;
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Voulez-vous vraiment supprimer cette question ?");
+    if (!confirmDelete) return;
 
-    simulateLoading();
+    setLoading(true);
     try {
-      setFaqs(faqs.filter(faq => faq.id !== id));
+      await deleteFaq(id);
+      setFaqs(faqs.filter((faq) => faq.id !== id));
     } catch (err) {
       setError("Erreur lors de la suppression de la FAQ");
+    } finally {
+      setLoading(false);
     }
   };
 
