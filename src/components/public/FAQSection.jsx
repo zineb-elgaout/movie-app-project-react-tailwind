@@ -1,36 +1,35 @@
 
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import { FaChevronDown, FaChevronUp, FaQuestionCircle } from 'react-icons/fa';
 import {motion} from 'framer-motion';
+import { getFaqs } from '../../../services/faqService';
 const FAQSection = () => {
   const [activeIndex, setActiveIndex] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [faqs, setFaqs] = useState([]);
+  const [error, setError] = useState(null);
 
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
-  const faqs = [
-    {
-      question: "Comment créer un compte sur ToonTime ?",
-      answer: "Cliquez sur 'S'inscrire' en haut à droite de la page d'accueil. Entrez votre email, créez un mot de passe et validez votre compte via le lien que vous recevrez par email."
-    },
-    {
-      question: "Quels modes de paiement acceptez-vous ?",
-      answer: "Nous acceptons les cartes Visa, Mastercard, PayPal et les cartes cadeaux ToonTime. Les paiements sont sécurisés par chiffrement SSL."
-    },
-    {
-      question: "Puis-je annuler mon abonnement à tout moment ?",
-      answer: "Oui, vous pouvez annuler votre abonnement dans la section 'Compte' à tout moment. L'accès reste valide jusqu'à la fin de la période payée."
-    },
-    {
-      question: "Comment changer la qualité de streaming ?",
-      answer: "Pendant la lecture, cliquez sur l'icône d'engrenage et sélectionnez la qualité souhaitée dans le menu 'Paramètres de lecture'."
-    },
-    {
-      question: "Les dessins animés ont-ils des sous-titres ?",
-      answer: "La plupart de notre catalogue propose des sous-titres en français et plusieurs autres langues. Activez-les via le bouton 'Sous-titres' pendant la lecture."
-    }
-  ];
+  // Charger les FAQ depuis le backend
+    useEffect(() => {
+      const fetchFaqs = async () => {
+        setLoading(true);
+        try {
+          const faqs = await getFaqs();
+          setFaqs(faqs);
+        } catch (err) {
+          setError("Erreur lors du chargement des FAQ");
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchFaqs();
+    }, []);
+
 
   return (
     <section id='about' className="bg-black text-white py-16 px-4">
