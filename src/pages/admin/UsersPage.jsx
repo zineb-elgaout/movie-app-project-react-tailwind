@@ -181,6 +181,7 @@ export default function UsersPage() {
                                         <th className="px-6 py-4 text-left font-semibold text-gray-300">Utilisateur</th>
                                         <th className="px-6 py-4 text-left font-semibold text-gray-300">Email</th>
                                         <th className="px-6 py-4 text-left font-semibold text-gray-300">Nationalité</th>
+                                        <th className="px-6 py-4 text-left font-semibold text-gray-300">Crée le</th>
                                         <th className="px-6 py-4 text-left font-semibold text-gray-300">Rôle</th>
                                         <th className="px-6 py-4 text-right font-semibold text-gray-300">Actions</th>
                                     </tr>
@@ -196,6 +197,7 @@ export default function UsersPage() {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-gray-300">{user.email}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-gray-300">{user.nationality || '-'}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-gray-300">{new Date(user.createdAt).toLocaleDateString() || '-'}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getRoleBadge(user.role)}`}>
                                                         {user.role}
