@@ -4,36 +4,41 @@ import { FiPhone, FiMail, FiMapPin, FiArrowLeft, FiClock, FiHelpCircle } from 'r
 import { FaDiscord } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import backgroundImage from '../../../src/assets/public/images/contactPageBack.png';
+import {sendContactForm} from '../../../services/contactService';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [id]: value
-    }));
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulation d'envoi
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setErrorMessage("");
+
+    try {
+      const result = await sendContactForm(formData);
+      console.log(result);
       setSubmitSuccess(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: "", email: "", subject: "", message: "" });
       setTimeout(() => setSubmitSuccess(false), 5000);
-    }, 1500);
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -134,6 +139,18 @@ export default function ContactForm() {
                   >
                     {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
                   </motion.button>
+
+                  {submitSuccess && (
+                    <p className="text-green-500 font-medium">
+                      Your message has been sent successfully 
+                    </p>
+                  )}
+
+                  {errorMessage && (
+                    <p className="text-red-500 font-medium">
+                      {errorMessage}
+                    </p>
+                  )}
 
                 </form>
               </div>
