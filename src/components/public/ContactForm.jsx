@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { FiPhone, FiMail, FiMapPin, FiArrowLeft, FiClock, FiHelpCircle } from 'react-icons/fi';
 import { FaDiscord } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import backgroundImage from '../../../src/assets/public/images/contactPageBack.png';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -39,7 +40,7 @@ export default function ContactForm() {
     <div 
       className="min-h-screen flex items-center justify-center p-4 relative"
       style={{
-        backgroundImage: "url('https://wallpapers.com/images/hd/animation-movies-3840-x-2160-wallpaper-f3ra0cyl5yhwfv8c.jpg')",
+        backgroundImage:  `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed"
@@ -129,10 +130,11 @@ export default function ContactForm() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     disabled={isSubmitting}
-                    className="w-full bg-pink-900 hover:bg-pink-800 py-4 rounded font-bold text-white transition-colors"
+                    className="w-full bg-gradient-to-r from-yellow-500  to-pink-600 hover:opacity-90 py-4 rounded-full font-bold text-white transition-all duration-300"
                   >
                     {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
                   </motion.button>
+
                 </form>
               </div>
 
@@ -145,7 +147,7 @@ export default function ContactForm() {
                   
                   <div className="space-y-5">
                     <div className="flex items-start p-4 rounded-lg">
-                      <div className="bg-indigo-300 p-3 rounded-full mr-4">
+                      <div className="bg-gradient-to-r from-yellow-500  to-pink-600 p-3 rounded-full mr-4">
                         <FiPhone className="text-white text-lg" />
                       </div>
                       <div>
@@ -158,7 +160,7 @@ export default function ContactForm() {
                     </div>
 
                     <div className="flex items-start p-4 rounded-lg">
-                      <div className="bg-indigo-300 p-3 rounded-full mr-4">
+                      <div className="bg-gradient-to-r from-yellow-500  to-pink-600 p-3 rounded-full mr-4">
                         <FiMail className="text-white text-lg" />
                       </div>
                       <div>
@@ -169,7 +171,7 @@ export default function ContactForm() {
                     </div>
 
                     <div className="flex items-start p-4 rounded-lg">
-                      <div className="bg-indigo-300 p-3 rounded-full mr-4">
+                      <div className="bg-gradient-to-r from-yellow-500  to-pink-600 p-3 rounded-full mr-4">
                         <FiMapPin className="text-white text-lg" />
                       </div>
                       <div>
@@ -197,7 +199,7 @@ export default function ContactForm() {
         href="#" 
         className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg flex flex-col items-center transition-colors border border-gray-700"
       >
-        <FaDiscord className="text-3xl text-indigo-400 mb-3" />
+        <FaDiscord className="text-3xl text-yellow-500 mb-3" />
         <span className="text-white font-medium">Discord</span>
         <span className="text-gray-400 text-sm mt-1 text-center">Communauté active</span>
       </motion.a>
@@ -208,7 +210,7 @@ export default function ContactForm() {
         href="#" 
         className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg flex flex-col items-center transition-colors border border-gray-700"
       >
-        <FiHelpCircle className="text-3xl text-indigo-400 mb-3" />
+        <FiHelpCircle className="text-3xl text-yellow-500 mb-3" />
         <span className="text-white font-medium">Centre d'aide</span>
         <span className="text-gray-400 text-sm mt-1 text-center">Guides & tutoriels</span>
       </motion.a>
