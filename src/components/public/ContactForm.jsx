@@ -216,7 +216,9 @@ export default function ContactForm() {
         href="#" 
         className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg flex flex-col items-center transition-colors border border-gray-700"
       >
-        <FaDiscord className="text-3xl text-yellow-500 mb-3" />
+        <div className="bg-gradient-to-r from-yellow-500  to-pink-600 p-3 rounded-full ">
+          <FaDiscord className="text-white text-lg" />
+        </div>
         <span className="text-white font-medium">Discord</span>
         <span className="text-gray-400 text-sm mt-1 text-center">Communauté active</span>
       </motion.a>
@@ -227,7 +229,9 @@ export default function ContactForm() {
         href="#" 
         className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg flex flex-col items-center transition-colors border border-gray-700"
       >
-        <FiHelpCircle className="text-3xl text-yellow-500 mb-3" />
+        <div className="bg-gradient-to-r from-yellow-500  to-pink-600 p-3 rounded-full ">
+          <FiHelpCircle className="text-white text-lg" />
+        </div>
         <span className="text-white font-medium">Centre d'aide</span>
         <span className="text-gray-400 text-sm mt-1 text-center">Guides & tutoriels</span>
       </motion.a>

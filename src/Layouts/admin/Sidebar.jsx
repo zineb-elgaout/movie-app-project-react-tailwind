@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import {FiUser, FiLogOut, FiMenu, FiX, FiEdit, FiVideo, FiCreditCard, FiInfo, FiFilm} from 'react-icons/fi';
+import {FiUser, FiLogOut, FiMenu, FiX, FiEdit, FiVideo,  FiInfo, FiFilm} from 'react-icons/fi';
 import { MdOutlineSpaceDashboard } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import profil from '../../../public/vite.svg';
 import { getUserProfile } from '../../../services/userService';
 import {logout} from '../../../services/authService';
-import { AiFillInfoCircle } from 'react-icons/ai';
 
 function Sidebar() {
  

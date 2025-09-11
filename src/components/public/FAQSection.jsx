@@ -45,7 +45,7 @@ const FAQSection = () => {
             >
             <div className="inline-flex items-center mb-4 ">
                 <div className="w-12 h-px bg-gradient-to-r from-pink-500 to-purple-500 m-4"></div>
-                <span className="text-sm font-medium tracking-widest text-pink-400 uppercase">Explorez</span>
+                <span className="text-sm font-medium tracking-widest text-pink-200 uppercase">Explorez</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400">Questions Fréquentes</span>
