@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function KeywordsMarquee({ keywords }) {
+export default function KeywordsMarquee({ keywords , position , backgroundColor}) {
   const containerRef = useRef(null);
   const contentRef = useRef(null);
   const [shouldAnimate, setShouldAnimate] = useState(false);
@@ -14,7 +14,8 @@ export default function KeywordsMarquee({ keywords }) {
   return (
     <div
       ref={containerRef}
-      className="absolute bottom-4 left-0 w-full overflow-hidden px-4 py-2 flex justify-center"
+      className={`${position} w-full overflow-hidden px-4 py-2 flex justify-center`}
+
     >
       <div
         ref={contentRef}
@@ -23,7 +24,7 @@ export default function KeywordsMarquee({ keywords }) {
         {keywords.split(",").map((kw, i) => (
           <span
             key={i}
-            className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm inline-block mr-2"
+            className={`${backgroundColor} px-4 py-2 rounded-full text-sm inline-block mr-2 `}
           >
             {kw.trim()}
           </span>
@@ -32,7 +33,7 @@ export default function KeywordsMarquee({ keywords }) {
         {shouldAnimate && keywords.split(",").map((kw, i) => (
           <span
             key={`repeat-${i}`}
-            className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm inline-block mr-2"
+            className={`${backgroundColor} px-4 py-2 rounded-full text-sm inline-block mr-2 `}
           >
             {kw.trim()}
           </span>

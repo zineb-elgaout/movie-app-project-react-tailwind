@@ -177,7 +177,7 @@ export default function CartoonDetailPage() {
       {/* Mots-clés en bas */}
       {cartoon.keywords && (
         <div className="hidden md:block"> {/* Ajout de hidden md:block */}
-          <KeywordsMarquee keywords={cartoon.keywords} />
+          <KeywordsMarquee keywords={cartoon.keywords} position={"absolute bottom-4 left-0"}  backgroundColor={"bg-black bg-opacity-50"} />
         </div>
       )}
 

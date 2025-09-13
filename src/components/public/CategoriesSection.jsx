@@ -9,6 +9,12 @@ import ScrollNav from "../../Layouts/public/ScrollNav";
 
 export default function CategoriesSection(){
     
+const categories = [
+    { id: 1, title: "Aventures Animées", description: "Plongez dans des univers colorés où héros courageux et créatures fantastiques vous emmènent dans des quêtes extraordinaires."},
+    { id: 2, title: "Mondes Fantastiques", description: "Explorez des royaumes enchantés peuplés de créatures magiques et de paysages oniriques." },
+    { id: 3, title: "Rêves Ghibli", description: "Un voyage magique au cœur de l’imagination japonaise, avec Chihiro, Totoro et bien plus encore." },
+    { id: 4, title: "Classiques Intemporels", description: "Redécouvrez les films d'animation qui ont marqué des générations et continuent de captiver petits et grands." }, 
+]
     return (
         
         <section id="categories" className="relative bg-black py-20 overflow-hidden">
@@ -16,7 +22,7 @@ export default function CategoriesSection(){
         {/* Effets d'arrière-plan */}
         <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-full opacity-5">
-                <div className="absolute top-0 left-0 w-1/3 h-1/3 bg-pink-500 rounded-full filter blur-[100px]"></div>
+                <div className="absolute top-0 left-0 w-1/3 h-1/3 bg-gray-500 rounded-full filter blur-[100px]"></div>
                 <div className="absolute bottom-0 right-0 w-1/3 h-1/3 bg-purple-500 rounded-full filter blur-[100px]"></div>
             </div>
         </div>

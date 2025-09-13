@@ -7,14 +7,12 @@ import { login } from '../../../services/authService'
 import { useNavigate } from 'react-router-dom';
 
 
-
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(true)
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-
 
   
   
@@ -35,10 +33,11 @@ const handleSubmit = async (e) => {
 
   return (
     <>
+    
     <div className="min-h-screen flex items-center justify-center bg-dark bg-cover bg-center" 
          style={{ backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://wallpapers.com/images/hd/animation-movies-3840-x-2160-wallpaper-f3ra0cyl5yhwfv8c.jpg')" }}>
       
-      <div className="w-full max-w-md bg-black bg-opacity-75 rounded-lg p-12">
+      <div className="w-full max-w-md bg-black bg-opacity-75 rounded-lg p-12  m-3">
         <Link 
             to="/" 
             className="flex items-center text-indigo-200 hover:text-indigo-400 transition-colors mb-8"
@@ -54,7 +53,7 @@ const handleSubmit = async (e) => {
 
         <h2 className="text-white text-3xl mb-6">Identifiez vous</h2>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6  ">
             <div className="relative">
                 <input
                 type="email"

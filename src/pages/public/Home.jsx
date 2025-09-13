@@ -12,7 +12,6 @@ import HeroSection from "../../components/public/HeroSection";
 
 const HomePage = () => {
 
-
   return (
     <div className="min-h-screen bg-black font-sans">
         <Navbar />
