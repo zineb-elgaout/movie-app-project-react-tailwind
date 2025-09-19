@@ -35,7 +35,7 @@ export default function Navbar({ShowMenu=true}) {
         <Link to="/register" className="bg-black text-white rounded-full px-3 py-1 text-sm font-semibold hover:bg-gray-300 hover:text-black transition">
           S'inscrire
         </Link>
-        <Link to="/login" className="bg-white text-black rounded-full  px-3 py-1 text-sm font-semibold hover:bg-gray-300 hover:text-black transition">
+        <Link to="/login" className="bg-gray-300 text-black rounded-full  px-3 py-1 text-sm font-semibold hover:bg-white hover:text-black transition">
           Se connecter
         </Link>
       </div>

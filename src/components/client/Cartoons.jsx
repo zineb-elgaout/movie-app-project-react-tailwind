@@ -1,5 +1,6 @@
 import {useState }from "react";
 import { useNavigate } from "react-router-dom";
+import {  FaHeart, FaHeartCircleBolt, FaHeartCircleCheck } from "react-icons/fa6";
 
 export default function Cartoons({ cartoons }) {
 
@@ -96,8 +97,12 @@ const navigateToDetails = (cartoonId) => {
               </div>
 
               {/* Badge catégorie */}
-              <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+              <div className="absolute top-2 right-2 flex flex-col gap-2 items-end w-full">
+              <div className=" bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
                 {item.categoryTitle}
+              </div>
+              <div className="text-red-600 "><FaHeartCircleCheck className="size-6"/></div>
+
               </div>
             </div>
           </div>

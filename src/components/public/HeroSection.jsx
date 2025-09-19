@@ -9,17 +9,15 @@ const HeroSection = () => {
 
  const slides = [
   {
-    title: "Aventures Animées",
-    description: "Plongez dans des univers colorés où héros courageux et créatures fantastiques vous emmènent dans des quêtes extraordinaires.",
-    imageUrl: "https://imgix.ranker.com/list_img_v2/6672/2086672/original/2086672-u2?w=1200&h=720&fm=pjpg&q=80&fit=crop&dpr=2", 
-  },
-  
-  {
     title: "Mondes Fantastiques",
     description: "Explorez des royaumes enchantés peuplés de créatures magiques et de paysages oniriques.",
     imageUrl: "https://th.bing.com/th/id/R.37c596d49d8d41332a3754ff3d22d32a?rik=Q%2bEwiWeMwTY7UQ&pid=ImgRaw&r=0", // Steven Universe
   },
-  
+  {
+    title: "Aventures Animées",
+    description: "Plongez dans des univers colorés où héros courageux et créatures fantastiques vous emmènent dans des quêtes extraordinaires.",
+    imageUrl: "https://imgix.ranker.com/list_img_v2/6672/2086672/original/2086672-u2?w=1200&h=720&fm=pjpg&q=80&fit=crop&dpr=2", 
+  },
   {
     title: "Rêves Ghibli",
     description: "Un voyage magique au cœur de l’imagination japonaise, avec Chihiro, Totoro et bien plus encore.",
@@ -79,7 +77,7 @@ const HeroSection = () => {
             </a>
             
             <a 
-              href="/guest" 
+              href="/toontime" 
               className={`px-6 py-3 rounded-full hover:bg-gray-700 bg-black text-white font-medium transition-colors shadow-md`}
             >
               Continuer comme invité

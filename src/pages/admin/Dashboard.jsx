@@ -164,6 +164,57 @@ const Dashboard = () => {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
+
+                
+              </div>
+              {/* Autres graphes ou sections peuvent être ajoutés ici */}
+
+              
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                {/* Genres Populaires */}
+                <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 shadow-lg border border-gray-700">
+                  <h3 className="text-lg font-semibold text-white mb-4">
+                    Genres Populaires
+                  </h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={mockData.topGenres}
+                        dataKey="count"
+                        nameKey="genre"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={100}
+                        label
+                      >
+                        {mockData.topGenres.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Legend />
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                {/* Revenue par Mois */}
+                <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 shadow-lg border border-gray-700 lg:col-span-2">
+                  <h3 className="text-lg font-semibold text-white mb-4">
+                    Revenue par Mois
+                  </h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={mockData.revenueByMonth}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <XAxis dataKey="month" stroke="#9CA3AF" />
+                      <YAxis stroke="#9CA3AF" />
+                      <Tooltip />
+                      <Bar dataKey="revenue" fill="#8b5cf6" radius={[8, 8, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                
+
+                
               </div>
             </div>
           </main>
