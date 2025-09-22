@@ -35,7 +35,7 @@ function Sidebar() {
   const iconContainerStyle = (isActive) => `
     flex items-center justify-center 
     ${collapsed ? 'w-10 h-10' : 'w-8 h-8'} 
-    rounded-full transition-all
+    rounded-r-full rounded-t-full transition-all
     ${isActive 
       ? 'bg-gradient-to-r from-indigo-500 to-purple-600' 
       : 'hover:bg-gray-700/50'
