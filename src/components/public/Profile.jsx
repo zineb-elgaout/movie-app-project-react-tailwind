@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { FiMail, FiMapPin, FiCalendar, FiAward, FiBook, FiMessageSquare, FiHeart, FiStar, FiEdit2, FiCamera, FiX } from 'react-icons/fi';
-import AdminLayout from '../../Layouts/admin/AdminLayout';
 
-const ProfilePage = () => {
+const Profile= () => {
   const [activeTab, setActiveTab] = useState('favorites');
   const [isEditing, setIsEditing] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -117,7 +116,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <AdminLayout>
+    <>
       {/* Photo de couverture avec bouton d'édition */}
       <div 
         className="h-56 bg-cover bg-center relative group"
@@ -536,8 +535,8 @@ const ProfilePage = () => {
           </div>
         </div>
       )}
-    </AdminLayout>  
+    </>  
   );
 };
 
-export default ProfilePage;
+export default Profile;

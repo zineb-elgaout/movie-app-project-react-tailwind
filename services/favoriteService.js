@@ -54,7 +54,7 @@ export const getFavoriteById = async (id) => {
   return response.data;
 };
 
-export const createFavorite = async (favorite) => {
+export const addFavorite = async (favorite) => {
   const response = await axiosAuth.post("/", favorite);
   return response.data;
 };
@@ -64,7 +64,7 @@ export const updateFavorite = async (id, favorite) => {
   return response.data;
 };
 
-export const deleteFavorite = async (id) => {
+export const removeFavorite = async (id) => {
   const response = await axiosAuth.delete(`/${id}`);
   return response.data;
 };

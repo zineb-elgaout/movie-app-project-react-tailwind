@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {FiUser, FiLogOut, FiMenu, FiX, FiEdit, FiVideo,  FiInfo, FiFilm} from 'react-icons/fi';
-import { MdOutlineSpaceDashboard } from 'react-icons/md';
+import { FaChartBar } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import profil from '../../../public/vite.svg';
 import { getUserProfile } from '../../../services/userService';
@@ -54,11 +54,9 @@ function Sidebar() {
 
   // Données de navigation pour éviter la répétition
   const navItems = [
-    { to: "/dashboard", icon: MdOutlineSpaceDashboard, text: "Tableau de bord" },
+    { to: "/dashboard", icon: FaChartBar, text: "Tableau de bord" },
     { to: "/categories", icon: FiVideo, text: "Catégories" },
-    { to: "/cartoon", icon: FiFilm, text: "Animations" },
     { to: "/users", icon: FiUser, text: "Utilisateurs" },
-    { to: "/editors", icon: FiEdit, text: "Éditeurs" },
     { to: "/FAQ", icon: FiInfo, text: "FAQ" },
   ];
 
