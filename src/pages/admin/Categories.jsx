@@ -1,5 +1,4 @@
 import { useState } from "react";
-import AdminLayout from "../../Layouts/admin/AdminLayout";
 import Header from "../../components/ui/Header";
 import Button from "../../components/ui/Button";
 import Loading from "../../components/Loading";
@@ -50,7 +49,7 @@ export default function Categories() {
   if (error) return <ErrorMessage message={error} />;
 
   return (
-    <AdminLayout>
+    <>
       <section className="px-4 sm:px-6 py-8 bg-gray-900 min-h-screen">
         <div className=" mx-auto">
           <Header
@@ -251,6 +250,6 @@ export default function Categories() {
           </div>
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 }

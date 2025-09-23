@@ -5,7 +5,6 @@ import cartoon  from '../../assets/public/images/cartoon.jpg';
 import gibli from '../../assets/public/images/gibli.webp';
 import disney from '../../assets/public/images/disney.webp';
 import CartoonCard from "../ui/CartoonCard";
-import ScrollNav from "../../Layouts/public/ScrollNav";
 
 export default function CategoriesSection(){
     

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import Footer from '../../Layouts/public/Footer'
 import { login } from '../../../services/authService'
 import { useNavigate } from 'react-router-dom';
+import { getUserProfile } from '../../../services/userService';
 
 
 export default function Login() {
@@ -23,7 +24,19 @@ const handleSubmit = async (e) => {
   try {
     const data = await login(email, password, rememberMe);
     console.log("Utilisateur connecté :", data);
-    navigate("/users");
+    switch (getUserProfile().role) {
+        case "Admin":
+          navigate("/admin/dashboard")
+          break
+        case "Editor":
+          navigate("/editor/dashboard")
+          break
+        case "Client":
+          navigate("/toontime")
+          break
+        default:
+          navigate("/") 
+      }
   } catch (err) {
     setError(err.message || "Erreur inconnue");
   }

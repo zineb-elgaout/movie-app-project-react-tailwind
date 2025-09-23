@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from 'framer-motion';
-import AdminLayout from "../../Layouts/admin/AdminLayout";
 import Header from "../../components/ui/Header";
 import { useState, useEffect } from 'react';
 import { FiEye, FiEdit, FiTrash2 } from 'react-icons/fi';
@@ -66,7 +65,7 @@ export default function UsersPage() {
     if (error) return <ErrorMessage message={error} />;
 
     return (
-        <AdminLayout>
+        <>
             <section className="px-4 sm:px-6 py-8 bg-gray-900 min-h-screen">
                 <div className="mx-auto">
                     <Header
@@ -264,6 +263,6 @@ export default function UsersPage() {
                     />
                 </div>
             )}
-        </AdminLayout>
+        </>
     );
 }

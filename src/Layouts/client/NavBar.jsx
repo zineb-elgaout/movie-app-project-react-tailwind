@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa6";
 import { getUserProfile } from "../../../services/userService"; // chemin selon ton projet
 
-const Navbar = () => {
+const NavBar = () => {
   const [user, setUser] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
   const menuRef = useRef(null);
@@ -67,14 +67,14 @@ const Navbar = () => {
               </div>
 
               <Link
-                to="/profil"
+                to="/client/profil"
                 className="px-4 py-2 text-white hover:bg-gray-900 rounded-md"
                 onClick={() => setOpenMenu(false)}
               >
                 Profil
               </Link>
               <Link
-                to="/settings"
+                to="/client/settings"
                 className="px-4 py-2 text-white hover:bg-gray-900 rounded-md"
                 onClick={() => setOpenMenu(false)}
               >
@@ -94,4 +94,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavBar;

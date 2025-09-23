@@ -1,10 +1,9 @@
 
 import React, { useState ,useEffect} from 'react';
-import Navbar from '../../components/client/NavBar';
+import NavBar from '../../Layouts/client/NavBar';
 import Hero from '../../components/client/Hero';
 import Categories from '../../components/client/Categories';
 import SearchBar from '../../components/client/SearchBar';
-import Header from '../../components/ui/Header';
 import { getAllCategories } from '../../../services/categoryService';
 import { getAllCartoons } from '../../../services/cartoonService';
 import Cartoons from '../../components/client/Cartoons';
@@ -76,7 +75,7 @@ const [categories, setCategories] = useState([]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <Navbar />
+      <NavBar />
       <Hero slides={heroSlides} />
       
       <div className="bg-black py-8 px-4 sm:px-6 lg:px-8">

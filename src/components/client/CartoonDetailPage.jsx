@@ -1,9 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { getCartoonById, getAllCartoons } from "../../../services/cartoonService";
-import Navbar from "./NavBar";
+import { addFavorite, removeFavorite, getFavorites } from "../../../services/favoriteService";
 import KeywordsMarquee from "../ui/KeywordsMarquee";
+import NavBar from "../../Layouts/client/NavBar";
 import { Link } from "react-router-dom";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 export default function CartoonDetailPage() {
   const { id } = useParams();
@@ -15,6 +17,8 @@ export default function CartoonDetailPage() {
   const [showModal, setShowModal] = useState(false);
   const [selectedTrailer, setSelectedTrailer] = useState(null);
   const [error, setError] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
 
   const openTrailer = (trailerUrl) => {
     setSelectedTrailer(trailerUrl);
@@ -24,6 +28,7 @@ export default function CartoonDetailPage() {
   const navigateToDetails = (cartoonId) => {
     navigate(`/cartoon/${cartoonId}`);
   };
+
   const closeModal = () => {
     setShowModal(false);
     setSelectedTrailer(null);
@@ -35,12 +40,54 @@ export default function CartoonDetailPage() {
     return `https://www.youtube.com/embed/${videoId}`;
   };
 
+  // Vérifier si le cartoon est dans les favoris
+  const checkIfFavorite = async (cartoonId) => {
+    try {
+      const favorites = await getFavorites();
+      const isFav = favorites.some(fav => 
+        fav.cartoonId === cartoonId || fav.cartoon?.id === cartoonId
+      );
+      setIsFavorite(isFav);
+    } catch (err) {
+      console.error("Erreur lors de la vérification des favoris:", err);
+    }
+  };
+
+  // Fonction pour gérer les favoris
+  const toggleFavorite = async () => {
+    if (!cartoon || favoriteLoading) return;
+    
+    try {
+      setFavoriteLoading(true);
+      
+      if (isFavorite) {
+        // Retirer des favoris
+        await removeFavorite(cartoon.id);
+        setIsFavorite(false);
+        console.log("Retiré des favoris");
+      } else {
+        // Ajouter aux favoris
+        await addFavorite(cartoon.id);
+        setIsFavorite(true);
+        console.log("Ajouté aux favoris");
+      }
+    } catch (err) {
+      console.error("Erreur lors de la mise à jour des favoris:", err);
+      alert(err.userMessage || "Erreur lors de la mise à jour des favoris");
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
+
   // Fetch cartoon details
   const fetchCartoon = useCallback(async () => {
     try {
       setLoading(true);
       const res = await getCartoonById(id);
       setCartoon(res.data);
+
+      // Vérifier si c'est un favori
+      await checkIfFavorite(res.data.id);
 
       // Fetch all cartoons to calculate related cartoons
       const allRes = await getAllCartoons();
@@ -67,259 +114,253 @@ export default function CartoonDetailPage() {
 
   return (
     <div>
-    <div className="relative min-h-screen text-white">
-      <Navbar />
+      <div className="relative min-h-screen text-white">
+        <NavBar />
 
-      {/* Background image */}
-      <div className="absolute inset-0">
-        <img
-          src={cartoon.backImageUrl || cartoon.brandImageUrl}
-          alt={cartoon.title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-80"></div>
-      </div>
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <img
+            src={cartoon.backImageUrl || cartoon.brandImageUrl}
+            alt={cartoon.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-80"></div>
+        </div>
 
-      {/* Contenu principal */}
-      <div className="relative container mx-auto px-4 py-8 md:py-16 lg:py-20 min-h-screen flex flex-col-reverse md:flex-row items-start md:items-center justify-center gap-8">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 lg:gap-12 mx-auto w-full">
-          <div className="flex flex-col space-y-4 md:space-y-5 justify-center">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight">
-              {cartoon.title}
-            </h1>
-            <p className="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl">
-              {cartoon.description}
-            </p>
+        {/* Contenu principal */}
+        <div className="relative container mx-auto px-4 py-8 md:py-16 lg:py-20 min-h-screen flex flex-col-reverse md:flex-row items-start md:items-center justify-center gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 lg:gap-12 mx-auto w-full">
+            <div className="flex flex-col space-y-4 md:space-y-5 justify-center">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight">
+                {cartoon.title}
+              </h1>
+              <p className="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl">
+                {cartoon.description}
+              </p>
 
-            <div className="flex flex-wrap">
-              <div>
-                <h3 className="text-lg font-semibold mr-7 my-2">Date de sortie</h3>
-                <span className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">
-                  {cartoon.releaseDate}
-                </span>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold my-2">Catégorie</h3>
-                <span className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">
-                  {cartoon.categoryTitle}
-                </span>
-              </div>
-            </div>
-
-            {/* Personnages principaux */}
-            {cartoon.mainCharacters && (
-              <>
-                <h3 className="text-lg font-semibold">Personnages principaux</h3>
-                <div className="flex flex-wrap gap-2">
-                  {cartoon.mainCharacters.split(",").map((char, i) => (
-                    <span key={i} 
-                        className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">
-                      {char.trim()}
-                    </span>
-                  ))}
+              <div className="flex flex-wrap gap-6">
+                <div>
+                  <h3 className="text-lg font-semibold mr-7 my-2">Date de sortie</h3>
+                  <span className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">
+                    {cartoon.releaseDate}
+                  </span>
                 </div>
-              </>
-            )}
+                <div>
+                  <h3 className="text-lg font-semibold my-2">Catégorie</h3>
+                  <span className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">
+                    {cartoon.categoryTitle}
+                  </span>
+                </div>
+              </div>
 
-            {/* Boutons */}
-            <div className="flex flex-wrap gap-4 pt-6">
-                <button className="bg-purple-600 hover:bg-purple-900 px-6 py-3 rounded-lg font-semibold flex items-center  mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                    fillRule="evenodd"
-                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                    clipRule="evenodd"
-                    />
-                </svg>
-                Ajouter aux favoris
+              {/* Personnages principaux */}
+              {cartoon.mainCharacters && (
+                <>
+                  <h3 className="text-lg font-semibold">Personnages principaux</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {cartoon.mainCharacters.split(",").map((char, i) => (
+                      <span key={i} 
+                          className="bg-black bg-opacity-50 px-4 py-2 rounded-full text-sm">
+                        {char.trim()}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* Boutons */}
+              <div className="flex flex-wrap gap-4 pt-6">
+                <button 
+                  onClick={toggleFavorite}
+                  disabled={favoriteLoading}
+                  className={`px-6 py-3 rounded-lg font-semibold flex items-center mb-3 transition-all duration-200 ${
+                    isFavorite 
+                      ? 'bg-red-600 hover:bg-red-700 text-white' 
+                      : 'bg-purple-600 hover:bg-purple-700 text-white'
+                  } ${favoriteLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {favoriteLoading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  ) : isFavorite ? (
+                    <FaHeart className="h-5 w-5 mr-2" />
+                  ) : (
+                    <FaRegHeart className="h-5 w-5 mr-2" />
+                  )}
+                  {isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
                 </button>
 
                 <button
-                onClick={() => openTrailer(cartoon.trailerUrl)}
-                className="bg-white bg-opacity-20 hover:bg-opacity-30 px-6 py-3 rounded-lg font-semibold flex items-center mb-3"
+                  onClick={() => openTrailer(cartoon.trailerUrl)}
+                  className="bg-white bg-opacity-20 hover:bg-opacity-30 px-6 py-3 rounded-lg font-semibold flex items-center mb-3"
                 >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                    clipRule="evenodd"
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                      clipRule="evenodd"
                     />
-                </svg>
-                Voir la bande-annonce
+                  </svg>
+                  Voir la bande-annonce
                 </button>
+              </div>
             </div>
-            </div>
-            </div>
+          </div>
+
           {/* Brand image style Hero */}
-
-            <div className="hidden md:flex items-center justify-center align-top relative max-w-[400px]">
-                <div className="absolute top-[-20px] right-[-20px] scale-95 z-0 hidden lg:block rotate-[-25deg]">
-                    <img
-                    src={cartoon.brandImageUrl}
-                    alt="Brand background"
-                    className="rounded-lg shadow-[0_15px_50px_rgba(0,0,0,0.8)] object-cover opacity-60"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-60 rounded-lg"></div>
-                </div>
-                <div className="relative z-10 lg:rotate-[16deg]">
-                    <img
-                    src={cartoon.brandImageUrl}
-                    alt="Brand"
-                    className="rounded-lg shadow-[0_20px_60px_rgba(0,0,0,0.9)] object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg"></div>
-                </div>
+          <div className="hidden md:flex items-center justify-center align-top relative max-w-[400px]">
+            <div className="absolute top-[-20px] right-[-20px] scale-95 z-0 hidden lg:block rotate-[-25deg]">
+              <img
+                src={cartoon.brandImageUrl}
+                alt="Brand background"
+                className="rounded-lg shadow-[0_15px_50px_rgba(0,0,0,0.8)] object-cover opacity-60"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-60 rounded-lg"></div>
             </div>
-      </div>
-
-      
-
-      {/* Mots-clés en bas */}
-      {cartoon.keywords && (
-        <div className="hidden md:block"> {/* Ajout de hidden md:block */}
-          <KeywordsMarquee keywords={cartoon.keywords} position={"absolute bottom-4 left-0"}  backgroundColor={"bg-black bg-opacity-50"} />
-        </div>
-      )}
-
-      {/* Modal Trailer */}
-      {showModal && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50"
-          onClick={closeModal}
-        >
-          <div
-            className="bg-black p-4 rounded-lg max-w-3xl w-full relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 text-white text-2xl z-50"
-            >
-              ✕
-            </button>
-            <div className="relative w-full h-0 pb-[56.25%] z-10">
-              <iframe
-                className="absolute top-0 left-0 w-full h-full rounded-lg"
-                src={getEmbedUrl(selectedTrailer)}
-                title="Trailer Video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+            <div className="relative z-10 lg:rotate-[16deg]">
+              <img
+                src={cartoon.brandImageUrl}
+                alt="Brand"
+                className="rounded-lg shadow-[0_20px_60px_rgba(0,0,0,0.9)] object-cover"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg"></div>
             </div>
           </div>
         </div>
-      )}
 
-      
-    </div>
-    {/* Section autres suggestions */}
-        {relatedCartoons.length > 0 && (
-          <div className="bg-black py-12 px-4 sm:px-6 lg:px-8  ">
-            <div className="mx-auto">
-              <div className="mb-10">
-                <h2 className="text-2xl md:text-3xl font-bold text-white">
-                  Vous pourriez aussi aimer
-                </h2>
-              </div>
-              
-              <div className="relative flex justify-center">
-                {/* Conteneur modifié pour le défilement horizontal */}
-                <div className="mb-12 overflow-x-auto pb-4 hide-scrollbar">
-                  <div className="flex space-x-6 w-max">
-                    {relatedCartoons.slice(0, 10).map((item) => (
-                      <div
-                        key={item.id}
-                        className="group relative overflow-hidden rounded-lg transition-all duration-300 transform hover:scale-105 hover:z-10 cursor-pointer flex-shrink-0"
-                        style={{ width: '200px' }} // Largeur fixe pour chaque élément
-                      >
-                        {/* Image fixe même hauteur */}
-                        <div className="w-full h-[290px] bg-gray-800 rounded-lg overflow-hidden">
-                          <img
-                            src={item.brandImageUrl}
-                            alt={item.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
+        {/* Mots-clés en bas */}
+        {cartoon.keywords && (
+          <div className="hidden md:block">
+            <KeywordsMarquee keywords={cartoon.keywords} position={"absolute bottom-4 left-0"} backgroundColor={"bg-black bg-opacity-50"} />
+          </div>
+        )}
 
-                        {/* Overlay noir total */}
-                        <div className="absolute inset-0 bg-black bg-opacity-80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-start text-start p-4">
-                          <h3 className="text-white font-bold text-lg">{item.title}</h3>
-                          <p className="text-gray-400 text-sm">Sortie : {item.releaseDate}</p>
-
-                          {/* Boutons responsive */}
-                          <div className="flex flex-col sm:flex-col space-y-2 sm:space-y-0 py-3 w-full gap-2">
-                            {/* Bouton Trailer */}
-                            <button
-                              onClick={() => openTrailer(getEmbedUrl(item.trailerUrl))}
-                              className="bg-purple-600 hover:bg-purple-800 text-white px-3 py-2 rounded-lg font-semibold flex items-center justify-center text-xs sm:text-sm w-full sm:w-auto"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-4 w-4 mr-2"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                              Annonce
-                            </button>
-
-                            {/* Bouton Info */}
-                            <button 
-                              onClick={() => navigateToDetails(item.id)}
-                              className="bg-white bg-opacity-30 hover:bg-opacity-20 text-white px-3 py-2 rounded-lg font-semibold flex items-center justify-center text-xs sm:text-sm w-full sm:w-auto"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-4 w-4 mr-2"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                              Savoir plus
-                            </button>
-                          </div>
-
-                          {/* Badge catégorie */}
-                          <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                            {item.categoryTitle}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Effet de dégradé sur les bords (optionnel) */}
-                <div className="hidden md:block absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
-                <div className="hidden md:block absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
-              </div>
-              
-              <div className="mt-8 text-center">
-                <Link to="/toontime" className="inline-flex items-center px-6 py-3 border border-gray-700 hover:border-purple-500 text-gray-300 hover:text-white rounded-lg transition-all duration-300 group">
-                  Voir plus de suggestions
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </Link>
+        {/* Modal Trailer */}
+        {showModal && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50"
+            onClick={closeModal}
+          >
+            <div
+              className="bg-black p-4 rounded-lg max-w-3xl w-full relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={closeModal}
+                className="absolute top-2 right-2 text-white text-2xl z-50"
+              >
+                ✕
+              </button>
+              <div className="relative w-full h-0 pb-[56.25%] z-10">
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full rounded-lg"
+                  src={getEmbedUrl(selectedTrailer)}
+                  title="Trailer Video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
               </div>
             </div>
           </div>
         )}
-
       </div>
-  );
 
-  
+      {/* Section autres suggestions */}
+      {relatedCartoons.length > 0 && (
+        <div className="bg-black py-12 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto">
+            <div className="mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold text-white">
+                Vous pourriez aussi aimer
+              </h2>
+            </div>
+            
+            <div className="relative flex justify-center">
+              <div className="mb-12 overflow-x-auto pb-4 hide-scrollbar">
+                <div className="flex space-x-6 w-max">
+                  {relatedCartoons.slice(0, 10).map((item) => (
+                    <div
+                      key={item.id}
+                      className="group relative overflow-hidden rounded-lg transition-all duration-300 transform hover:scale-105 hover:z-10 cursor-pointer flex-shrink-0"
+                      style={{ width: '200px' }}
+                    >
+                      <div className="w-full h-[290px] bg-gray-800 rounded-lg overflow-hidden">
+                        <img
+                          src={item.brandImageUrl}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      <div className="absolute inset-0 bg-black bg-opacity-80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-start text-start p-4">
+                        <h3 className="text-white font-bold text-lg">{item.title}</h3>
+                        <p className="text-gray-400 text-sm">Sortie : {item.releaseDate}</p>
+
+                        <div className="flex flex-col sm:flex-col space-y-2 sm:space-y-0 py-3 w-full gap-2">
+                          <button
+                            onClick={() => openTrailer(getEmbedUrl(item.trailerUrl))}
+                            className="bg-purple-600 hover:bg-purple-800 text-white px-3 py-2 rounded-lg font-semibold flex items-center justify-center text-xs sm:text-sm w-full sm:w-auto"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4 mr-2"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            Annonce
+                          </button>
+
+                          <button 
+                            onClick={() => navigateToDetails(item.id)}
+                            className="bg-white bg-opacity-30 hover:bg-opacity-20 text-white px-3 py-2 rounded-lg font-semibold flex items-center justify-center text-xs sm:text-sm w-full sm:w-auto"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4 mr-2"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            Savoir plus
+                          </button>
+                        </div>
+
+                        <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                          {item.categoryTitle}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="hidden md:block absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+              <div className="hidden md:block absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+            </div>
+            
+            <div className="mt-8 text-center">
+              <Link to="/toontime" className="inline-flex items-center px-6 py-3 border border-gray-700 hover:border-purple-500 text-gray-300 hover:text-white rounded-lg transition-all duration-300 group">
+                Voir plus de suggestions
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

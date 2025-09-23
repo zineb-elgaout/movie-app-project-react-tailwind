@@ -1,12 +1,11 @@
-import AdminLayout from "../../Layouts/admin/AdminLayout";
 import { useState ,useEffect} from 'react';
 import { FiShield, FiBell, FiMoon, FiChevronRight , FiMail , FiArrowLeft , FiArrowDown , FiCheck } from 'react-icons/fi';
 import Header from "../../components/ui/Header";
-import axios from "axios";
 import {getVerifiedEmails, requestVerificationCode ,verifyCode } from "../../../services/emailVerificationService";
 import { getUserProfile } from "../../../services/userService";
+import EditorLayout from "../../Layouts/editor/EditorLayout";
 
-const SettingsPage = () => {
+const Settings = () => {
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(true);
   const [activeSection, setActiveSection] = useState('security');
@@ -141,7 +140,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <AdminLayout>
+    <>
       <div className=" bg-gray-900 text-gray-100">
         <div className=" px-4 py-8">
           <div className=" mx-auto">
@@ -450,8 +449,8 @@ const SettingsPage = () => {
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
-export default SettingsPage;
+export default Settings;

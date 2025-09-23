@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import {FiUser, FiLogOut, FiMenu, FiX, FiEdit, FiVideo,  FiInfo, FiFilm} from 'react-icons/fi';
+import { FiLogOut, FiMenu, FiX,  FiVideo,  FiInfo} from 'react-icons/fi';
 import { FaChartBar } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import profil from '../../../public/vite.svg';
 import { getUserProfile } from '../../../services/userService';
 import {logout} from '../../../services/authService';
 
-function Sidebar() {
+function EditorSideBar() {
  
   const nom = getUserProfile()?.lastName || '';
   const prenom = getUserProfile()?.firstName || '';
@@ -54,10 +54,9 @@ function Sidebar() {
 
   // Données de navigation pour éviter la répétition
   const navItems = [
-    { to: "/admin/dashboard", icon: FaChartBar, text: "Tableau de bord" },
-    { to: "/admin/categories", icon: FiVideo, text: "Catégories" },
-    { to: "/admin/users", icon: FiUser, text: "Utilisateurs" },
-    { to: "/admin/faq", icon: FiInfo, text: "FAQ" },
+    { to: "/editor/dashboard", icon: FaChartBar, text: "Tableau de bord" },
+    { to: "/editor/categories", icon: FiVideo, text: "Catégories" },
+    { to: "/editor/faq", icon: FiInfo, text: "FAQ" },
   ];
 
   return (
@@ -107,13 +106,13 @@ function Sidebar() {
             </div>
             <div className="flex space-x-2 mt-3 pt-3">
               <NavLink 
-                to="/admin/profil" 
+                to="/editor/profil" 
                 className="text-xs bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-1 rounded-full flex-1 text-center transition-colors"
               >
                 Profil
               </NavLink>
               <NavLink 
-                to="/admin/settings" 
+                to="/editor/settings" 
                 className="text-xs bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-1 rounded-full flex-1 text-center transition-colors"
               >
                 Paramètres
@@ -172,4 +171,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default EditorSideBar;
