@@ -16,31 +16,44 @@ const axiosAuth = axios.create({
   },
 });
 
+// Intercepteur pour ajouter le token
 axiosAuth.interceptors.request.use(
   (config) => {
     const token = getTokenFromCookie();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.warn("Aucun token trouvé dans les cookies");
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
+// Intercepteur pour mieux gérer les erreurs
 axiosAuth.interceptors.response.use(
   (response) => {
     console.log("API Response:", response);
     return response;
   },
   (error) => {
-    console.error("API Error:", error.response || error);
+    console.error("API Error Details:", {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
     return Promise.reject(error);
   }
 );
 
 export const getFavorites = async () => {
-  const response = await axiosAuth.get("/");
-  return response.data;
+  try {
+    const response = await axiosAuth.get("/");
+    return response.data;
+  } catch (error) {
+    console.error("Error in getFavorites:", error);
+    throw error;
+  }
 };
 
 export const getFavoriteById = async (id) => {

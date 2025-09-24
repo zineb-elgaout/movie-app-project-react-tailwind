@@ -73,6 +73,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/cartoon/:id" element={ <ProtectedRoute rolesAllowed={["Client"]}> <CartoonDetailPage />  </ProtectedRoute> } />
+
 
         {/* Editor */}
         <Route

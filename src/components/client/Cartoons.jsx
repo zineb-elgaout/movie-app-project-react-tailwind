@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHeart, FaHeartCircleCheck } from "react-icons/fa6";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { addFavorite, removeFavorite, getFavorites } from "../../../services/favoriteService";
 
 export default function Cartoons({ cartoons }) {
@@ -15,8 +15,10 @@ export default function Cartoons({ cartoons }) {
     const loadFavorites = async () => {
       try {
         const favorites = await getFavorites();
-        // Extraire les IDs des cartoons favoris
-        const favoriteCartoonIds = favorites.map(fav => fav.cartoonId || fav.cartoon?.id);
+        // Extraire les IDs des cartoons favoris (comme dans CartoonDetailPage)
+        const favoriteCartoonIds = favorites.map(fav => 
+          fav.cartoonId || fav.cartoon?.id
+        );
         setFavoriteIds(favoriteCartoonIds.filter(id => id != null));
       } catch (err) {
         console.error("Erreur lors du chargement des favoris:", err);
@@ -37,12 +39,13 @@ export default function Cartoons({ cartoons }) {
   };
 
   const getEmbedUrl = (url) => {
+    if (!url) return "";
     try {
       const videoId = new URL(url).searchParams.get("v");
       return `https://www.youtube.com/embed/${videoId}`;
     } catch (error) {
       console.error("URL de trailer invalide:", url);
-      return url; // Retourner l'URL originale en fallback
+      return url;
     }
   };
 
@@ -50,9 +53,11 @@ export default function Cartoons({ cartoons }) {
     navigate(`/cartoon/${cartoonId}`);
   };
 
-  // 🔹 Fonction pour gérer les favoris
+  // 🔹 Fonction pour gérer les favoris (identique à CartoonDetailPage)
   const toggleFavorite = async (cartoonId, event) => {
-    event.stopPropagation(); // Empêcher la propagation des événements
+    event.stopPropagation();
+    
+    if (!cartoonId || loadingFavorites[cartoonId]) return;
     
     try {
       setLoadingFavorites(prev => ({ ...prev, [cartoonId]: true }));
@@ -64,20 +69,25 @@ export default function Cartoons({ cartoons }) {
         console.log("Retiré des favoris:", cartoonId);
       } else {
         // Ajouter aux favoris
-        await addFavorite({ cartoonId: cartoonId });
+        await addFavorite(cartoonId);
         setFavoriteIds(prev => [...prev, cartoonId]);
         console.log("Ajouté aux favoris:", cartoonId);
       }
     } catch (err) {
       console.error("Erreur lors de la mise à jour des favoris:", err);
-      alert("Erreur lors de la mise à jour des favoris. Vérifiez votre connexion.");
+      alert(err.response?.data?.message || "Erreur lors de la mise à jour des favoris");
     } finally {
       setLoadingFavorites(prev => ({ ...prev, [cartoonId]: false }));
     }
   };
 
+  // 🔹 Vérifier si un cartoon est favori
+  const isFavorite = (cartoonId) => {
+    return favoriteIds.includes(cartoonId);
+  };
+
   return (
-    <div className="pyb-12 bg-black">
+    <div className="py-12 bg-black">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
         {cartoons.map((item) => (
           <div
@@ -117,20 +127,22 @@ export default function Cartoons({ cartoons }) {
                 <div className="bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
                   {item.categoryTitle}
                 </div>
+                
+                {/* 🔹 Bouton favori identique à CartoonDetailPage */}
                 <button
                   onClick={(e) => toggleFavorite(item.id, e)}
                   disabled={loadingFavorites[item.id]}
                   className={`text-red-600 text-xl transition-all duration-200 ${
                     loadingFavorites[item.id] ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
                   }`}
-                  title={favoriteIds.includes(item.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
+                  title={isFavorite(item.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
                 >
                   {loadingFavorites[item.id] ? (
                     <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
-                  ) : favoriteIds.includes(item.id) ? (
-                    <FaHeartCircleCheck />
+                  ) : isFavorite(item.id) ? (
+                    <FaHeart className="h-5 w-5" />
                   ) : (
-                    <FaHeart />
+                    <FaRegHeart className="h-5 w-5" />
                   )}
                 </button>
               </div>
