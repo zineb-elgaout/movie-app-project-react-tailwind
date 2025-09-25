@@ -13,6 +13,7 @@ const Topbar = ({ sidebarCollapsed }) => {
   const nom = getUserProfile()?.lastName || ' ';
   const prenom = getUserProfile()?.firstName || ' ';
   const email = getUserProfile()?.email || ' ';
+  const role = getUserProfile()?.role || '';
 
   return (
     <div 
@@ -64,21 +65,23 @@ const Topbar = ({ sidebarCollapsed }) => {
                   <p className="text-xs text-gray-400">{email}</p>
                 </div>
                 <NavLink 
-                  to="/profil" 
-                  className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <FiUser className="mr-2" />
-                  Profil
-                </NavLink>
-                <NavLink 
-                  to="/settings" 
-                  className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <FiSettings className="mr-2" />
-                  Paramètres
-                </NavLink>
+  to={`/${role}/profil`} 
+  className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 transition-colors"
+  onClick={() => setIsMenuOpen(false)}
+>
+  <FiUser className="mr-2" />
+  Profil
+</NavLink>
+
+<NavLink 
+  to={`/${role}/settings`} 
+  className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 transition-colors"
+  onClick={() => setIsMenuOpen(false)}
+>
+  <FiSettings className="mr-2" />
+  Paramètres
+</NavLink>
+
                 
                 <NavLink 
                   to="/logout" 

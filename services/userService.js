@@ -25,8 +25,19 @@ export function getUserProfile() {
     const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
     const firstName = decoded["FirstName"];
     const lastName = decoded["LastName"];
+    const nationality = decoded["Nationality"];  // 🔹 majuscule comme côté backend
+    const createdAt = decoded["CreatedAt"];      // 🔹 majuscule comme côté backend
 
-    return { id, email, username, role, firstName, lastName };
+    return {
+      id,
+      email,
+      username,
+      role,
+      firstName,
+      lastName,
+      nationality,
+      createdAt: createdAt ? new Date(createdAt) : null, // 🔹 converti en Date JS
+    };
   } catch (error) {
     console.error("Erreur lors du décodage du token :", error);
     return null;

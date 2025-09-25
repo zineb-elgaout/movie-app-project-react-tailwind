@@ -1,541 +1,343 @@
-import { useState } from 'react';
-import { FiMail, FiMapPin, FiCalendar, FiAward, FiBook, FiMessageSquare, FiHeart, FiStar, FiEdit2, FiCamera, FiX } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiMail, FiMapPin, FiUser, FiAward, FiMessageSquare, FiHeart, FiStar, FiClock, FiArrowRight } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { getUserProfile } from '../../../services/userService';
+import { getFavorites } from '../../../services/favoriteService';
 
-const Profile= () => {
+const Profile = () => {
   const [activeTab, setActiveTab] = useState('favorites');
-  const [isEditing, setIsEditing] = useState(false);
-  const [showImageModal, setShowImageModal] = useState(false);
-  const [imageType, setImageType] = useState(''); // 'profile' or 'cover'
-  
-  // Données du profil pour une app de cartoons
-  const [profileData, setProfileData] = useState({
-    coverPhoto: 'https://www.gannett-cdn.com/-mm-/c4ff156bfef11d468e2b233282a16eb1303f6aa4/c=0-39-768-473/local/-/media/2018/05/22/CarolinaGroup/Greenville/636625918491296957-Fireflies-2-1-.jpg?width=3200&height=1680&fit=crop',
-    profilePhoto: 'https://www.nautiljon.com/images/actualite/00/59/1486721458562_image.jpg',
-    
-    username: 'cartoon_lover',
-    fullName: 'zineb elgaout',
-    email: 'zineb.elgaout@example.com',
-    country: 'New York, USA',
-    birthDate: '2004-05-02',
-    role: 'Admin',
-   
-    favoriteGenres: ['Animation', 'Comédie', 'Aventure', 'Science-fiction'],
-    watchlist: [
-      'Adventure Time',
-      'Rick and Morty',
-      'Avatar: The Last Airbender',
-      'Gravity Falls'
-    ],
-    likedCartoons: [
-      'Steven Universe',
-      'Over the Garden Wall',
-      'The Amazing World of Gumball',
-      'Samurai Jack'
-    ],
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [favorites, setFavorites] = useState([]);
+  const [favoritesLoading, setFavoritesLoading] = useState(false);
 
-    interests: ['Analyse de cartoons', 'Histoire de l\'animation', 'Voice acting', 'Character design'],
+  // Charger les données du profil et des favoris
+  useEffect(() => {
+    const loadProfileData = async () => {
+      try {
+        setLoading(true);
+        
+        // Charger le profil utilisateur
+        const userProfile = await getUserProfile();
+        setProfileData(userProfile);
 
-    statistique: {
-      critiques: 20,
-      votes: 10,
-      favoris: 15,
+        // Charger les favoris
+        await loadFavorites();
+        
+      } catch (err) {
+        console.error('Erreur lors du chargement du profil:', err);
+        setError('Impossible de charger le profil');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfileData();
+  }, []);
+
+  const loadFavorites = async () => {
+    try {
+      setFavoritesLoading(true);
+      const data = await getFavorites();
+      
+      if (data && Array.isArray(data)) {
+        const firstItem = data[0];
+        let cartoonsOnly = [];
+
+        if (firstItem?.cartoon) {
+          cartoonsOnly = data
+            .map(fav => fav.cartoon)
+            .filter(cartoon => cartoon != null);
+        } else if (firstItem?.cartoonId || firstItem?.title) {
+          cartoonsOnly = data;
+        }
+
+        setFavorites(cartoonsOnly);
+      } else {
+        setFavorites([]);
+      }
+    } catch (err) {
+      console.error('Erreur lors du chargement des favoris:', err);
+      setFavorites([]);
+    } finally {
+      setFavoritesLoading(false);
     }
-  });
-
-  const [editForm, setEditForm] = useState({ ...profileData });
-
-  // Gérer les changements dans le formulaire d'édition
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditForm({
-      ...editForm,
-      [name]: value
-    });
   };
 
-  // Gérer les changements des catégories préférées
-  const handleGenreChange = (index, value) => {
-    const newGenres = [...editForm.favoriteGenres];
-    newGenres[index] = value;
-    setEditForm({
-      ...editForm,
-      favoriteGenres: newGenres
-    });
+  // Formatage de la date d'inscription
+  const formatMemberSince = (dateString) => {
+    const date = new Date(dateString);
+    return `Membre depuis ${date.toLocaleDateString('fr-FR', { 
+      month: 'long', 
+      year: 'numeric' 
+    })}`;
   };
 
-  // Ajouter une nouvelle catégorie
-  const addGenre = () => {
-    setEditForm({
-      ...editForm,
-      favoriteGenres: [...editForm.favoriteGenres, '']
-    });
-  };
+  // Obtenir seulement les 6 premiers favoris
+  const displayedFavorites = favorites.slice(0, 6);
+  const hasMoreFavorites = favorites.length > 6;
 
-  // Supprimer une catégorie
-  const removeGenre = (index) => {
-    const newGenres = editForm.favoriteGenres.filter((_, i) => i !== index);
-    setEditForm({
-      ...editForm,
-      favoriteGenres: newGenres
-    });
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black">
+        <div className="flex flex-col items-center justify-center min-h-[70vh] px-4">
+          <div className="relative">
+            <div className="animate-spin rounded-full h-20 w-20 border-2 border-purple-500/30 border-t-purple-500 mb-6"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <FiUser className="w-8 h-8 text-purple-500" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-3">Chargement du profil</h2>
+          <p className="text-gray-400 text-center max-w-md">
+            Préparation de votre profil...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-  // Sauvegarder les modifications
-  const handleSave = () => {
-    setProfileData(editForm);
-    setIsEditing(false);
-    // Ici, vous ajouteriez normalement un appel API pour sauvegarder les données
-  };
+  if (error) {
+    return (
+      <div className="min-h-screen bg-black">
+        <div className="flex flex-col items-center justify-center min-h-[70vh] px-4">
+          <div className="bg-gray-900/80 backdrop-blur-sm p-8 rounded-xl border border-gray-700 max-w-md w-full text-center">
+            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+              <FiUser className="w-8 h-8 text-red-400" />
+            </div>
+            <h2 className="text-xl font-semibold text-white mb-2">Erreur de chargement</h2>
+            <p className="text-gray-300 mb-6 text-sm">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center mx-auto border border-gray-600"
+            >
+              Réessayer
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  // Annuler les modifications
-  const handleCancel = () => {
-    setEditForm({ ...profileData });
-    setIsEditing(false);
-  };
-
-  // Ouvrir le modal de modification d'image
-  const openImageModal = (type) => {
-    setImageType(type);
-    setShowImageModal(true);
-  };
-
-  // Changer l'image (simulé)
-  const changeImage = (url) => {
-    if (imageType === 'profile') {
-      setEditForm({
-        ...editForm,
-        profilePhoto: url
-      });
-    } else {
-      setEditForm({
-        ...editForm,
-        coverPhoto: url
-      });
-    }
-    setShowImageModal(false);
+  const userStats = {
+    favoris: favorites.length,
+    critiques: 0,
+    votes: 0,
   };
 
   return (
-    <>
-      {/* Photo de couverture avec bouton d'édition */}
+    <div className="min-h-screen bg-black">
+      {/* Photo de couverture */}
       <div 
-        className="h-56 bg-cover bg-center relative group"
-        style={{ backgroundImage: `url(${isEditing ? editForm.coverPhoto : profileData.coverPhoto})` }}
+        className="h-56 bg-cover bg-center relative"
+        style={{ 
+          backgroundImage: `url(https://images.unsplash.com/photo-1579546929662-711aa81148cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80)`,
+          backgroundPosition: 'center'
+        }}
       >
-        {isEditing && (
-          <button
-            onClick={() => openImageModal('cover')}
-            className="absolute top-4 right-4 bg-gray-800 bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-100 transition-all"
-            title="Changer la photo de couverture"
-          >
-            <FiCamera size={18} />
-          </button>
-        )}
-        
-        {/* Conteneur photo de profil avec fond gris */}
-        <div className="absolute -bottom-16 left-4 group">
-          {/* Fond gris circulaire (plus grand que la photo) */}
-          <div className="absolute -inset-4 bg-gray-900 rounded-full z-0"></div>
-          
-          {/* Photo de profil par dessus */}
+        {/* Photo de profil */}
+        <div className="absolute -bottom-16 left-8">
           <div className="relative">
             <img 
-              src={isEditing ? editForm.profilePhoto : profileData.profilePhoto} 
+              src={profileData.profilePhoto || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'} 
               alt="Profile" 
-              className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover shadow-lg border-4 border-gray-900 relative z-10"
+              className="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-gray-900 bg-gray-700"
             />
-            {isEditing && (
-              <button
-                onClick={() => openImageModal('profile')}
-                className="absolute bottom-2 right-2 bg-gray-800 bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-100 transition-all z-20"
-                title="Changer la photo de profil"
-              >
-                <FiCamera size={16} />
-              </button>
-            )}
           </div>
-        </div>
-
-        {/* Bouton d'édition du profil */}
-        <div className="absolute top-4 right-4">
-          {!isEditing ? (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="flex items-center bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md transition-colors"
-            >
-              <FiEdit2 size={16} className="mr-2" />
-              Modifier le profil
-            </button>
-          ) : (
-            <div className="flex space-x-2">
-              <button
-                onClick={handleSave}
-                className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors"
-              >
-                Enregistrer
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md transition-colors"
-              >
-                Annuler
-              </button>
-            </div>
-          )}
         </div>
       </div>
       
       {/* Contenu du profil */}
       <div className="px-4 md:px-8 pt-20 pb-8">
-        {/* En-tête avec nom et titre */}
-        <div className="mb-6">
-          {isEditing ? (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Nom complet</label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={editForm.fullName}
-                  onChange={handleInputChange}
-                  className="w-full md:w-1/2 p-2 bg-gray-700 border border-gray-600 rounded-md text-white"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Nom d'utilisateur</label>
-                <input
-                  type="text"
-                  name="username"
-                  value={editForm.username}
-                  onChange={handleInputChange}
-                  className="w-full md:w-1/2 p-2 bg-gray-700 border border-gray-600 rounded-md text-white"
-                />
-              </div>
-            </div>
-          ) : (
-            <>
-              <h1 className="text-2xl md:text-3xl font-bold text-white">
-                {profileData.fullName}
-              </h1>
-              <p className="text-base md:text-lg text-purple-400">@{profileData.username}</p>
-            </>
-          )}
+        {/* En-tête avec nom et informations */}
+        <div className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            {profileData.firstName} {profileData.lastName}
+          </h1>
+          <p className="text-base md:text-lg text-purple-400 mb-1">
+            @{profileData.firstName?.toLowerCase()}_{profileData.lastName?.toLowerCase()}
+          </p>
+          <p className="text-sm text-gray-400 flex items-center">
+            <FiClock className="w-4 h-4 mr-2" />
+            {formatMemberSince(profileData.createdAt)}
+          </p>
         </div>
 
         {/* Grille principale */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
-          {/* Colonne gauche (1/4 de largeur) */}
+          {/* Colonne gauche - Informations */}
           <div className="lg:col-span-1 space-y-6">
             {/* Informations personnelles */}
-            <div className="bg-gray-800 p-4 md:p-5 rounded-lg">
-              <h3 className="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-4">Informations</h3>
+            <div className="bg-gray-800 p-5 rounded-lg border border-gray-700">
+              <h3 className="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-4">
+                Informations du compte
+              </h3>
               <div className="space-y-3">
-                {isEditing ? (
-                  <>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={editForm.email}
-                        onChange={handleInputChange}
-                        className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-1">Pays/Ville</label>
-                      <input
-                        type="text"
-                        name="country"
-                        value={editForm.country}
-                        onChange={handleInputChange}
-                        className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-1">Date de naissance</label>
-                      <input
-                        type="date"
-                        name="birthDate"
-                        value={editForm.birthDate}
-                        onChange={handleInputChange}
-                        className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white"
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center text-gray-300">
-                      <FiMail className="w-4 h-4 mr-3 text-purple-400" />
-                      <span className="text-sm md:text-base">{profileData.email}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <FiMapPin className="w-4 h-4 mr-3 text-purple-400" />
-                      <span className="text-sm md:text-base">{profileData.country}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <FiCalendar className="w-4 h-4 mr-3 text-purple-400" />
-                      <span className="text-sm md:text-base">Né le {new Date(profileData.birthDate).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <FiAward className="w-4 h-4 mr-3 text-purple-400" />
-                      <span className="text-sm md:text-base">{profileData.role}</span>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Genres préférés */}
-            <div className="bg-gray-800 p-3 md:p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="text-sm font-semibold text-purple-400 uppercase tracking-wider">Catégories préférées</h3>
-                {isEditing && (
-                  <button
-                    onClick={addGenre}
-                    className="text-purple-400 hover:text-purple-300 text-sm"
-                  >
-                    + Ajouter
-                  </button>
-                )}
-              </div>
-              {isEditing ? (
-                <div className="space-y-2">
-                  {editForm.favoriteGenres.map((genre, index) => (
-                    <div key={index} className="flex items-center">
-                      <input
-                        type="text"
-                        value={genre}
-                        onChange={(e) => handleGenreChange(index, e.target.value)}
-                        className="flex-1 p-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm"
-                      />
-                      <button
-                        onClick={() => removeGenre(index)}
-                        className="ml-2 text-red-400 hover:text-red-300"
-                      >
-                        <FiX size={16} />
-                      </button>
-                    </div>
-                  ))}
+                <div className="flex items-center text-gray-300">
+                  <FiMail className="w-4 h-4 mr-3 text-purple-400" />
+                  <span className="text-sm">{profileData.email}</span>
                 </div>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  {profileData.favoriteGenres.map((genre, index) => (
-                    <span 
-                      key={index}
-                      className="px-2 py-1 text-xs md:px-3 md:py-1 bg-gray-600 text-gray-200 rounded-full hover:bg-gray-500 transition-colors"
-                    >
-                      {genre}
-                    </span>
-                  ))}
+                <div className="flex items-center text-gray-300">
+                  <FiMapPin className="w-4 h-4 mr-3 text-purple-400" />
+                  <span className="text-sm">{profileData.nationality || 'Non spécifié'}</span>
                 </div>
-              )}
+                <div className="flex items-center text-gray-300">
+                  <FiUser className="w-4 h-4 mr-3 text-purple-400" />
+                  <span className="text-sm">{profileData.role}</span>
+                </div>
+                <div className="flex items-center text-gray-300">
+                  <FiAward className="w-4 h-4 mr-3 text-purple-400" />
+                  <span className="text-sm">
+                    {userStats.favoris} favori{userStats.favoris > 1 ? 's' : ''}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Colonne droite (3/4 de largeur) */}
+          {/* Colonne droite - Contenu principal */}
           <div className="lg:col-span-3 space-y-6">
-            {/* Onglets et statistiques */}
+            {/* Onglets */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div className="flex space-x-2 md:space-x-4">
+              <div className="flex space-x-4">
                 <button
                   onClick={() => setActiveTab('favorites')}
-                  className={`px-4 py-2 text-sm md:text-base md:px-6 md:py-2 font-medium rounded-md transition-colors flex items-center ${
+                  className={`px-6 py-2 font-medium rounded-md transition-colors flex items-center ${
                     activeTab === 'favorites' 
                       ? 'bg-purple-600 text-white' 
                       : 'text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   <FiHeart className="mr-2" />
-                  Favoris
+                  Favoris ({userStats.favoris})
                 </button>
                 <button
                   onClick={() => setActiveTab('comments')}
-                  className={`px-4 py-2 text-sm md:text-base md:px-6 md:py-2 font-medium rounded-md transition-colors flex items-center ${
+                  className={`px-6 py-2 font-medium rounded-md transition-colors flex items-center ${
                     activeTab === 'comments' 
                       ? 'bg-purple-600 text-white' 
                       : 'text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   <FiMessageSquare className="mr-2" />
-                  Critiques
+                  Critiques ({userStats.critiques})
                 </button>
                 <button
                   onClick={() => setActiveTab('votes')}
-                  className={`px-4 py-2 text-sm md:text-base md:px-6 md:py-2 font-medium rounded-md transition-colors flex items-center ${
+                  className={`px-6 py-2 font-medium rounded-md transition-colors flex items-center ${
                     activeTab === 'votes' 
                       ? 'bg-purple-600 text-white' 
                       : 'text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   <FiStar className="mr-2" />
-                  Votes
+                  Votes ({userStats.votes})
                 </button>
-              </div>
-
-              {/* Statistiques alignées à droite */}
-              <div className="flex flex-wrap gap-2 md:gap-4 justify-end w-full md:w-auto">
-                <div className="flex items-center space-x-1 border border-gray-600 rounded-full px-2 py-1 md:px-3 md:py-2">
-                  <FiMessageSquare className="text-purple-400 text-sm md:text-base" />
-                  <span className="text-gray-200 text-xs md:text-sm">{profileData.statistique.critiques} critiques</span>
-                </div>
-                <div className="flex items-center space-x-1 border border-gray-600 rounded-full px-2 py-1 md:px-3 md:py-2">
-                  <FiHeart className="text-purple-400 text-sm md:text-base" />
-                  <span className="text-gray-200 text-xs md:text-sm">{profileData.statistique.favoris} favoris</span>
-                </div>
-                <div className="flex items-center space-x-1 border border-gray-600 rounded-full px-2 py-1 md:px-3 md:py-2">
-                  <FiStar className="text-purple-400 text-sm md:text-base" />
-                  <span className="text-gray-200 text-xs md:text-sm">{profileData.statistique.votes} votes</span>
-                </div>
               </div>
             </div>
 
             {/* Contenu des onglets */}
-            <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 min-h-[400px]">
               {activeTab === 'favorites' ? (
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-4">Mes cartoons favoris</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {profileData.likedCartoons.map((cartoon, index) => (
-                      <div key={index} className="bg-gray-700 p-3 md:p-4 rounded-lg shadow-sm border border-gray-500 hover:border-purple-400 transition-colors">
-                        <h4 className="font-medium text-white text-sm md:text-base">{cartoon}</h4>
-                        <p className="text-xs md:text-sm text-gray-300 mt-1">Ma note: ★★★★★</p>
-                      </div>
-                    ))}
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-semibold text-white">Mes cartoons favoris</h3>
+                    {hasMoreFavorites && (
+                      <Link 
+                        to="/favoris"
+                        className="flex items-center text-purple-400 hover:text-purple-300 text-sm transition-colors"
+                      >
+                        Voir tous ({favorites.length})
+                        <FiArrowRight className="ml-1" />
+                      </Link>
+                    )}
                   </div>
+                  
+                  {favoritesLoading ? (
+                    <div className="flex justify-center items-center py-12">
+                      <div className="animate-spin rounded-full h-8 w-8 border-2 border-purple-500 border-t-transparent"></div>
+                    </div>
+                  ) : favorites.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FiHeart className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h4 className="text-lg font-medium text-gray-300 mb-2">Aucun favori</h4>
+                      <p className="text-gray-400 text-sm mb-4">
+                        Vous n'avez pas encore ajouté de cartoons à vos favoris.
+                      </p>
+                      <Link 
+                        to="/toontime"
+                        className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-md transition-colors"
+                      >
+                        Découvrir les cartoons
+                      </Link>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                        {displayedFavorites.map((favorite, index) => (
+                          <div key={favorite.id || index} className="bg-gray-700 rounded-lg border border-gray-600 hover:border-purple-400 transition-all duration-200 hover:scale-105">
+                            <div className="h-40 bg-gray-600 rounded-t-lg overflow-hidden">
+                              <img 
+                                src={favorite.backImageUrl} 
+                                alt={favorite.title}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.src = 'https://images.unsplash.com/photo-1635863138275-d9b33299680a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
+                                }}
+                              />
+                            </div>
+                            <div className="p-3">
+                              <h4 className="font-medium text-white text-sm mb-1 truncate">{favorite.title}</h4>
+                              <p className="text-gray-300 text-xs">
+                                {favorite.releaseDate ? new Date(favorite.releaseDate).getFullYear() : 'Date inconnue'}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {hasMoreFavorites && (
+                        <div className="text-center border-t border-gray-700 pt-6">
+                          <Link 
+                            to="/favoris"
+                            className="inline-flex items-center bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors"
+                          >
+                            Voir les {favorites.length - 6} autres favoris
+                            <FiArrowRight className="ml-2" />
+                          </Link>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               ) : activeTab === 'comments' ? (
-                <div>
-                  <h3 className="text-lg font-semibold text-white mb-4">Mes dernières critiques</h3>
-                  <div className="space-y-4">
-                    {[1, 2].map((item) => (
-                      <div key={item} className="bg-gray-700 p-3 md:p-4 rounded-lg shadow-sm border border-gray-500">
-                        <div className="flex items-center mb-2">
-                          <img 
-                            src={profileData.profilePhoto} 
-                            alt="Profile" 
-                            className="w-6 h-6 md:w-8 md:h-8 rounded-full mr-2"
-                          />
-                          <span className="font-medium text-white text-sm md:text-base">Sur "Adventure Time"</span>
-                        </div>
-                        <p className="text-gray-300 text-xs md:text-sm">"Une série qui mélange parfaitement absurdité comique et profondeur émotionnelle. Chaque personnage est soigneusement développé sur plusieurs saisons..."</p>
-                        <div className="flex justify-between items-center mt-2">
-                          <span className="text-xs text-gray-400">Posté le {new Date().toLocaleDateString()}</span>
-                          <span className="text-yellow-400 text-xs md:text-sm">★★★★☆</span>
-                        </div>
-                      </div>
-                    ))}
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FiMessageSquare className="w-8 h-8 text-gray-400" />
                   </div>
+                  <h4 className="text-lg font-medium text-gray-300 mb-2">Fonctionnalité à venir</h4>
+                  <p className="text-gray-400 text-sm">
+                    La gestion des critiques sera bientôt disponible.
+                  </p>
                 </div>
               ) : (
-                <div>
-                  <h3 className="text-lg font-semibold text-white mb-4">Mes derniers votes</h3>
-                  <div className="space-y-4">
-                    {[1, 2].map((item) => (
-                      <div key={item} className="bg-gray-700 p-3 md:p-4 rounded-lg shadow-sm border border-gray-500">
-                        <div className="flex items-center mb-2">
-                          <img 
-                            src={profileData.profilePhoto} 
-                            alt="Profile" 
-                            className="w-6 h-6 md:w-8 md:h-8 rounded-full mr-2"
-                          />
-                          <span className="font-medium text-white text-sm md:text-base">Sur "Adventure Time"</span>
-                        </div>
-                        <p className="text-gray-300 text-xs md:text-sm">"Une série qui mélange parfaitement absurdité comique et profondeur émotionnelle. Chaque personnage est soigneusement développé sur plusieurs saisons..."</p>
-                        <div className="flex justify-between items-center mt-2">
-                          <span className="text-xs text-gray-400">Voté le {new Date().toLocaleDateString()}</span>
-                          <span className="text-yellow-400 text-xs md:text-sm">★★★★☆</span>
-                        </div>
-                      </div>
-                    ))}
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FiStar className="w-8 h-8 text-gray-400" />
                   </div>
+                  <h4 className="text-lg font-medium text-gray-300 mb-2">Fonctionnalité à venir</h4>
+                  <p className="text-gray-400 text-sm">
+                    La gestion des votes sera bientôt disponible.
+                  </p>
                 </div>
               )}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Modal de changement d'image */}
-      {showImageModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold text-white">
-                Changer la {imageType === 'profile' ? 'photo de profil' : 'photo de couverture'}
-              </h3>
-              <button
-                onClick={() => setShowImageModal(false)}
-                className="text-gray-400 hover:text-white"
-              >
-                <FiX size={24} />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <p className="text-gray-300">Choisissez une nouvelle image :</p>
-              
-              <div className="grid grid-cols-2 gap-4">
-                {/* Options d'images prédéfinies */}
-                {imageType === 'profile' ? (
-                  <>
-                    <div 
-                      className="cursor-pointer border-2 border-gray-600 rounded-lg overflow-hidden hover:border-purple-500 transition-colors"
-                      onClick={() => changeImage('https://www.nautiljon.com/images/actualite/00/59/1486721458562_image.jpg')}
-                    >
-                      <img 
-                        src="https://www.nautiljon.com/images/actualite/00/59/1486721458562_image.jpg" 
-                        alt="Option 1" 
-                        className="w-full h-24 object-cover"
-                      />
-                    </div>
-                    <div 
-                      className="cursor-pointer border-2 border-gray-600 rounded-lg overflow-hidden hover:border-purple-500 transition-colors"
-                      onClick={() => changeImage('https://static.hitek.fr/img/actualite/2017/08/fb_avatar.png')}
-                    >
-                      <img 
-                        src="https://static.hitek.fr/img/actualite/2017/08/fb_avatar.png" 
-                        alt="Option 2" 
-                        className="w-full h-24 object-cover"
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div 
-                      className="cursor-pointer border-2 border-gray-600 rounded-lg overflow-hidden hover:border-purple-500 transition-colors"
-                      onClick={() => changeImage('https://www.gannett-cdn.com/-mm-/c4ff156bfef11d468e2b233282a16eb1303f6aa4/c=0-39-768-473/local/-/media/2018/05/22/CarolinaGroup/Greenville/636625918491296957-Fireflies-2-1-.jpg?width=3200&height=1680&fit=crop')}
-                    >
-                      <img 
-                        src="https://www.gannett-cdn.com/-mm-/c4ff156bfef11d468e2b233282a16eb1303f6aa4/c=0-39-768-473/local/-/media/2018/05/22/CarolinaGroup/Greenville/636625918491296957-Fireflies-2-1-.jpg?width=3200&height=1680&fit=crop" 
-                        alt="Option 1" 
-                        className="w-full h-24 object-cover"
-                      />
-                    </div>
-                    <div 
-                      className="cursor-pointer border-2 border-gray-600 rounded-lg overflow-hidden hover:border-purple-500 transition-colors"
-                      onClick={() => changeImage('https://wallpaperaccess.com/full/1268168.jpg')}
-                    >
-                      <img 
-                        src="https://wallpaperaccess.com/full/1268168.jpg" 
-                        alt="Option 2" 
-                        className="w-full h-24 object-cover"
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-              
-              <div className="pt-4 border-t border-gray-700">
-                <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md transition-colors">
-                  Télécharger une image
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </>  
+    </div>
   );
 };
 

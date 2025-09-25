@@ -84,9 +84,6 @@ const [categories, setCategories] = useState([]);
         
         <Categories categories={categories} />
 
-        {renderSectionHeader( 'Catégories préferée')}
-        
-        {renderSectionHeader('Films et seriés préférées')}
         
         {renderSectionHeader('Films et seriés')}
 
