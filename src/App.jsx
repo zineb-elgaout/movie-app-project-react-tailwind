@@ -101,7 +101,9 @@ function App() {
           path="/editor/dashboard"
           element={
             <ProtectedRoute rolesAllowed={["Editor"]}>
+              <EditorLayout>
               <EditorDashboard />
+              </EditorLayout>
             </ProtectedRoute>
           }
         />
