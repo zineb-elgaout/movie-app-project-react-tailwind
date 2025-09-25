@@ -1,85 +1,175 @@
-import { useState ,useEffect} from 'react';
-import { FiShield, FiBell, FiMoon, FiChevronRight , FiMail , FiArrowLeft , FiArrowDown , FiCheck } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiShield, FiBell, FiMoon, FiChevronRight, FiMail, FiArrowLeft, FiArrowDown, FiCheck, FiLock } from 'react-icons/fi';
 import Header from "../../components/ui/Header";
-import {getVerifiedEmails, requestVerificationCode ,verifyCode } from "../../../services/emailVerificationService";
-import { getUserProfile } from "../../../services/userService";
-import EditorLayout from "../../Layouts/editor/EditorLayout";
+import { getVerifiedEmails, requestVerificationCode, verifyCode } from "../../../services/emailVerificationService";
+import { getUserProfile, enableTwoFactor, confirmTwoFactor } from "../../../services/userService"; // Import ajouté
 
 const Settings = () => {
-  const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(true);
   const [activeSection, setActiveSection] = useState('security');
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [selectedEmail, setSelectedEmail] = useState('');
 
+  // États pour la 2FA
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [twoFactorStep, setTwoFactorStep] = useState('disabled'); // 'disabled', 'request', 'code', 'success'
+  const [twoFactorEmail, setTwoFactorEmail] = useState('');
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [twoFactorLoading, setTwoFactorLoading] = useState(false);
 
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
-  const [verificationStep, setVerificationStep] = useState('email'); // 'email', 'code', 'success'
+  const [verificationStep, setVerificationStep] = useState('email');
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [verifiedEmails, setVerifiedEmails] = useState([]);
+
   const showMessage = (text, type = "success") => {
     setMessage({ text, type });
     setTimeout(() => setMessage({ text: "", type: "" }), 5000);
   };
 
-
   useEffect(() => {
-  fetchVerifiedEmails();
-}, []);
+    fetchVerifiedEmails();
+    checkTwoFactorStatus();
+  }, []);
 
-    // Récupérer la liste des emails vérifiés
-    const fetchVerifiedEmails = async () => {
-      try {
-        const userId = getUserProfile().id;
-        const emails = await getVerifiedEmails(userId); 
-        setVerifiedEmails(emails);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des emails vérifiés :", error);
-        setVerifiedEmails([]);
+  // Vérifier le statut 2FA de l'utilisateur
+  const checkTwoFactorStatus = async () => {
+    try {
+      const profile = getUserProfile();
+      // Vérifiez si la propriété existe dans votre token JWT
+      setTwoFactorEnabled(profile?.isTwoFactorEnabled || false);
+    } catch (error) {
+      console.error("Erreur lors de la vérification du statut 2FA:", error);
+    }
+  };
+
+  const fetchVerifiedEmails = async () => {
+    try {
+      const profile = getUserProfile();
+      if (!profile?.id) {
+        showMessage("Utilisateur non connecté", "error");
+        return;
       }
-    };
+      const emails = await getVerifiedEmails(profile.id);
+      setVerifiedEmails(emails);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des emails vérifiés :", error);
+      setVerifiedEmails([]);
+    }
+  };
 
+  // Demander l'activation de la 2FA - CORRIGÉ
+  const handleTwoFactorRequest = async () => {
+    if (!twoFactorEmail) {
+      showMessage("Veuillez sélectionner un email pour la 2FA", "error");
+      return;
+    }
+
+    setTwoFactorLoading(true);
+    try {
+      const profile = getUserProfile();
+      if (!profile?.id) {
+        showMessage("Utilisateur non connecté", "error");
+        return;
+      }
+
+      // Appel API corrigé - passage du userId ET de l'email
+      await enableTwoFactor(profile.id, twoFactorEmail);
+      setTwoFactorStep('code');
+      showMessage("Code de vérification 2FA envoyé à votre email", "success");
+    } catch (error) {
+      console.error("Erreur lors de la demande 2FA:", error);
+      const errorMessage = error.response?.data?.message || "Erreur lors de l'envoi du code 2FA";
+      showMessage(errorMessage, "error");
+    } finally {
+      setTwoFactorLoading(false);
+    }
+  };
+
+  // Confirmer le code 2FA - CORRIGÉ
+  const handleTwoFactorConfirm = async (e) => {
+    e.preventDefault();
+    
+    if (!twoFactorCode) {
+      showMessage("Veuillez entrer le code de vérification", "error");
+      return;
+    }
+
+    const codeRegex = /^\d{6}$/;
+    if (!codeRegex.test(twoFactorCode)) {
+      showMessage("Le code doit contenir 6 chiffres", "error");
+      return;
+    }
+
+    setTwoFactorLoading(true);
+    try {
+      // Appel API corrigé
+      await confirmTwoFactor(twoFactorEmail, twoFactorCode);
+      
+      setTwoFactorStep('success');
+      setTwoFactorEnabled(true);
+      showMessage("2FA activée avec succès!", "success");
+      
+      // Réinitialiser après succès
+      setTimeout(() => {
+        resetTwoFactorProcess();
+      }, 3000);
+    } catch (error) {
+      console.error("Erreur lors de la confirmation 2FA:", error);
+      const errorMessage = error.response?.data?.message || "Code incorrect ou expiré";
+      showMessage(errorMessage, "error");
+    } finally {
+      setTwoFactorLoading(false);
+    }
+  };
+
+  // Réinitialiser le processus 2FA
+  const resetTwoFactorProcess = () => {
+    setTwoFactorStep('disabled');
+    setTwoFactorEmail('');
+    setTwoFactorCode('');
+  };
+
+  // Annuler l'activation 2FA
+  const cancelTwoFactor = () => {
+    setTwoFactorStep('disabled');
+    setTwoFactorEmail('');
+    setTwoFactorCode('');
+  };
 
   const handleEmailSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (!email) {
-    showMessage("Veuillez entrer une adresse email", "error");
-    return;
-  }
-
-  // Validation basique de l'email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    showMessage("Veuillez entrer une adresse email valide", "error");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const userId = getUserProfile().id;
-    console.log("User ID:", userId);
-
-    await requestVerificationCode({ email, userId });
+    e.preventDefault();
     
-    setVerificationStep('code');
-    showMessage("Code de vérification envoyé à votre adresse email", "success");
-  } catch (error) {
-    console.error("Erreur lors de l'envoi du code:", error);
-    const errorMessage = error.response?.data || "Erreur lors de l'envoi du code de vérification";
-    showMessage(errorMessage, "error");
-  } finally {
-    setLoading(false);
-  }
-};
+    if (!email) {
+      showMessage("Veuillez entrer une adresse email", "error");
+      return;
+    }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showMessage("Veuillez entrer une adresse email valide", "error");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const profile = getUserProfile();
+      if (!profile?.id) {
+        showMessage("Utilisateur non connecté", "error");
+        return;
+      }
+
+      await requestVerificationCode({ email, userId: profile.id });
+      
+      setVerificationStep('code');
+      showMessage("Code de vérification envoyé à votre adresse email", "success");
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du code:", error);
+      const errorMessage = error.response?.data || "Erreur lors de l'envoi du code de vérification";
+      showMessage(errorMessage, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCodeSubmit = async (e) => {
     e.preventDefault();
@@ -89,7 +179,6 @@ const Settings = () => {
       return;
     }
 
-    // Validation du code (6 chiffres)
     const codeRegex = /^\d{6}$/;
     if (!codeRegex.test(verificationCode)) {
       showMessage("Le code doit contenir 6 chiffres", "error");
@@ -98,11 +187,16 @@ const Settings = () => {
 
     setLoading(true);
     try {
-      // Utiliser le service fourni pour vérifier le code
       await verifyCode(email, verificationCode);
       
       setVerificationStep('success');
       showMessage("Email vérifié avec succès!", "success");
+      fetchVerifiedEmails(); // Rafraîchir la liste des emails
+      
+      // Réinitialiser après succès
+      setTimeout(() => {
+        resetVerificationProcess();
+      }, 3000);
     } catch (error) {
       console.error("Erreur lors de la vérification:", error);
       const errorMessage = typeof error === 'string' ? error : "Code de vérification invalide ou expiré";
@@ -117,33 +211,13 @@ const Settings = () => {
     setEmail('');
     setVerificationCode('');
   };
-  
 
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setPasswordForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    // Ici tu appelleras ton backend pour changer le mot de passe
-    console.log('Password change submitted', passwordForm);
-    setShowPasswordForm(false);
-    setPasswordForm({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    });
-  };
 
   return (
     <>
-      <div className=" bg-gray-900 text-gray-100">
-        <div className=" px-4 py-8">
-          <div className=" mx-auto">
+      <div className="bg-gray-900 text-gray-100">
+        <div className="px-4 py-8">
+          <div className="mx-auto">
             <Header
               header={{
                 prefix: 'Gestion des',
@@ -181,6 +255,13 @@ const Settings = () => {
             </button>
           </div>
 
+          {/* Message de notification */}
+          {message.text && (
+            <div className={`mb-4 p-3 rounded-md ${message.type === 'success' ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'}`}>
+              {message.text}
+            </div>
+          )}
+
           {/* Contenu des sections */}
           <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
             {/* Section Sécurité */}
@@ -193,20 +274,156 @@ const Settings = () => {
 
                 <div className="space-y-6">
 
+                  {/* Authentification à deux facteurs (2FA) */}
+                  <div className="p-4 bg-gray-700 rounded-lg">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center">
+                        <FiLock className="text-lg mr-2 text-blue-400" />
+                        <div>
+                          <h3 className="font-medium">Authentification à deux facteurs</h3>
+                          <p className="text-sm text-gray-400">
+                            {twoFactorEnabled 
+                              ? "2FA est activée sur votre compte" 
+                              : "Ajoutez une couche de sécurité supplémentaire"}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => !twoFactorEnabled && setTwoFactorStep('request')}
+                        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${twoFactorEnabled ? 'bg-green-600 cursor-default' : 'bg-gray-600 hover:bg-gray-500'}`}
+                        disabled={twoFactorEnabled}
+                      >
+                        <span
+                          className={`inline-block w-4 h-4 transform transition-transform rounded-full bg-white ${twoFactorEnabled ? 'translate-x-6' : 'translate-x-1'}`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Étape 1: Demande d'activation 2FA */}
+                    {twoFactorStep === 'request' && (
+                      <div className="mt-4 p-4 bg-gray-800 rounded-md">
+                        <h4 className="font-medium mb-3">Activer l'authentification à deux facteurs</h4>
+                        <p className="text-sm text-gray-300 mb-4">
+                          Sélectionnez un email vérifié pour recevoir les codes de sécurité.
+                        </p>
+                        
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Email pour la 2FA
+                          </label>
+                          <select
+                            value={twoFactorEmail}
+                            onChange={(e) => setTwoFactorEmail(e.target.value)}
+                            className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          >
+                            <option value="">Sélectionnez un email vérifié</option>
+                            {verifiedEmails
+                              .filter(e => e.isVerified)
+                              .map((emailItem, index) => (
+                                <option key={index} value={emailItem.email}>
+                                  {emailItem.email}
+                                </option>
+                              ))
+                            }
+                          </select>
+                        </div>
+
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={cancelTwoFactor}
+                            className="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-full text-sm font-medium transition-colors"
+                          >
+                            Annuler
+                          </button>
+                          <button
+                            onClick={handleTwoFactorRequest}
+                            disabled={twoFactorLoading || !twoFactorEmail}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${twoFactorLoading || !twoFactorEmail ? 'bg-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
+                          >
+                            {twoFactorLoading ? 'Envoi en cours...' : 'Activer la 2FA'}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Étape 2: Saisie du code 2FA */}
+                    {twoFactorStep === 'code' && (
+                      <form onSubmit={handleTwoFactorConfirm} className="mt-4 p-4 bg-gray-800 rounded-md">
+                        <h4 className="font-medium mb-3">Vérification du code 2FA</h4>
+                        <p className="text-sm text-gray-300 mb-4">
+                          Entrez le code à 6 chiffres envoyé à <strong>{twoFactorEmail}</strong>
+                        </p>
+                        
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Code de vérification
+                          </label>
+                          <input
+                            type="text"
+                            value={twoFactorCode}
+                            onChange={(e) => setTwoFactorCode(e.target.value)}
+                            className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="123456"
+                            required
+                          />
+                        </div>
+
+                        <div className="flex space-x-2">
+                          <button
+                            type="button"
+                            onClick={() => setTwoFactorStep('request')}
+                            className="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-full text-sm font-medium transition-colors"
+                          >
+                            <FiArrowLeft className="inline mr-1" /> Changer d'email
+                          </button>
+                          <button
+                            type="submit"
+                            disabled={twoFactorLoading}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${twoFactorLoading ? 'bg-gray-600 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
+                          >
+                            {twoFactorLoading ? 'Vérification...' : 'Activer la 2FA'}
+                          </button>
+                        </div>
+                      </form>
+                    )}
+
+                    {/* Étape 3: Succès 2FA */}
+                    {twoFactorStep === 'success' && (
+                      <div className="mt-4 p-4 bg-gray-800 rounded-md">
+                        <div className="flex items-center justify-center text-green-400 mb-3">
+                          <FiCheck className="text-2xl mr-2" />
+                          <span className="text-lg font-medium">2FA activée avec succès!</span>
+                        </div>
+                        <p className="text-sm text-gray-300 text-center">
+                          L'authentification à deux facteurs est maintenant activée sur votre compte.
+                          Vous recevrez un code de sécurité à chaque connexion.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
                   {/* Liste des emails vérifiés */}
                   <div className="p-4 bg-gray-700 rounded-lg">
                     <h3 className="font-medium mb-2">Emails vérifiés</h3>
-                    {verifiedEmails
-                      .filter(e => e.isVerified)
-                      .map((emailItem, index) => (
-                        <li key={index} className="flex items-center">
-                          <FiCheck className="mr-2 text-green-400" /> {emailItem.email}
-                        </li>
-                      ))
-                    }
+                    <ul className="space-y-2">
+                      {verifiedEmails
+                        .filter(e => e.isVerified)
+                        .map((emailItem, index) => (
+                          <li key={index} className="flex items-center text-sm">
+                            <FiCheck className="mr-2 text-green-400" /> 
+                            {emailItem.email}
+                            {twoFactorEnabled && twoFactorEmail === emailItem.email && (
+                              <span className="ml-2 px-2 py-1 bg-blue-600 text-xs rounded-full">2FA</span>
+                            )}
+                          </li>
+                        ))
+                      }
+                    </ul>
                   </div>
 
-                  {/* Vérification d'email */}
+                  
+                    
+                    {/* Vérification d'email */}
                   <div className="p-4 bg-gray-700 rounded-lg">
                     <div className="flex items-center mb-3">
                       <FiMail className="text-lg mr-2 text-yellow-400" />
@@ -314,81 +531,7 @@ const Settings = () => {
                   
 
                   {/* Mot de passe */}
-                  {!showPasswordForm ? (
-                    <div className="flex justify-between items-center p-4 bg-gray-700 rounded-lg">
-                      <div>
-                        <h3 className="font-medium">Mot de passe</h3>
-                      </div>
-                      <button
-                        onClick={() => setShowPasswordForm(true)}
-                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-full text-sm font-medium transition-colors"
-                      >
-                        Modifier
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="p-4 bg-gray-700 rounded-lg">
-                      <h3 className="font-medium mb-4">Changer le mot de passe</h3>
-                      <form onSubmit={handlePasswordSubmit}>
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-1">
-                              Mot de passe actuel
-                            </label>
-                            <input
-                              type="password"
-                              name="currentPassword"
-                              value={passwordForm.currentPassword}
-                              onChange={handlePasswordChange}
-                              className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                              required
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-1">
-                              Nouveau mot de passe
-                            </label>
-                            <input
-                              type="password"
-                              name="newPassword"
-                              value={passwordForm.newPassword}
-                              onChange={handlePasswordChange}
-                              className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                              required
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-1">
-                              Confirmer le nouveau mot de passe
-                            </label>
-                            <input
-                              type="password"
-                              name="confirmPassword"
-                              value={passwordForm.confirmPassword}
-                              onChange={handlePasswordChange}
-                              className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                              required
-                            />
-                          </div>
-                          <div className="flex justify-end space-x-3 pt-2">
-                            <button
-                              type="button"
-                              onClick={() => setShowPasswordForm(false)}
-                              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-full text-sm font-medium transition-colors"
-                            >
-                              Annuler
-                            </button>
-                            <button
-                              type="submit"
-                              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-full text-sm font-medium transition-colors"
-                            >
-                              Enregistrer
-                            </button>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  )}
+                  
                 </div>
               </div>
             )}
@@ -401,21 +544,12 @@ const Settings = () => {
                   <h2 className="text-xl font-semibold">Notifications</h2>
                 </div>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center p-4 bg-gray-700 rounded-lg">
-                    <div>
-                      <h3 className="font-medium">Notifications par email</h3>
-                      <p className="text-sm text-gray-400 mt-1">
-                        Recevoir des notifications importantes par email
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => setNotifications(!notifications)}
-                      className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${notifications ? 'bg-indigo-600' : 'bg-gray-600'}`}
-                    >
-                      <span
-                        className={`inline-block w-4 h-4 transform transition-transform rounded-full bg-white ${notifications ? 'translate-x-6' : 'translate-x-1'}`}
-                      />
-                    </button>
+                  <div className="p-6 bg-gray-700 rounded-lg text-center">
+                    <FiBell className="text-4xl mx-auto text-gray-400 mb-3" />
+                    <h3 className="font-medium text-lg mb-2">Fonctionnalité à venir</h3>
+                    <p className="text-gray-400">
+                      La gestion avancée des notifications sera disponible prochainement.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -428,21 +562,12 @@ const Settings = () => {
                   <FiMoon className="text-xl mr-2 text-white" />
                   <h2 className="text-xl font-semibold">Apparence</h2>
                 </div>
-                <div className="flex justify-between items-center p-4 bg-gray-700 rounded-lg">
-                  <div>
-                    <h3 className="font-medium">Mode sombre</h3>
-                    <p className="text-sm text-gray-400 mt-1">
-                      {darkMode ? "Activé" : "Désactivé"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setDarkMode(!darkMode)}
-                    className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${darkMode ? 'bg-indigo-600' : 'bg-gray-600'}`}
-                  >
-                    <span
-                      className={`inline-block w-4 h-4 transform transition-transform rounded-full bg-white ${darkMode ? 'translate-x-6' : 'translate-x-1'}`}
-                    />
-                  </button>
+                <div className="p-6 bg-gray-700 rounded-lg text-center">
+                  <FiMoon className="text-4xl mx-auto text-gray-400 mb-3" />
+                  <h3 className="font-medium text-lg mb-2">Fonctionnalité à venir</h3>
+                  <p className="text-gray-400">
+                    Les paramètres d'apparence personnalisés arrivent bientôt.
+                  </p>
                 </div>
               </div>
             )}
