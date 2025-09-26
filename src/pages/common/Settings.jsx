@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FiShield, FiBell, FiMoon, FiChevronRight, FiMail, FiArrowLeft, FiArrowDown, FiCheck, FiLock } from 'react-icons/fi';
 import Header from "../../components/ui/Header";
 import { getVerifiedEmails, requestVerificationCode, verifyCode } from "../../../services/emailVerificationService";
-import { getUserProfile, enableTwoFactor, confirmTwoFactor } from "../../../services/userService"; // Import ajouté
+import { getUserProfile, enableTwoFactor, confirmTwoFactor ,disableTwoFactor} from "../../../services/userService"; // Import ajouté
 
 const Settings = () => {
   const [activeSection, setActiveSection] = useState('security');
@@ -36,7 +36,7 @@ const Settings = () => {
     try {
       const profile = getUserProfile();
       // Vérifiez si la propriété existe dans votre token JWT
-      setTwoFactorEnabled(profile?.isTwoFactorEnabled || false);
+      setTwoFactorEnabled(profile?.twoFactorEnabled || false);
     } catch (error) {
       console.error("Erreur lors de la vérification du statut 2FA:", error);
     }
@@ -117,6 +117,35 @@ const Settings = () => {
       console.error("Erreur lors de la confirmation 2FA:", error);
       const errorMessage = error.response?.data?.message || "Code incorrect ou expiré";
       showMessage(errorMessage, "error");
+    } finally {
+      setTwoFactorLoading(false);
+    }
+  };
+
+    // Désactiver le 2FA
+  const handleTwoFactorDisable = async () => {
+    if (!twoFactorEnabled) return;
+
+    setTwoFactorLoading(true);
+    try {
+      const profile = getUserProfile();
+      if (!profile?.id) {
+        showMessage("Utilisateur non connecté", "error");
+        return;
+      }
+
+      const result = await disableTwoFactor(profile.id);
+      if (result?.success) {
+        setTwoFactorEnabled(false);
+        setTwoFactorStep('disabled');
+        showMessage(result.message || "2FA désactivé avec succès", "success");
+        window.location.href = "/logout";
+      } else {
+        showMessage(result.message || "Impossible de désactiver le 2FA", "error");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la désactivation 2FA :", error);
+      showMessage("Erreur lors de la désactivation 2FA", "error");
     } finally {
       setTwoFactorLoading(false);
     }
@@ -288,16 +317,50 @@ const Settings = () => {
                           </p>
                         </div>
                       </div>
+
+                      {/* Toggle 2FA */}
                       <button
-                        onClick={() => !twoFactorEnabled && setTwoFactorStep('request')}
-                        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${twoFactorEnabled ? 'bg-green-600 cursor-default' : 'bg-gray-600 hover:bg-gray-500'}`}
-                        disabled={twoFactorEnabled}
+                        onClick={async () => {
+                          if (!twoFactorEnabled) {
+                            setTwoFactorStep('request'); // Début du processus 2FA
+                          } else {
+                            // Désactivation 2FA
+                            setTwoFactorLoading(true);
+                            try {
+                              const profile = getUserProfile();
+                              if (!profile?.id) {
+                                showMessage("Utilisateur non connecté", "error");
+                                return;
+                              }
+                              const result = await disableTwoFactor(profile.id);
+                              if (result?.success) {
+                                setTwoFactorEnabled(false);
+                                setTwoFactorStep('disabled');
+                                showMessage(result.message || "2FA désactivée avec succès", "success");
+                              } else {
+                                showMessage(result.message || "Impossible de désactiver le 2FA", "error");
+                              }
+                            } catch (error) {
+                              console.error("Erreur lors de la désactivation 2FA :", error);
+                              showMessage("Erreur lors de la désactivation 2FA", "error");
+                            } finally {
+                              setTwoFactorLoading(false);
+                            }
+                          }
+                        }}
+                        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${
+                          twoFactorEnabled ? 'bg-green-600 hover:bg-green-600 cursor-pointer' : 'bg-gray-600 hover:bg-gray-500'
+                        }`}
+                        disabled={twoFactorLoading}
                       >
                         <span
-                          className={`inline-block w-4 h-4 transform transition-transform rounded-full bg-white ${twoFactorEnabled ? 'translate-x-6' : 'translate-x-1'}`}
+                          className={`inline-block w-4 h-4 transform transition-transform rounded-full bg-white ${
+                            twoFactorEnabled ? 'translate-x-6' : 'translate-x-1'
+                          }`}
                         />
                       </button>
                     </div>
+
 
                     {/* Étape 1: Demande d'activation 2FA */}
                     {twoFactorStep === 'request' && (

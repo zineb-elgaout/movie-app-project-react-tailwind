@@ -28,6 +28,7 @@ export function getUserProfile() {
     const lastName = decoded["LastName"];
     const nationality = decoded["Nationality"];
     const createdAt = decoded["CreatedAt"];
+    const twoFactorEnabled = decoded["IsTwoFactorEnabledCustom"];
 
     return {
       id,
@@ -38,12 +39,14 @@ export function getUserProfile() {
       lastName,
       nationality,
       createdAt: createdAt ? new Date(createdAt) : null,
+      twoFactorEnabled: twoFactorEnabled === "True" || twoFactorEnabled === true,
     };
   } catch (error) {
     console.error("Erreur lors du décodage du token :", error);
     return null;
   }
 }
+
 
 // Création d'une instance Axios avec le token automatiquement ajouté
 const axiosAuth = axios.create({
@@ -162,7 +165,7 @@ export const confirmTwoFactor = async (email, verificationCode) => {
   }
 };
 
-// 🔹 Fonction de test pour identifier le bon format
+//  Fonction de test pour identifier le bon format
 export const testTwoFactorFormat = async () => {
   const userProfile = getUserProfile();
   if (!userProfile) return;
@@ -190,13 +193,39 @@ export const testTwoFactorFormat = async () => {
         }
       );
       
-      console.log(`✅ Format ${format.name} fonctionne:`, response.data);
+      console.log(`Format ${format.name} fonctionne:`, response.data);
       return { success: true, format: format.name, data: response.data };
       
     } catch (error) {
-      console.log(`❌ Format ${format.name} échoue:`, error.response?.data);
+      console.log(`Format ${format.name} échoue:`, error.response?.data);
     }
   }
   
   throw new Error('Aucun format ne fonctionne');
+};
+
+// 🔹 Désactivation du 2FA
+export const disableTwoFactor = async (userId) => {
+  try {
+    const token = getTokenFromCookie();
+    if (!token) throw new Error("Utilisateur non connecté");
+
+    // Envoi de la requête au backend
+    const response = await axios.post(
+      `${TWO_FACTOR_URL}/disable`,
+      userId, // le backend attend un string simple
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    // Retourne le résultat du backend
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la désactivation du 2FA :', error.response?.data || error.message);
+    throw error;
+  }
 };
