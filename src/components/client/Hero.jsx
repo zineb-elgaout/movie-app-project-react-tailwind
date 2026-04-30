@@ -19,7 +19,7 @@ const Hero = ({ slides }) => {
         >
           {/* Image de fond */}
           <img
-            src={slide.imageUrl}
+            src={slide.backImageUrl}
             alt={slide.title}
             className="w-full h-full object-cover"
           />
@@ -61,13 +61,13 @@ const Hero = ({ slides }) => {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                     </svg>
-                    Watch Now
+                    Voir annonce
                   </button>
                   <button className="bg-white bg-opacity-30 hover:bg-opacity-20 text-white px-4 py-2 sm:px-7 sm:py-3 rounded-lg font-semibold flex items-center text-base sm:text-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    More Info
+                    Savoir plus
                   </button>
                 </div>
               </div>

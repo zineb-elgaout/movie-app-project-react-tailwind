@@ -9,6 +9,7 @@ import { FiEye, FiEdit, FiTrash2, FiExternalLink} from 'react-icons/fi';
 import { Link } from "react-router-dom";
 import UpdateCategory from "../../components/admin/categories/UpdateCategory";
 import { deleteCategory } from "../../../services/categoryService";
+import { getUserProfile } from "../../../services/userService";
 
 export default function Categories() {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -17,6 +18,7 @@ export default function Categories() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const { categories, loading, error, fetchCategories, token } = useCategories();
 
+  const role = getUserProfile().role.toLowerCase();
   const handleAfterAdd = () => {
     setShowAddForm(false);
     fetchCategories();
@@ -108,7 +110,7 @@ export default function Categories() {
                           <td className="px-6 py-4 whitespace-nowrap text-right">
                             <div className="flex justify-start">
                               <Link
-                                to={`/category/${category.id}`}
+                                to={`/${role}/category/${category.id}`}
                                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-300 hover:text-green-400 hover:bg-gray-700 transition-colors"
                                 title="Gérer les cartoons de cette catégorie"
                               >

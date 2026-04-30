@@ -10,6 +10,7 @@ import { getAllCartoons, deleteCartoon } from "../../../services/cartoonService"
 import Loading from "../../components/Loading";
 import ErrorMessage from "../../components/ErrorMessage";
 import { FiEdit, FiTrash2, FiArrowLeft, FiPlus, FiExternalLink, FiFolder, FiEye } from "react-icons/fi";
+import { getUserProfile } from "../../../services/userService";
 
 export default function CategoryContent() {
   const { id } = useParams();
@@ -63,6 +64,7 @@ export default function CategoryContent() {
     }
   };
 
+  const role = getUserProfile().role.toLowerCase();
   const handleViewDetails = (cartoon) => {
     setSelectedCartoon(cartoon);
     setShowDetailModal(true);
@@ -72,7 +74,6 @@ export default function CategoryContent() {
   if (error) return <ErrorMessage message={error} />;
 
   return (
-    <AdminLayout>
       <section className="px-4 sm:px-6 py-8 bg-gray-900 min-h-screen">
         <div className=" mx-auto">
           <Header
@@ -84,7 +85,7 @@ export default function CategoryContent() {
           />
 
           <div className="flex justify-between items-center mb-6">
-            <Link to="/categories" className="flex items-center text-indigo-300 hover:text-indigo-400 transition-colors">
+            <Link to={`/${role}/categories`} className="flex items-center text-indigo-300 hover:text-indigo-400 transition-colors">
               <FiArrowLeft className="mr-2" /> Retour aux autres catégories
             </Link>
             <Button onClick={() => setShowCreate(true)}>
@@ -296,6 +297,5 @@ export default function CategoryContent() {
           </div>
         )}
       </section>
-    </AdminLayout>
   );
 }

@@ -70,17 +70,17 @@ const HeroSection = () => {
           {/* Liens pour s'identifier et continuer comme invité */}
           <div className="flex flex-wrap justify-center gap-4 pt-4">
             <a 
-              href="/login" 
+              href="/register" 
               className={`px-6 py-3 rounded-full hover:bg-gray-700 bg-black text-white font-medium transition-colors shadow-md`}
             >
-              S'inscrire maintenant
+              S'inscrire 
             </a>
             
             <a 
-              href="/toontime" 
+              href="/login" 
               className={`px-6 py-3 rounded-full hover:bg-gray-700 bg-black text-white font-medium transition-colors shadow-md`}
             >
-              Continuer comme invité
+              Commencer maintenant
             </a>
           </div>
           

@@ -303,6 +303,133 @@ const Settings = () => {
 
                 <div className="space-y-6">
 
+                  {/* Liste des emails vérifiés */}
+                  <div className="p-4 bg-gray-700 rounded-lg">
+                    <h3 className="font-medium mb-2">Emails vérifiés</h3>
+                    <ul className="space-y-2">
+                      {verifiedEmails
+                        .filter(e => e.isVerified)
+                        .map((emailItem, index) => (
+                          <li key={index} className="flex items-center text-sm">
+                            <FiCheck className="mr-2 text-green-400" /> 
+                            {emailItem.email}
+                            {twoFactorEnabled && twoFactorEmail === emailItem.email && (
+                              <span className="ml-2 px-2 py-1 bg-blue-600 text-xs rounded-full">2FA</span>
+                            )}
+                          </li>
+                        ))
+                      }
+                    </ul>
+                  </div>
+
+                  
+                    
+                    {/* Vérification d'email */}
+                  <div className="p-4 bg-gray-700 rounded-lg">
+                    <div className="flex items-center mb-3">
+                      <FiMail className="text-lg mr-2 text-yellow-400" />
+                      <div>
+                        <h3 className="font-medium">Vérification d'email</h3>
+                        <p className="text-sm text-gray-400 mt-1">
+                          {verificationStep === 'email' 
+                            ? "Entrez votre adresse email pour recevoir un code de vérification"
+                            : verificationStep === 'code'
+                            ? "Entrez le code reçu par email"
+                            : "Votre email a été vérifié avec succès!"}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Étape 1: Saisie de l'email */}
+                    {verificationStep === 'email' && (
+                      <form onSubmit={handleEmailSubmit} className="mt-4">
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-gray-300 mb-1">
+                            Adresse email
+                          </label>
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                            placeholder="votre@email.com"
+                            required
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          disabled={loading}
+                          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-700'}`}
+                        >
+                          {loading ? 'Envoi en cours...' : 'Recevoir le code de vérification'}
+                        </button>
+                      </form>
+                    )}
+                    
+                    {/* Étape 2: Saisie du code */}
+                    {verificationStep === 'code' && (
+                      <form onSubmit={handleCodeSubmit} className="mt-4">
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-gray-300 mb-1">
+                            Code de vérification
+                          </label>
+                          <p className="text-sm text-gray-400 mb-2">
+                            Entrez le code à 6 chiffres envoyé à <strong>{email}</strong>
+                          </p>
+                          <input
+                            type="text"
+                            value={verificationCode}
+                            onChange={(e) => setVerificationCode(e.target.value)}
+                            className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                            placeholder="123456"
+                            required
+                          />
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            type="button"
+                            onClick={() => setVerificationStep('email')}
+                            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-full text-sm font-medium transition-colors"
+                          >
+                            <FiArrowLeft className="inline mr-1" /> Changer d'email
+                          </button>
+                          <button
+                            type="submit"
+                            disabled={loading}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
+                          >
+                            {loading ? 'Vérification...' : 'Vérifier le code'}
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                    
+                    {/* Étape 3: Succès */}
+                    {verificationStep === 'success' && (
+                      <div className="mt-4">
+                        <div className="flex items-center justify-center text-green-400 mb-4">
+                          <FiCheck className="text-2xl mr-2" />
+                          <span className="text-lg font-medium">Email vérifié avec succès!</span>
+                        </div>
+                        <p className="text-sm text-gray-300 mb-4 text-center">
+                          Votre adresse email <strong>{email}</strong> a été vérifiée.
+                          Vous pouvez maintenant utiliser toutes les fonctionnalités de sécurité.
+                        </p>
+                        <div className="flex justify-center">
+                          <button
+                            onClick={resetVerificationProcess}
+                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-full text-sm font-medium transition-colors"
+                          >
+                            Vérifier une autre adresse
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    
+
+                  </div>
+
                   {/* Authentification à deux facteurs (2FA) */}
                   <div className="p-4 bg-gray-700 rounded-lg">
                     <div className="flex items-center justify-between mb-4">
@@ -465,132 +592,7 @@ const Settings = () => {
                     )}
                   </div>
 
-                  {/* Liste des emails vérifiés */}
-                  <div className="p-4 bg-gray-700 rounded-lg">
-                    <h3 className="font-medium mb-2">Emails vérifiés</h3>
-                    <ul className="space-y-2">
-                      {verifiedEmails
-                        .filter(e => e.isVerified)
-                        .map((emailItem, index) => (
-                          <li key={index} className="flex items-center text-sm">
-                            <FiCheck className="mr-2 text-green-400" /> 
-                            {emailItem.email}
-                            {twoFactorEnabled && twoFactorEmail === emailItem.email && (
-                              <span className="ml-2 px-2 py-1 bg-blue-600 text-xs rounded-full">2FA</span>
-                            )}
-                          </li>
-                        ))
-                      }
-                    </ul>
-                  </div>
-
                   
-                    
-                    {/* Vérification d'email */}
-                  <div className="p-4 bg-gray-700 rounded-lg">
-                    <div className="flex items-center mb-3">
-                      <FiMail className="text-lg mr-2 text-yellow-400" />
-                      <div>
-                        <h3 className="font-medium">Vérification d'email</h3>
-                        <p className="text-sm text-gray-400 mt-1">
-                          {verificationStep === 'email' 
-                            ? "Entrez votre adresse email pour recevoir un code de vérification"
-                            : verificationStep === 'code'
-                            ? "Entrez le code reçu par email"
-                            : "Votre email a été vérifié avec succès!"}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    {/* Étape 1: Saisie de l'email */}
-                    {verificationStep === 'email' && (
-                      <form onSubmit={handleEmailSubmit} className="mt-4">
-                        <div className="mb-4">
-                          <label className="block text-sm font-medium text-gray-300 mb-1">
-                            Adresse email
-                          </label>
-                          <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                            placeholder="votre@email.com"
-                            required
-                          />
-                        </div>
-                        <button
-                          type="submit"
-                          disabled={loading}
-                          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-700'}`}
-                        >
-                          {loading ? 'Envoi en cours...' : 'Recevoir le code de vérification'}
-                        </button>
-                      </form>
-                    )}
-                    
-                    {/* Étape 2: Saisie du code */}
-                    {verificationStep === 'code' && (
-                      <form onSubmit={handleCodeSubmit} className="mt-4">
-                        <div className="mb-4">
-                          <label className="block text-sm font-medium text-gray-300 mb-1">
-                            Code de vérification
-                          </label>
-                          <p className="text-sm text-gray-400 mb-2">
-                            Entrez le code à 6 chiffres envoyé à <strong>{email}</strong>
-                          </p>
-                          <input
-                            type="text"
-                            value={verificationCode}
-                            onChange={(e) => setVerificationCode(e.target.value)}
-                            className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                            placeholder="123456"
-                            required
-                          />
-                        </div>
-                        <div className="flex space-x-2">
-                          <button
-                            type="button"
-                            onClick={() => setVerificationStep('email')}
-                            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-full text-sm font-medium transition-colors"
-                          >
-                            <FiArrowLeft className="inline mr-1" /> Changer d'email
-                          </button>
-                          <button
-                            type="submit"
-                            disabled={loading}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
-                          >
-                            {loading ? 'Vérification...' : 'Vérifier le code'}
-                          </button>
-                        </div>
-                      </form>
-                    )}
-                    
-                    {/* Étape 3: Succès */}
-                    {verificationStep === 'success' && (
-                      <div className="mt-4">
-                        <div className="flex items-center justify-center text-green-400 mb-4">
-                          <FiCheck className="text-2xl mr-2" />
-                          <span className="text-lg font-medium">Email vérifié avec succès!</span>
-                        </div>
-                        <p className="text-sm text-gray-300 mb-4 text-center">
-                          Votre adresse email <strong>{email}</strong> a été vérifiée.
-                          Vous pouvez maintenant utiliser toutes les fonctionnalités de sécurité.
-                        </p>
-                        <div className="flex justify-center">
-                          <button
-                            onClick={resetVerificationProcess}
-                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-full text-sm font-medium transition-colors"
-                          >
-                            Vérifier une autre adresse
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    
-
-                  </div>
                   
 
                   {/* Mot de passe */}

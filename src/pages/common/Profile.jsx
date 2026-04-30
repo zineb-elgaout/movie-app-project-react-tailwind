@@ -3,6 +3,7 @@ import { FiMail, FiMapPin, FiUser, FiAward, FiMessageSquare, FiHeart, FiStar, Fi
 import { Link } from 'react-router-dom';
 import { getUserProfile } from '../../../services/userService';
 import { getFavorites } from '../../../services/favoriteService';
+import profil_back from '../../assets/public/images/profil_back.png';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState('favorites');
@@ -131,7 +132,7 @@ const Profile = () => {
       <div 
         className="h-56 bg-cover bg-center relative"
         style={{ 
-          backgroundImage: `url(https://images.unsplash.com/photo-1579546929662-711aa81148cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80)`,
+          backgroundImage: `url(${profil_back})`,
           backgroundPosition: 'center'
         }}
       >
@@ -139,7 +140,7 @@ const Profile = () => {
         <div className="absolute -bottom-16 left-8">
           <div className="relative">
             <img 
-              src={profileData.profilePhoto || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'} 
+              src={profileData.profilePhoto || 'https://static.tvtropes.org/pmwiki/pub/images/kiki_kikis_delivery_service_5007.jpg'} 
               alt="Profile" 
               className="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-gray-900 bg-gray-700"
             />

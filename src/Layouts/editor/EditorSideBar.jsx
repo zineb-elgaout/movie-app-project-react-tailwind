@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import { FiLogOut, FiMenu, FiX,  FiVideo,  FiInfo} from 'react-icons/fi';
 import { FaChartBar } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import profil from '../../../public/vite.svg';
 import { getUserProfile } from '../../../services/userService';
 import {logout} from '../../../services/authService';
 
@@ -74,7 +73,7 @@ function EditorSideBar() {
             </motion.button>
             <motion.div whileHover={{ scale: 1.05 }} className="relative">
               <img 
-                src={profil} 
+                src="https://tse2.mm.bing.net/th/id/OIP.xg2Gr-sdlm79effHocezGQAAAA?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" 
                 alt="Profile"
                 className="w-9 h-9 rounded-full object-cover shadow-md "
               />
@@ -86,7 +85,7 @@ function EditorSideBar() {
               <div className="flex items-center space-x-3">
                 <motion.div whileHover={{ scale: 1.05 }} className="relative">
                   <img 
-                    src={profil}
+                    src= "https://tse2.mm.bing.net/th/id/OIP.xg2Gr-sdlm79effHocezGQAAAA?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
                     alt="Profile"
                     className="w-10 h-10 rounded-full object-cover shadow-md"
                   />
