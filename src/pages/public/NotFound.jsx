@@ -24,12 +24,6 @@ const NotFound = () => {
           Désolé, la page que vous recherchez n'existe pas ou a été déplacée.
         </p>
         
-        <Link to="/">
-          <button className="flex items-center justify-center gap-2 bg-white bg-opacity-20 backdrop-blur-md text-white px-6 py-3 rounded-lg border border-white border-opacity-30 hover:bg-opacity-30 transition-all duration-300 shadow-lg">
-            <FaBackward className="text-lg" />
-            <span>Retour à l'accueil</span>
-          </button>
-        </Link>
       </div>
     </div>
   );

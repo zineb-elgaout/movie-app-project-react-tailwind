@@ -1,17 +1,56 @@
 import React from "react";
-import { FaGithub, FaInstagram, FaTwitter, FaYoutube, FaFacebook } from 'react-icons/fa';
-import { FiMail } from 'react-icons/fi';
+import { FaInstagram, FaTwitter, FaYoutube, FaFacebook } from 'react-icons/fa';
 import {motion} from 'framer-motion';
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
+const NAVIGATION_LINKS = [
+  { label: "Accueil", target: "nav" },
+  { label: "Notre vision", target: "vision" },
+  { label: "Catégories", target: "categories" },
+  { label: "À propos", target: "about" },
+];
 
-export default function Footer (){
+const LEGAL_LINKS = [
+  { label: "Confidentialité", href: "#" },
+  { label: "Conditions d'utilisation", href: "#" },
+  { label: "Préférences de cookies", href: "#" },
+];
+
+const SOCIAL_LINKS = [
+  { icon: FaFacebook, href: "#", ariaLabel: "Facebook" },
+  { icon: FaInstagram, href: "#", ariaLabel: "Instagram" },
+  { icon: FaTwitter, href: "#", ariaLabel: "Twitter" },
+  { icon: FaYoutube, href: "#", ariaLabel: "YouTube" },
+];
+
+export default function Footer() {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleNavigation = (event, targetId) => {
+        event.preventDefault();
+        if (location.pathname !== "/") {
+            navigate("/", { replace: false });
+            setTimeout(() => {
+                const element = document.getElementById(targetId);
+                if (element) {
+                    element.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }, 100);
+            return;
+        }
+
+        const element = document.getElementById(targetId);
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    };
+
     return (
         <footer className="bg-black text-white py-12">
         <div className="max-w-6xl mx-auto px-6">
             <div className="grid md:grid-cols-4 gap-8">
             <motion.div 
-                
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2 }}>
@@ -21,16 +60,22 @@ export default function Footer (){
             </motion.div>
             
             <motion.div 
-                
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2 }}>
                 <h3 className="text-xl font-bold mb-4">Navigation</h3>
                 <ul className="space-y-2 text-sm">
-                <li><a href="#nav" className="hover:text-pink-400 transition">Accueil</a></li>
-                <li><a href="#vision" className="hover:text-pink-400 transition">Notre vision</a></li>
-                <li><a href="#categories" className="hover:text-pink-400 transition">Catégories</a></li>
-                <li><a href="#about" className="hover:text-pink-400 transition">À  propos</a></li>
+                {NAVIGATION_LINKS.map((link) => (
+                    <li key={link.target}>
+                        <a
+                            href={`#${link.target}`}
+                            onClick={(event) => handleNavigation(event, link.target)}
+                            className="hover:text-pink-400 transition"
+                        >
+                            {link.label}
+                        </a>
+                    </li>
+                ))}
                 </ul>
             </motion.div>
             
@@ -51,25 +96,25 @@ export default function Footer (){
             </motion.div>
             
             <motion.div 
-                
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2 }}>
                 <h3 className="text-xl font-bold mb-4">Réseaux sociaux</h3>
                 <p className="mb-4 text-sm text-gray-300">Reçois les dernières sorties et nos sélections spéciales chaque semaine !</p>
-                    <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-pink-400 transition text-xl">
-                    <FaFacebook />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-pink-400 transition text-xl">
-                    <FaInstagram />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-pink-400 transition text-xl">
-                    <FaTwitter />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-pink-400 transition text-xl">
-                    <FaYoutube />
-                </a>
+                <div className="flex space-x-4">
+                {SOCIAL_LINKS.map((social) => {
+                    const Icon = social.icon;
+                    return (
+                        <a
+                            key={social.ariaLabel}
+                            href={social.href}
+                            aria-label={social.ariaLabel}
+                            className="text-gray-400 hover:text-pink-400 transition text-xl"
+                        >
+                            <Icon />
+                        </a>
+                    );
+                })}
                 </div>
                 
             </motion.div>
@@ -80,9 +125,11 @@ export default function Footer (){
                 © {new Date().getFullYear()} ToonTime. Tous droits réservés.
             </div>
             <div className="flex space-x-6">
-                <a href="#" className="hover:text-pink-400 transition">Confidentialité</a>
-                <a href="#" className="hover:text-pink-400 transition">Conditions d'utilisation</a>
-                <a href="#" className="hover:text-pink-400 transition">Préférences de cookies</a>
+                {LEGAL_LINKS.map((link) => (
+                    <a key={link.label} href={link.href} className="hover:text-pink-400 transition">
+                        {link.label}
+                    </a>
+                ))}
             </div>
             </div>
         </div>
